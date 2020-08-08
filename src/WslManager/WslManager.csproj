@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <StartupObject></StartupObject>
+    <PackageId>WslManager</PackageId>
+    <Version>0.1</Version>
+    <Authors>rkttu.com</Authors>
+    <Company>WSLHub</Company>
+    <Product>WslManager</Product>
+    <AssemblyName>WslManager</AssemblyName>
+    <RootNamespace>WslManager</RootNamespace>
+  </PropertyGroup>
+
+</Project>
