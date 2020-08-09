@@ -95,6 +95,9 @@ namespace WslManager
 
             backupWorker.ProgressChanged += new ProgressChangedEventHandler((s, e) =>
             {
+                if (mainForm.IsDisposed)
+                    return;
+
                 var targetItem = (DistroInfo)e.UserState;
 
                 foreach (ListViewItem eachItem in listView.Items)
@@ -111,6 +114,9 @@ namespace WslManager
 
             backupWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler((s, e) =>
             {
+                if (mainForm.IsDisposed)
+                    return;
+
                 if (e.Error != null)
                 {
                     MessageBox.Show(mainForm,
@@ -196,6 +202,9 @@ namespace WslManager
 
             restoreWorker.ProgressChanged += new ProgressChangedEventHandler((s, e) =>
             {
+                if (mainForm.IsDisposed)
+                    return;
+
                 var targetItem = (DistroInfo)e.UserState;
 
                 if (targetItem == null)
@@ -221,6 +230,9 @@ namespace WslManager
 
             restoreWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler((s, e) =>
             {
+                if (mainForm.IsDisposed)
+                    return;
+
                 if (e.Error != null)
                 {
                     MessageBox.Show(mainForm,
@@ -482,6 +494,9 @@ namespace WslManager
 
             timer.Tick += new EventHandler((s, e) =>
             {
+                if (mainForm.IsDisposed)
+                    return;
+
                 RefreshListView(listView, statusItem, WslHelper.GetDistroList());
             });
 
