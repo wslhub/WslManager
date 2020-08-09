@@ -124,7 +124,7 @@ namespace WslManager
 
         public static Process CreateUnregisterDistroProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--unregister \"{distroName}\"")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--unregister {distroName}")
             {
                 UseShellExecute = false,
             };
