@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -55,8 +55,6 @@ namespace WslManager
             };
 
             statusStrip.Items.Add(statusItem);
-
-            RefreshListView(listView, statusItem, WslHelper.GetDistroList());
 
             var backupWorker = new BackgroundWorker()
             {
@@ -455,6 +453,23 @@ namespace WslManager
 
                 var process = WslHelper.CreateLaunchSpecificDistroProcess(targetItem.DistroName);
                 process.Start();
+            });
+
+            mainForm.Load += new EventHandler((s, e) =>
+            {
+                var wslHostPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.System),
+                    "lxss", "wslhost.exe");
+
+                if (!File.Exists(wslHostPath))
+                {
+                    MessageBox.Show(mainForm, "It looks like WSL does not available on this system. Please install WSL first.",
+                        mainForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+                    mainForm.Close();
+                    return;
+                }
+
+                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
             });
 
             return mainForm;
