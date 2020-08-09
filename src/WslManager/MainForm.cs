@@ -20,6 +20,12 @@ namespace WslManager
                 StartPosition = FormStartPosition.WindowsDefaultBounds,
             };
 
+            var timer = new System.Windows.Forms.Timer()
+            {
+                Enabled = false,
+                Interval = 3000,
+            };
+
             var layout = new ToolStripContainer()
             {
                 Parent = mainForm,
@@ -470,12 +476,19 @@ namespace WslManager
                 }
 
                 RefreshListView(listView, statusItem, WslHelper.GetDistroList());
+
+                timer.Enabled = true;
+            });
+
+            timer.Tick += new EventHandler((s, e) =>
+            {
+                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
             });
 
             return mainForm;
         }
 
-        public static void AddDistroInfoIntoListView(
+        public static ListViewItem AddDistroInfoIntoListView(
             ListView listView,
             DistroInfo distroInfo)
         {
@@ -500,7 +513,7 @@ namespace WslManager
             }
 
             listView.Items.Add(lvItem);
-            lvItem.Selected = distroInfo.IsDefault;
+            return lvItem;
         }
 
         public static void RefreshListView(
@@ -517,12 +530,21 @@ namespace WslManager
             }
 
             listView.BeginUpdate();
+            var selectedDistroName = default(string);
+
+            if (listView.SelectedItems.Count > 0)
+                selectedDistroName = (listView.SelectedItems[0]?.Tag as DistroInfo)?.DistroName;
 
             if (listView.Items.Count > 0)
                 listView.Items.Clear();
 
             foreach (var eachDistro in distroInfoList.DistroList)
-                AddDistroInfoIntoListView(listView, eachDistro);
+            {
+                var createdItem = AddDistroInfoIntoListView(listView, eachDistro);
+
+                if (string.Equals(eachDistro.DistroName, selectedDistroName, StringComparison.Ordinal))
+                    createdItem.Selected = true;
+            }
 
             stateLabel.Text = $"Total {distroInfoList.DistroList.Count()} distros found.";
             listView.EndUpdate();
