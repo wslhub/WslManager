@@ -56,7 +56,7 @@ namespace WslManager
 
             statusStrip.Items.Add(statusItem);
 
-            RefreshListView(listView, statusItem, GetDistroList());
+            RefreshListView(listView, statusItem, WslHelper.GetDistroList());
 
             var backupWorker = new BackgroundWorker()
             {
@@ -67,33 +67,22 @@ namespace WslManager
             backupWorker.DoWork += new DoWorkEventHandler((s, e) =>
             {
                 var request = (DistroBackupRequest)e.Argument;
-
-                var startInfo = new ProcessStartInfo("wsl.exe", $"--export \"{request.DistroName}\" \"{request.SaveFilePath}\"")
-                {
-                    UseShellExecute = false,
-                };
-
-                var process = new Process()
-                {
-                    StartInfo = startInfo,
-                    EnableRaisingEvents = true,
-                };
-
+                var process = WslHelper.CreateExportDistroProcess(request.DistroName, request.SaveFilePath);
                 process.Start();
 
-                var list = GetDistroList();
+                var list = WslHelper.GetDistroList();
                 var convertingItem = list.DistroList.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
                 backupWorker.ReportProgress(0, convertingItem);
 
                 while (!process.HasExited && !backupWorker.CancellationPending)
                 {
-                    list = GetDistroList();
+                    list = WslHelper.GetDistroList();
                     convertingItem = list.DistroList.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
                     backupWorker.ReportProgress(50, convertingItem);
                     Thread.Sleep(TimeSpan.FromSeconds(1d));
                 }
 
-                list = GetDistroList();
+                list = WslHelper.GetDistroList();
                 convertingItem = list.DistroList.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
                 backupWorker.ReportProgress(100, convertingItem);
                 request.Succeed = true;
@@ -146,7 +135,7 @@ namespace WslManager
 
                 if (result.Succeed)
                 {
-                    RefreshListView(listView, statusItem, GetDistroList());
+                    RefreshListView(listView, statusItem, WslHelper.GetDistroList());
                     var itemPath = result.SaveFilePath.Replace(@"/", @"\");
                     Process.Start("explorer.exe", "/select," + itemPath);
                 }
@@ -167,21 +156,10 @@ namespace WslManager
             restoreWorker.DoWork += new DoWorkEventHandler((s, e) =>
             {
                 var request = (DistroRestoreRequest)e.Argument;
-
-                var startInfo = new ProcessStartInfo("wsl.exe", $"--import \"{request.DistroName}\" \"{request.RestoreDirPath}\" \"{request.TarFilePath}\"")
-                {
-                    UseShellExecute = false,
-                };
-
-                var process = new Process()
-                {
-                    StartInfo = startInfo,
-                    EnableRaisingEvents = true,
-                };
-
+                var process = WslHelper.CreateImportDistroProcess(request.DistroName, request.RestoreDirPath, request.TarFilePath);
                 process.Start();
 
-                var list = GetDistroList();
+                var list = WslHelper.GetDistroList();
                 var installingItem = list.DistroList.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
 
                 if (installingItem == null)
@@ -191,28 +169,18 @@ namespace WslManager
 
                 while (!process.HasExited && !restoreWorker.CancellationPending)
                 {
-                    list = GetDistroList();
+                    list = WslHelper.GetDistroList();
                     installingItem = list.DistroList.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
                     restoreWorker.ReportProgress(50, installingItem);
                     Thread.Sleep(TimeSpan.FromSeconds(1d));
                 }
 
-                list = GetDistroList();
+                list = WslHelper.GetDistroList();
                 installingItem = list.DistroList.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
 
                 if (request.SetAsDefault)
                 {
-                    startInfo = new ProcessStartInfo("wsl.exe", $"--set-default \"{request.DistroName}\"")
-                    {
-                        UseShellExecute = false,
-                    };
-
-                    process = new Process()
-                    {
-                        StartInfo = startInfo,
-                        EnableRaisingEvents = true,
-                    };
-
+                    process = WslHelper.CreateSetAsDefaultProcess(request.DistroName);
                     process.Start();
                     process.WaitForExit();
                 }
@@ -277,20 +245,8 @@ namespace WslManager
 
                 if (result.Succeed)
                 {
-                    RefreshListView(listView, statusItem, GetDistroList());
-
-                    var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {result.DistroName}")
-                    {
-                        UseShellExecute = false,
-                        WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                    };
-
-                    var process = new Process()
-                    {
-                        StartInfo = startInfo,
-                        EnableRaisingEvents = true,
-                    };
-
+                    RefreshListView(listView, statusItem, WslHelper.GetDistroList());
+                    var process = WslHelper.CreateLaunchSpecificDistroProcess(result.DistroName);
                     process.Start();
                 }
                 else
@@ -342,18 +298,7 @@ namespace WslManager
                 if (targetItem == null)
                     return;
 
-                var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {targetItem.DistroName}")
-                {
-                    UseShellExecute = false,
-                    WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                };
-
-                var process = new Process()
-                {
-                    StartInfo = startInfo,
-                    EnableRaisingEvents = true,
-                };
-
+                var process = WslHelper.CreateLaunchSpecificDistroProcess(targetItem.DistroName);
                 var result = process.Start();
             });
 
@@ -412,20 +357,10 @@ namespace WslManager
                     MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                     return;
 
-                var startInfo = new ProcessStartInfo("wsl.exe", $"--unregister {targetItem.DistroName}")
-                {
-                    UseShellExecute = false,
-                };
-
-                var process = new Process()
-                {
-                    StartInfo = startInfo,
-                    EnableRaisingEvents = true,
-                };
-
+                var process = WslHelper.CreateUnregisterDistroProcess(targetItem.DistroName);
                 process.Start();
                 process.WaitForExit();
-                RefreshListView(listView, statusItem, GetDistroList());
+                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
             });
 
             pointContextMenuStrip.Items.AddSeparator();
@@ -440,20 +375,10 @@ namespace WslManager
                 if (targetItem == null)
                     return;
 
-                var startInfo = new ProcessStartInfo("wsl.exe", $"--set-default {targetItem.DistroName}")
-                {
-                    UseShellExecute = false,
-                };
-
-                var process = new Process()
-                {
-                    StartInfo = startInfo,
-                    EnableRaisingEvents = true,
-                };
-
+                var process = WslHelper.CreateSetAsDefaultProcess(targetItem.DistroName);
                 process.Start();
                 process.WaitForExit();
-                RefreshListView(listView, statusItem, GetDistroList());
+                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
             });
 
             var defaultContextMenuStrip = new ContextMenuStrip();
@@ -462,7 +387,7 @@ namespace WslManager
 
             refreshListContextMenuItem.Click += new EventHandler((s, e) =>
             {
-                RefreshListView(listView, statusItem, GetDistroList());
+                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
             });
 
             defaultContextMenuStrip.Items.AddSeparator();
@@ -497,7 +422,7 @@ namespace WslManager
             {
                 if (e.KeyCode == Keys.F5)
                 {
-                    RefreshListView(listView, statusItem, GetDistroList());
+                    RefreshListView(listView, statusItem, WslHelper.GetDistroList());
                     return;
                 }
             });
@@ -528,47 +453,11 @@ namespace WslManager
                 if (targetItem == null)
                     return;
 
-                var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {targetItem.DistroName}")
-                {
-                    UseShellExecute = false,
-                    WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                };
-
-                var process = new Process()
-                {
-                    StartInfo = startInfo,
-                    EnableRaisingEvents = true,
-                };
-
-                var result = process.Start();
+                var process = WslHelper.CreateLaunchSpecificDistroProcess(targetItem.DistroName);
+                process.Start();
             });
 
             return mainForm;
-        }
-
-        public static DistroInfoList GetDistroList()
-        {
-            var processStartInfo = new ProcessStartInfo("wsl.exe", "-l -v")
-            {
-                LoadUserProfile = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                StandardOutputEncoding = Encoding.ASCII,
-                CreateNoWindow = true,
-            };
-
-            using var process = new Process()
-            {
-                StartInfo = processStartInfo,
-                EnableRaisingEvents = true,
-            };
-
-            if (!process.Start())
-                throw new Exception("Cannot start the WSL process.");
-
-            process.WaitForExit();
-            var output = process.StandardOutput.ReadToEnd().Replace("\0", string.Empty);
-            return new DistroInfoList(output);
         }
 
         public static void AddDistroInfoIntoListView(

@@ -13,12 +13,12 @@ namespace WslManager
 
             _distroListExpression = expression;
 
-            var lines = _distroListExpression.Split('\r', '\n', StringSplitOptions.RemoveEmptyEntries);
+            var lines = _distroListExpression.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<DistroInfo>(Math.Max(0, lines.Length - 1));
 
             foreach (var eachLine in lines)
             {
-                var items = eachLine.Trim().Split(' ', '\t', StringSplitOptions.RemoveEmptyEntries);
+                var items = eachLine.Trim().Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (3 <= items.Length && items.Length <= 4)
                 {

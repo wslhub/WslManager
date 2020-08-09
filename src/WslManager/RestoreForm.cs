@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
 namespace WslManager
@@ -244,7 +245,15 @@ namespace WslManager
 
                 if (string.IsNullOrWhiteSpace(installDirPath.Text))
                 {
-                    errorProvider.SetError(distroNameValue, "Install path required.");
+                    errorProvider.SetError(installDirPath, "Install path required.");
+                    installDirPath.Focus();
+                    e.Cancel = true;
+                    return;
+                }
+
+                if (Directory.GetFileSystemEntries(installDirPath.Text, "*.*", SearchOption.TopDirectoryOnly).Length > 0)
+                {
+                    errorProvider.SetError(installDirPath, "Selected directory is not an empty directory.");
                     installDirPath.Focus();
                     e.Cancel = true;
                     return;
@@ -257,9 +266,7 @@ namespace WslManager
                     e.Cancel = true;
                     return;
                 }
-                else if (MainForm.GetDistroList().DistroList
-                    .Count(x => string.Equals(x.DistroName, distroNameValue.Text, StringComparison.Ordinal))
-                    > 0)
+                else if (WslHelper.GetDistroNames().Contains(distroNameValue.Text, StringComparer.Ordinal))
                 {
                     errorProvider.SetError(distroNameValue, "Already taken distro name.");
                     distroNameValue.Focus();
