@@ -138,9 +138,9 @@ namespace WslManager
             return process;
         }
 
-        public static Process CreateShutdownDistroProcess(string distroName)
+        public static Process CreateShutdownDistroProcess()
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--shutdown {distroName}")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--shutdown")
             {
                 UseShellExecute = false,
             };

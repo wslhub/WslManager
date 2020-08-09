@@ -314,27 +314,6 @@ namespace WslManager
 
             pointContextMenuStrip.Items.AddSeparator();
 
-            var shutdownDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Shutdown Distro...");
-
-            shutdownDistroContextMenuItem.Click += new EventHandler((s, e) =>
-            {
-                var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
-                var targetItem = hitTest?.Item?.Tag as DistroInfo;
-
-                if (targetItem == null)
-                    return;
-
-                if (MessageBox.Show(mainForm, $"Really shutdown `{targetItem.DistroName}` distro? This operation can cause unintentional data loss.",
-                    mainForm.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
-                    MessageBoxDefaultButton.Button2) != DialogResult.Yes)
-                    return;
-
-                var process = WslHelper.CreateShutdownDistroProcess(targetItem.DistroName);
-                process.Start();
-                process.WaitForExit();
-                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
-            });
-
             var backupDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Backup Distro...");
 
             backupDistroContextMenuItem.Click += new EventHandler((s, e) =>
@@ -447,6 +426,23 @@ namespace WslManager
                     return;
 
                 restoreWorker.RunWorkerAsync(restoreRequest);
+            });
+
+            defaultContextMenuStrip.Items.AddSeparator();
+
+            var shutdownContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Shutdown WSL...");
+
+            shutdownContextMenuItem.Click += new EventHandler((s, e) =>
+            {
+                if (MessageBox.Show(mainForm, $"Really shutdown WSL entirely? This operation can cause unintentional data loss.",
+                    mainForm.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+                    return;
+
+                var process = WslHelper.CreateShutdownDistroProcess();
+                process.Start();
+                process.WaitForExit();
+                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
             });
 
             listView.KeyUp += new KeyEventHandler((s, e) =>
