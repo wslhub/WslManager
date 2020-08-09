@@ -20,12 +20,6 @@ namespace WslManager
                 StartPosition = FormStartPosition.WindowsDefaultBounds,
             };
 
-            var timer = new System.Windows.Forms.Timer()
-            {
-                Enabled = false,
-                Interval = 3000,
-            };
-
             var layout = new ToolStripContainer()
             {
                 Parent = mainForm,
@@ -320,6 +314,27 @@ namespace WslManager
 
             pointContextMenuStrip.Items.AddSeparator();
 
+            var shutdownDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Shutdown Distro...");
+
+            shutdownDistroContextMenuItem.Click += new EventHandler((s, e) =>
+            {
+                var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
+                var targetItem = hitTest?.Item?.Tag as DistroInfo;
+
+                if (targetItem == null)
+                    return;
+
+                if (MessageBox.Show(mainForm, $"Really shutdown `{targetItem.DistroName}` distro? This operation can cause unintentional data loss.",
+                    mainForm.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+                    return;
+
+                var process = WslHelper.CreateShutdownDistroProcess(targetItem.DistroName);
+                process.Start();
+                process.WaitForExit();
+                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
+            });
+
             var backupDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Backup Distro...");
 
             backupDistroContextMenuItem.Click += new EventHandler((s, e) =>
@@ -369,7 +384,7 @@ namespace WslManager
                     return;
 
                 if (MessageBox.Show(mainForm, $"Really unregister `{targetItem.DistroName}` distro? This cannot be undone.",
-                    mainForm.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                    mainForm.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                     return;
 
@@ -381,7 +396,7 @@ namespace WslManager
 
             pointContextMenuStrip.Items.AddSeparator();
 
-            var setAsDefaultDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Set as default distro");
+            var setAsDefaultDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("Set as &default distro");
 
             setAsDefaultDistroContextMenuItem.Click += new EventHandler((s, e) =>
             {
@@ -488,16 +503,6 @@ namespace WslManager
                 }
 
                 RefreshListView(listView, statusItem, WslHelper.GetDistroList());
-
-                timer.Enabled = true;
-            });
-
-            timer.Tick += new EventHandler((s, e) =>
-            {
-                if (mainForm.IsDisposed)
-                    return;
-
-                RefreshListView(listView, statusItem, WslHelper.GetDistroList());
             });
 
             return mainForm;
@@ -561,7 +566,7 @@ namespace WslManager
                     createdItem.Selected = true;
             }
 
-            stateLabel.Text = $"Total {distroInfoList.DistroList.Count()} distros found.";
+            stateLabel.Text = $"Total {distroInfoList.DistroList.Count()} distros found. - {DateTime.Now}";
             listView.EndUpdate();
         }
 
