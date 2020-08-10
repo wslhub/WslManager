@@ -466,11 +466,77 @@ namespace WslManager
 
             var defaultContextMenuStrip = new ContextMenuStrip();
 
+            var viewTypeContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&View");
+
+            var largeIconViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Large Icon");
+
+            largeIconViewTypeContextMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.LargeIcon;
+            });
+
+            var smallIconViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Small Icon");
+
+            smallIconViewTypeContextMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.SmallIcon;
+            });
+
+            var listViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&List");
+
+            listViewTypeContextMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.List;
+            });
+
+            var detailViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Detail");
+
+            detailViewTypeContextMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.Details;
+            });
+
+            var tileViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Tile");
+
+            tileViewTypeContextMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.Tile;
+            });
+
             var refreshListContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("Refresh &List");
 
             refreshListContextMenuItem.Click += new EventHandler((s, e) =>
             {
                 RefreshListView(listView, statusItem, WslHelper.GetDistroList());
+            });
+
+            viewTypeContextMenuItem.DropDownOpened += new EventHandler((s, e) =>
+            {
+                foreach (ToolStripMenuItem eachSubItem in viewTypeContextMenuItem.DropDownItems)
+                    eachSubItem.Checked = false;
+
+                switch (listView.View)
+                {
+                    case View.LargeIcon:
+                        largeIconViewTypeContextMenuItem.Checked = true;
+                        break;
+
+                    case View.SmallIcon:
+                        smallIconViewTypeContextMenuItem.Checked = true;
+                        break;
+
+                    case View.List:
+                        listViewTypeContextMenuItem.Checked = true;
+                        break;
+
+                    case View.Details:
+                        detailViewTypeContextMenuItem.Checked = true;
+                        break;
+
+                    case View.Tile:
+                        tileViewTypeContextMenuItem.Checked = true;
+                        break;
+                }
             });
 
             defaultContextMenuStrip.Items.AddSeparator();
