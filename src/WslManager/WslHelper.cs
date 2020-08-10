@@ -74,6 +74,21 @@ namespace WslManager
             return process;
         }
 
+        public static Process CreateLaunchSpecificDistroExplorerProcess(string distroName)
+        {
+            var startInfo = new ProcessStartInfo($"\\\\wsl$\\{distroName}")
+            {
+                UseShellExecute = true,
+            };
+
+            var process = new Process()
+            {
+                StartInfo = startInfo,
+            };
+
+            return process;
+        }
+
         public static Process CreateExportDistroProcess(string distroName, string tarFilePath)
         {
             var startInfo = new ProcessStartInfo("wsl.exe", $"--export \"{distroName}\" \"{tarFilePath}\"")

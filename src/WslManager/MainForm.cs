@@ -387,6 +387,20 @@ namespace WslManager
 
             pointContextMenuStrip.Items.AddSeparator();
 
+            var openDistroFolderContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("E&xplore Distro File System...");
+
+            openDistroFolderContextMenuItem.Click += new EventHandler((s, e) =>
+            {
+                var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
+                var targetItem = hitTest?.Item?.Tag as DistroInfo;
+
+                if (targetItem == null)
+                    return;
+
+                var process = WslHelper.CreateLaunchSpecificDistroExplorerProcess(targetItem.DistroName);
+                var result = process.Start();
+            });
+
             var backupDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Backup Distro...");
 
             backupDistroContextMenuItem.Click += new EventHandler((s, e) =>
