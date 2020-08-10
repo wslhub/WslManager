@@ -56,11 +56,14 @@ namespace WslManager
 
             statusStrip.Items.Add(statusItem);
 
+            var components = new Container();
+
             var backupWorker = new BackgroundWorker()
             {
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true,
             };
+            components.Add(backupWorker);
 
             backupWorker.DoWork += new DoWorkEventHandler((s, e) =>
             {
@@ -156,6 +159,7 @@ namespace WslManager
                 WorkerReportsProgress = true,
                 WorkerSupportsCancellation = true,
             };
+            components.Add(restoreWorker);
 
             restoreWorker.DoWork += new DoWorkEventHandler((s, e) =>
             {
@@ -499,6 +503,14 @@ namespace WslManager
                 }
 
                 RefreshListView(listView, statusItem, WslHelper.GetDistroList());
+            });
+
+            mainForm.Disposed += new EventHandler((s, e) =>
+            {
+                if (components == null)
+                    return;
+
+                components.Dispose();
             });
 
             return mainForm;
