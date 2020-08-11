@@ -91,7 +91,7 @@ namespace WslManager
 
         public static Process CreateExportDistroProcess(string distroName, string tarFilePath)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--export \"{distroName}\" \"{tarFilePath}\"")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--export {distroName} \"{tarFilePath}\"")
             {
                 UseShellExecute = false,
             };
@@ -107,7 +107,7 @@ namespace WslManager
 
         public static Process CreateImportDistroProcess(string distroName, string installDirectoryPath, string tarFilePath)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--import \"{distroName}\" \"{installDirectoryPath}\" \"{tarFilePath}\"")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--import {distroName} \"{installDirectoryPath}\" \"{tarFilePath}\"")
             {
                 UseShellExecute = false,
             };
@@ -123,7 +123,7 @@ namespace WslManager
 
         public static Process CreateSetAsDefaultProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--set-default \"{distroName}\"")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--set-default {distroName}")
             {
                 UseShellExecute = false,
             };

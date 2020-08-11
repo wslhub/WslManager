@@ -15,6 +15,18 @@ namespace WslManager
 {
     internal static class MainForm
     {
+        public static readonly Dictionary<string, string> StateImages = new Dictionary<string, string>
+        {
+            {
+                "default_distro",
+                "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAt0lEQVR4Xr3ToQrCUBTH4eNNNvtcU9/AYBUfQPAtLIO9hsE4tIhRLHsELcsG41YWZnBJkFuP5whD5Qp/p+BgHC673+9ywxrMTH9/rLXNCpgv8FTGUaZfO6C4vJbR9rDpCthrxNTFYRzQIolIIh0BO+PcC+DTpSCv1aZhb6RsXmFf3lQ3vsP5OefJcsyDWf8+da3RZ5ytk9XLB4wfm1LBTh1idArCKAIwjgCMIwDjCMI48in++Xe+AVbCHNkHNb8AAAAAAElFTkSuQmCC"
+            },
+            {
+                "hourglass",
+                "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAByElEQVR4XpWTPYsiQRCGX2UjTXYxMfAXKFyisKeZIIKsH6GcYnAox4KRHHLIhcKCOGhicAyIY3CnRiIYqKihu4Emov4A01OYRAU/6O1uBhkZZNcHCnpqmuJ9q6t0hBAwdrsdwe083EFhs9kgHA7js7TbbTD0UDAYDKjVamCUy2U0Gg1N5HI5mEwmfj5DLfDYbrf3NP4HAgEym80IPWtiOBySRCLBzhPlvk6tQAbw5nA4MBgMMJ1OQYvB7/ez4Kr6/T7sdjsor+w+DaLHJX9YHzqdDvb7PQRBQCQSQTqdhsViwXw+RygUIgBEjQUFZuUvVUB8Ph+hjeLSK5UKCQaDZDwes+8XqNBDy3en0/mvWCyiWq1ivV6j1+uhVCrBarUKAH5rClzjdDrhcDioFepA+aiANBqNIqlUCtFoFGazGW63G8lkEovF4icAjQW1/6flcvmtUCggk8mA9gGMWCyGeDyObDYLWZZ/0Xtfril4ZkPi9XrBnlMFz9lsNrRaLWbjx7UCXyeTCTweD47HI5rNJvL5PLrdLusDz7P/lEcoXCwThQ9PvV6HKIqgkwcFvicul4vbkCQJCg/nAqvVity8TOptNBqNPHkr71cXCDPl8tJBAAAAAElFTkSuQmCC"
+            },
+        };
+
         public static readonly Dictionary<string, string> LogoImages = new Dictionary<string, string>
         {
             {
@@ -95,6 +107,20 @@ namespace WslManager
                 smallImageList.Images.Add(pairs.Key, smallImage);
             }
 
+            var stateImageList = new ImageList()
+            {
+                ColorDepth = ColorDepth.Depth32Bit,
+                ImageSize = new Size(16, 16),
+            };
+            components.Add(stateImageList);
+
+            foreach (KeyValuePair<string, string> pairs in StateImages)
+            {
+                using var memStream = new MemoryStream(Convert.FromBase64String(pairs.Value), false);
+                var loadedImage = Image.FromStream(memStream, true);
+                stateImageList.Images.Add(pairs.Key, loadedImage);
+            }
+
             var listView = new ListView()
             {
                 Parent = layout.ContentPanel,
@@ -105,6 +131,7 @@ namespace WslManager
                 FullRowSelect = true,
                 LargeImageList = largeImageList,
                 SmallImageList = smallImageList,
+                StateImageList = stateImageList,
             };
 
             listView.Columns.Add(string.Empty, "Distro Name", 200);
@@ -677,6 +704,11 @@ namespace WslManager
                 if (roughName.Contains(eachKey, StringComparison.OrdinalIgnoreCase))
                     lvItem.ImageKey = eachKey;
             }
+
+            if (distroInfo.IsDefault)
+                lvItem.StateImageIndex = 0;
+            else if (string.Equals(distroInfo.DistroStatus, "Installing", StringComparison.OrdinalIgnoreCase))
+                lvItem.StateImageIndex = 1;
 
             foreach (ColumnHeader eachSubItem in listView.Columns)
             {
