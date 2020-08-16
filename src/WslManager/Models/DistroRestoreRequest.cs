@@ -1,8 +1,8 @@
-﻿namespace WslManager
+﻿namespace WslManager.Models
 {
-    public sealed class DistroRestoreRequest
+    public sealed class DistroRestoreRequest : DistroInfoBase
     {
-        public string DistroName { get; set; }
+        public override string DistroName { get; set; }
         public string TarFilePath { get; set; }
         public string RestoreDirPath { get; set; }
         public bool SetAsDefault { get; set; }

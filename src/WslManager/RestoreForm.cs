@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
+using WslManager.Extensions;
+using WslManager.Helpers;
+using WslManager.Models;
 
 namespace WslManager
 {
@@ -266,7 +269,7 @@ namespace WslManager
                     e.Cancel = true;
                     return;
                 }
-                else if (WslHelper.GetDistroNames().Contains(distroNameValue.Text, StringComparer.Ordinal))
+                else if (WslExtensions.GetDistroNames().Contains(distroNameValue.Text, StringComparer.Ordinal))
                 {
                     errorProvider.SetError(distroNameValue, "Already taken distro name.");
                     distroNameValue.Focus();

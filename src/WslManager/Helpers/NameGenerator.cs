@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace WslManager
+namespace WslManager.Helpers
 {
     /// <summary>
     /// Random Name Generator inspired by Docker NamesGenerator (https://github.com/docker/docker/blob/master/pkg/namesgenerator/names-generator.go)

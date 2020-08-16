@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
+using WslManager.Models;
 
-namespace WslManager
+namespace WslManager.Extensions
 {
-    internal static class ExtensionMethods
+    internal static class WinFormExtensions
     {
         public static ToolStripMenuItem AddMenuItem(this ToolStripItemCollection parent, string text)
             => (ToolStripMenuItem)parent.Add(text);
 
         public static void AddSeparator(this ToolStripItemCollection parent)
             => parent.Add(new ToolStripSeparator());
-
-        public static bool? IsDistroStarted(this DistroInfo info)
-        {
-            if (info == null)
-                return null;
-
-            return string.Equals(info.DistroStatus, "Running", StringComparison.OrdinalIgnoreCase);
-        }
     }
 }
