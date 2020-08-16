@@ -9,14 +9,18 @@ namespace WslManager.Extensions
 {
     internal static class WslExtensions
     {
-        public static string[] GetDistroNames()
+        private static readonly char[] NewLineChars = new char[] { '\r', '\n', };
+
+        private static readonly char[] WhitespaceChars = new char[] { '\u0020', '\t', };
+
+        public static IEnumerable<string> ExecuteAndGetResult(string executablePath, string commandLineArguments)
         {
-            var processStartInfo = new ProcessStartInfo("wsl.exe", "--list --quiet")
+            var processStartInfo = new ProcessStartInfo(executablePath, commandLineArguments)
             {
                 LoadUserProfile = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                StandardOutputEncoding = Encoding.ASCII,
+                StandardOutputEncoding = Encoding.UTF8,
                 CreateNoWindow = true,
             };
 
@@ -29,49 +33,39 @@ namespace WslManager.Extensions
             if (!process.Start())
                 throw new Exception("Cannot start the WSL process.");
 
-            process.WaitForExit();
-            var output = process.StandardOutput.ReadToEnd().Replace("\0", string.Empty);
-            return output.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            return process.StandardOutput
+                .ReadToEnd()
+                .Replace("\0", string.Empty)
+                .Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static IEnumerable<string> ExecuteAndGetResultForWsl(this DistroInfoBase distro, string oneLinerBashScript)
+        {
+            return ExecuteAndGetResult("wsl.exe", $"--distribution {distro.DistroName} -- {oneLinerBashScript}");
+        }
+
+        public static IEnumerable<string> GetDistroNames()
+        {
+            return ExecuteAndGetResult("wsl.exe", "--list --quiet");
         }
 
         public static IEnumerable<DistroInfo> GetDistroList()
         {
-            var processStartInfo = new ProcessStartInfo("wsl.exe", "--list --verbose")
-            {
-                LoadUserProfile = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                StandardOutputEncoding = Encoding.ASCII,
-                CreateNoWindow = true,
-            };
-
-            using var process = new Process()
-            {
-                StartInfo = processStartInfo,
-                EnableRaisingEvents = true,
-            };
-
-            if (!process.Start())
-                throw new Exception("Cannot start the WSL process.");
-
-            process.WaitForExit();
-            var output = process.StandardOutput.ReadToEnd().Replace("\0", string.Empty);
-            return ParseDistroList(output);
+            return ParseDistroList(ExecuteAndGetResult("wsl.exe", "--list --verbose"));
         }
 
-        public static IEnumerable<DistroInfo> ParseDistroList(string expression)
+        public static IEnumerable<DistroInfo> ParseDistroList(IEnumerable<string> lines)
         {
             var o = new List<DistroInfo>();
 
-            if (expression == null)
-                throw new ArgumentNullException(nameof(expression));
+            if (lines == null)
+                throw new ArgumentNullException(nameof(lines));
 
-            var lines = expression.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var list = new List<DistroInfo>(Math.Max(0, lines.Length - 1));
+            var list = new List<DistroInfo>(Math.Max(0, lines.Count() - 1));
 
             foreach (var eachLine in lines)
             {
-                var items = eachLine.Trim().Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                var items = eachLine.Trim().Split(WhitespaceChars, StringSplitOptions.RemoveEmptyEntries);
 
                 if (3 <= items.Length && items.Length <= 4)
                 {
@@ -209,6 +203,11 @@ namespace WslManager.Extensions
             };
 
             return process;
+        }
+
+        public static IEnumerable<string> GetRegularUserList(this DistroInfoBase distroInfo)
+        {
+            return distroInfo.ExecuteAndGetResultForWsl("cat /etc/passwd | grep \":[0-9][0-9][0-9][0-9]:\" | cut -d: -f1 -");
         }
     }
 }
