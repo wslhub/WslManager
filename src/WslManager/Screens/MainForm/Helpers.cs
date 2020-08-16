@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
+using WslManager.Extensions;
 using WslManager.Models;
 
 namespace WslManager.Screens.MainForm
@@ -66,10 +67,7 @@ namespace WslManager.Screens.MainForm
             }
 
             listView.BeginUpdate();
-            var selectedDistroName = default(string);
-
-            if (listView.SelectedItems.Count > 0)
-                selectedDistroName = (listView.SelectedItems[0]?.Tag as DistroInfo)?.DistroName;
+            var selectedDistroName = (listView.GetSelectedItem()?.Tag as DistroInfo)?.DistroName;
 
             if (listView.Items.Count > 0)
                 listView.Items.Clear();
