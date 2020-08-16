@@ -325,25 +325,107 @@ namespace WslManager
 
             var appMenu = menuStrip.Items.AddMenuItem("&App");
 
-            var aboutMenuItem = appMenu.DropDownItems.AddMenuItem("&About...");
+            var exitMenuItem = appMenu.DropDownItems.AddMenuItem("E&xit");
+
+            exitMenuItem.Click += new EventHandler((s, e) =>
+            {
+                mainForm.Close();
+            });
+
+            var viewMenu = menuStrip.Items.AddMenuItem("&View");
+
+            var viewTypeMenuItems = new List<ToolStripMenuItem>();
+
+            var largeIconMenuItem = viewMenu.DropDownItems.AddMenuItem("La&rge Icon");
+            viewTypeMenuItems.Add(largeIconMenuItem);
+
+            largeIconMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.LargeIcon;
+            });
+
+            var smallIconMenuItem = viewMenu.DropDownItems.AddMenuItem("&Small Icon");
+            viewTypeMenuItems.Add(smallIconMenuItem);
+
+            smallIconMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.SmallIcon;
+            });
+
+            var listMenuItem = viewMenu.DropDownItems.AddMenuItem("&List");
+            viewTypeMenuItems.Add(listMenuItem);
+
+            listMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.List;
+            });
+
+            var detailMenuItem = viewMenu.DropDownItems.AddMenuItem("&Detail");
+            viewTypeMenuItems.Add(detailMenuItem);
+
+            detailMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.Details;
+            });
+
+            var tileMenuItem = viewMenu.DropDownItems.AddMenuItem("&Tile");
+            viewTypeMenuItems.Add(tileMenuItem);
+
+            tileMenuItem.Click += new EventHandler((s, e) =>
+            {
+                listView.View = View.Tile;
+            });
+
+            viewMenu.DropDownOpening += new EventHandler((s, e) =>
+            {
+                foreach (var eachMenuItem in viewTypeMenuItems)
+                    eachMenuItem.Checked = false;
+
+                switch (listView.View)
+                {
+                    case View.LargeIcon:
+                        largeIconMenuItem.Checked = true;
+                        break;
+
+                    case View.SmallIcon:
+                        smallIconMenuItem.Checked = true;
+                        break;
+
+                    case View.List:
+                        listMenuItem.Checked = true;
+                        break;
+
+                    case View.Details:
+                        detailMenuItem.Checked = true;
+                        break;
+
+                    case View.Tile:
+                        tileMenuItem.Checked = true;
+                        break;
+                }
+            });
+
+            viewMenu.DropDownItems.AddSeparator();
+
+            var refreshMenuItem = viewMenu.DropDownItems.AddMenuItem("&Refresh List");
+
+            refreshMenuItem.Click += new EventHandler((s, e) =>
+            {
+                RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            });
+
+            var helpMenu = menuStrip.Items.AddMenuItem("&Help");
+
+            var aboutMenuItem = helpMenu.DropDownItems.AddMenuItem("&About...");
 
             aboutMenuItem.Click += new EventHandler((s, e) =>
             {
                 var message = string.Join(Environment.NewLine,
                     "WSL Manager v0.1",
                     "(c) 2019 rkttu.com, All rights reserved.");
-                
+
                 MessageBox.Show(mainForm, message, mainForm.Text,
                     MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
-            });
-
-            appMenu.DropDownItems.AddSeparator();
-
-            var exitMenuItem = appMenu.DropDownItems.AddMenuItem("E&xit");
-
-            exitMenuItem.Click += new EventHandler((s, e) =>
-            {
-                mainForm.Close();
             });
 
             var pointContextMenuStrip = new ContextMenuStrip();
