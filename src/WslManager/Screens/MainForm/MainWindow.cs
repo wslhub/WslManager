@@ -50,10 +50,7 @@ namespace WslManager.Screens.MainForm
                 StateImageList = stateImageList,
             };
 
-            listView.Columns.Add(string.Empty, "Distro Name", 200);
-            listView.Columns.Add("status", "Distro Status", 120);
-            listView.Columns.Add("wslver", "WSL Version", 120);
-            listView.Columns.Add("default", "Is Default", 120);
+            ConfigureListViewColumns(listView);
 
             listView.KeyUp += ListView_KeyUp;
             listView.MouseDown += ListView_MouseDown;

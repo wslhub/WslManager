@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
@@ -13,6 +10,15 @@ namespace WslManager.Screens.MainForm
     // Helpers
     partial class MainForm
     {
+        public static void ConfigureListViewColumns(
+            ListView listView)
+        {
+            listView.Columns.Add(string.Empty, "Distro Name", 200);
+            listView.Columns.Add("status", "Distro Status", 120);
+            listView.Columns.Add("wslver", "WSL Version", 120);
+            listView.Columns.Add("default", "Is Default", 120);
+        }
+
         public static ListViewItem AddDistroInfoIntoListView(
             ListView listView,
             DistroInfo distroInfo)
@@ -36,15 +42,15 @@ namespace WslManager.Screens.MainForm
                 switch (eachSubItem.Name)
                 {
                     case "status":
-                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = "status", Text = distroInfo.DistroStatus, });
+                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = distroInfo.DistroStatus, });
                         break;
 
                     case "wslver":
-                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = "wslver", Text = distroInfo.WSLVersion, });
+                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = distroInfo.WSLVersion, });
                         break;
 
                     case "default":
-                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = "default", Text = distroInfo.IsDefault ? "*" : string.Empty, });
+                        lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = distroInfo.IsDefault ? "*" : string.Empty, });
                         break;
                 }
             }
@@ -82,29 +88,6 @@ namespace WslManager.Screens.MainForm
 
             stateLabel.Text = $"Total {distroInfoList.Count()} distros found. - {DateTime.Now}";
             listView.EndUpdate();
-        }
-
-        public static Bitmap ResizeImage(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using var wrapMode = new ImageAttributes();
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-            }
-
-            return destImage;
         }
     }
 }
