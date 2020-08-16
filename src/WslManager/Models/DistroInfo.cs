@@ -4,10 +4,48 @@ namespace WslManager.Models
 {
     public sealed class DistroInfo : DistroInfoBase
     {
-        public bool IsDefault { get; set; }
-        public override string DistroName { get; set; }
-        public string DistroStatus { get; set; }
-        public string WSLVersion { get; set; }
+        private bool _isDefault;
+        private string _distroStatus;
+        private string _wslVersion;
+
+        public bool IsDefault
+        {
+            get => _isDefault;
+            set
+            {
+                if (value != _isDefault)
+                {
+                    _isDefault = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public string DistroStatus
+        {
+            get => _distroStatus;
+            set
+            {
+                if (value != _distroStatus)
+                {
+                    _distroStatus = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public string WSLVersion
+        {
+            get => _wslVersion;
+            set
+            {
+                if (value != _wslVersion)
+                {
+                    _wslVersion = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public override string ToString()
             => $"{(IsDefault ? "Default" : "Non-Default")}, {DistroName}, {DistroStatus}, {WSLVersion}";

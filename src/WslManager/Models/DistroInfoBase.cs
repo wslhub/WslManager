@@ -1,11 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WslManager.Models
+﻿namespace WslManager.Models
 {
-    public abstract class DistroInfoBase
+    public abstract class DistroInfoBase : NotifiableModel
     {
-        public abstract string DistroName { get; set; }
+        private string _distroName;
+
+        public string DistroName
+        {
+            get => _distroName;
+            set
+            {
+                if (value != _distroName)
+                {
+                    _distroName = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
     }
 }

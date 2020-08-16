@@ -1,9 +1,36 @@
-﻿namespace WslManager.Models
+﻿using System.ComponentModel;
+
+namespace WslManager.Models
 {
-    public sealed class DistroBackupRequest : DistroInfoBase
+    public sealed class DistroBackupRequest : DistroInfoBase, INotifyPropertyChanged
     {
-        public override string DistroName { get; set; }
-        public string SaveFilePath { get; set; }
-        public bool Succeed { get; set; }
+        private string _saveFilePath;
+        private bool _succeed;
+
+        public string SaveFilePath
+        {
+            get => _saveFilePath;
+            set
+            {
+                if (value != _saveFilePath)
+                {
+                    _saveFilePath = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public bool Succeed
+        {
+            get => _succeed;
+            set
+            {
+                if (value != _succeed)
+                {
+                    _succeed = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
     }
 }

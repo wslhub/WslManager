@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using WslManager.Screens.MainForm;
 
 namespace WslManager
 {
@@ -20,7 +21,7 @@ namespace WslManager
 
             var appContext = new ApplicationContext()
             {
-                MainForm = MainForm.Create(),
+                MainForm = new MainForm(),
             };
 
             Application.Run(appContext);
