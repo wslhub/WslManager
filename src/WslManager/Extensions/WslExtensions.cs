@@ -39,9 +39,12 @@ namespace WslManager.Extensions
                 .Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public static IEnumerable<string> ExecuteAndGetResultForWsl(this DistroInfoBase distro, string oneLinerBashScript)
+        public static IEnumerable<string> ExecuteAndGetResultForWsl(this DistroInfoBase distro, string userName, string oneLinerBashScript)
         {
-            return ExecuteAndGetResult("wsl.exe", $"--distribution {distro.DistroName} -- {oneLinerBashScript}");
+            if (string.IsNullOrWhiteSpace(userName))
+                return ExecuteAndGetResult("wsl.exe", $"--distribution {distro.DistroName} -- {oneLinerBashScript}");
+            else
+                return ExecuteAndGetResult("wsl.exe", $"--distribution {distro.DistroName} --user {userName} -- {oneLinerBashScript}");
         }
 
         public static IEnumerable<string> GetDistroNames()
@@ -207,7 +210,7 @@ namespace WslManager.Extensions
 
         public static IEnumerable<string> GetRegularUserList(this DistroInfoBase distroInfo)
         {
-            return distroInfo.ExecuteAndGetResultForWsl("cat /etc/passwd | grep \":[0-9][0-9][0-9][0-9]:\" | cut -d: -f1 -");
+            return distroInfo.ExecuteAndGetResultForWsl("root", "cat /etc/passwd | grep \":[0-9][0-9][0-9][0-9]:\" | cut -d: -f1 -");
         }
     }
 }
