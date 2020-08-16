@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using WslManager.Extensions;
-using WslManager.Models;
 
 namespace WslManager.Screens.MainForm
 {
@@ -27,62 +26,32 @@ namespace WslManager.Screens.MainForm
             viewTypeContextMenuItem.DropDownOpened += ViewTypeContextMenuItem_DropDownOpened;
 
             largeIconViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Large Icon");
-            largeIconViewTypeContextMenuItem.Click += LargeIconViewTypeContextMenuItem_Click;
+            largeIconViewTypeContextMenuItem.Click += Feature_SetListView_LargeIcon;
 
             smallIconViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Small Icon");
-            smallIconViewTypeContextMenuItem.Click += SmallIconViewTypeContextMenuItem_Click;
+            smallIconViewTypeContextMenuItem.Click += Feature_SetListView_SmallIcon;
 
             listViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&List");
-            listViewTypeContextMenuItem.Click += ListViewTypeContextMenuItem_Click;
+            listViewTypeContextMenuItem.Click += Feature_SetListView_List;
 
             detailViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Detail");
-            detailViewTypeContextMenuItem.Click += DetailViewTypeContextMenuItem_Click;
+            detailViewTypeContextMenuItem.Click += Feature_SetListView_Details;
 
             tileViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Tile");
-            tileViewTypeContextMenuItem.Click += TileViewTypeContextMenuItem_Click;
+            tileViewTypeContextMenuItem.Click += Feature_SetListView_Tile;
 
             refreshListContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("Refresh &List");
-            refreshListContextMenuItem.Click += RefreshListContextMenuItem_Click;
+            refreshListContextMenuItem.Click += Feature_RefreshDistroList;
 
             defaultContextMenuStrip.Items.AddSeparator();
 
             restoreDistroContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Restore Distro...");
-            restoreDistroContextMenuItem.Click += RestoreDistroContextMenuItem_Click;
+            restoreDistroContextMenuItem.Click += Feature_RestoreDistro;
 
             defaultContextMenuStrip.Items.AddSeparator();
 
             shutdownContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Shutdown WSL...");
-            shutdownContextMenuItem.Click += ShutdownContextMenuItem_Click;
-        }
-
-        private void LargeIconViewTypeContextMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.LargeIcon;
-        }
-
-        private void SmallIconViewTypeContextMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.SmallIcon;
-        }
-
-        private void ListViewTypeContextMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.List;
-        }
-
-        private void DetailViewTypeContextMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.Details;
-        }
-
-        private void TileViewTypeContextMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.Tile;
-        }
-
-        private void RefreshListContextMenuItem_Click(object sender, EventArgs e)
-        {
-            RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            shutdownContextMenuItem.Click += Feature_ShutdownWsl;
         }
 
         private void ViewTypeContextMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -112,43 +81,6 @@ namespace WslManager.Screens.MainForm
                     tileViewTypeContextMenuItem.Checked = true;
                     break;
             }
-        }
-
-        private void RestoreDistroContextMenuItem_Click(object sender, EventArgs e)
-        {
-            if (restoreWorker.IsBusy)
-            {
-                MessageBox.Show(
-                    this, "Already one or more restore in progress. Please try again later.",
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop);
-
-                return;
-            }
-
-            using var dialog = new RestoreForm.RestoreForm();
-
-            if (dialog.ShowDialog(this) != DialogResult.OK)
-                return;
-
-            var restoreRequest = dialog.Model;
-
-            if (restoreRequest == null)
-                return;
-
-            restoreWorker.RunWorkerAsync(restoreRequest);
-        }
-
-        private void ShutdownContextMenuItem_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show(this, $"Really shutdown WSL entirely? This operation can cause unintentional data loss.",
-                    Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
-                    MessageBoxDefaultButton.Button2) != DialogResult.Yes)
-                return;
-
-            var process = WslExtensions.CreateShutdownDistroProcess();
-            process.Start();
-            process.WaitForExit();
-            RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
         }
     }
 }

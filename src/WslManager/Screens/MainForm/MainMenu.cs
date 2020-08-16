@@ -9,7 +9,9 @@ namespace WslManager.Screens.MainForm
     partial class MainForm
     {
         private MenuStrip menuStrip;
-        private ToolStripMenuItem appMenu;
+        private ToolStripMenuItem distroMenu;
+        private ToolStripMenuItem restoreDistroMenuItem;
+        private ToolStripMenuItem shutdownMenuItem;
         private ToolStripMenuItem exitMenuItem;
 
         private List<ToolStripMenuItem> viewTypeMenuItems;
@@ -33,10 +35,20 @@ namespace WslManager.Screens.MainForm
                 Dock = DockStyle.Fill,
             };
 
-            appMenu = menuStrip.Items.AddMenuItem("&App");
+            distroMenu = menuStrip.Items.AddMenuItem("&Distro");
 
-            exitMenuItem = appMenu.DropDownItems.AddMenuItem("E&xit");
-            exitMenuItem.Click += ExitMenuItem_Click;
+            restoreDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Restore Distro...");
+            restoreDistroMenuItem.Click += Feature_RestoreDistro;
+
+            distroMenu.DropDownItems.AddSeparator();
+
+            shutdownMenuItem = distroMenu.DropDownItems.AddMenuItem("&Shutdown WSL");
+            shutdownMenuItem.Click += Feature_ShutdownWsl;
+
+            distroMenu.DropDownItems.AddSeparator();
+
+            exitMenuItem = distroMenu.DropDownItems.AddMenuItem("E&xit");
+            exitMenuItem.Click += Feature_ExitApp;
 
             viewMenu = menuStrip.Items.AddMenuItem("&View");
             viewMenu.DropDownOpening += ViewMenu_DropDownOpening;
@@ -44,63 +56,33 @@ namespace WslManager.Screens.MainForm
 
             largeIconMenuItem = viewMenu.DropDownItems.AddMenuItem("La&rge Icon");
             viewTypeMenuItems.Add(largeIconMenuItem);
-            largeIconMenuItem.Click += LargeIconMenuItem_Click;
+            largeIconMenuItem.Click += Feature_SetListView_LargeIcon;
 
             smallIconMenuItem = viewMenu.DropDownItems.AddMenuItem("&Small Icon");
             viewTypeMenuItems.Add(smallIconMenuItem);
-            smallIconMenuItem.Click += SmallIconMenuItem_Click;
+            smallIconMenuItem.Click += Feature_SetListView_SmallIcon;
 
             listMenuItem = viewMenu.DropDownItems.AddMenuItem("&List");
             viewTypeMenuItems.Add(listMenuItem);
-            listMenuItem.Click += ListMenuItem_Click;
+            listMenuItem.Click += Feature_SetListView_List;
 
             detailMenuItem = viewMenu.DropDownItems.AddMenuItem("&Detail");
             viewTypeMenuItems.Add(detailMenuItem);
-            detailMenuItem.Click += DetailMenuItem_Click;
+            detailMenuItem.Click += Feature_SetListView_Details;
 
             tileMenuItem = viewMenu.DropDownItems.AddMenuItem("&Tile");
             viewTypeMenuItems.Add(tileMenuItem);
-            tileMenuItem.Click += TileMenuItem_Click;
+            tileMenuItem.Click += Feature_SetListView_Tile;
 
             viewMenu.DropDownItems.AddSeparator();
 
             refreshMenuItem = viewMenu.DropDownItems.AddMenuItem("&Refresh List");
-            refreshMenuItem.Click += RefreshMenuItem_Click;
+            refreshMenuItem.Click += Feature_RefreshDistroList;
 
             helpMenu = menuStrip.Items.AddMenuItem("&Help");
 
             aboutMenuItem = helpMenu.DropDownItems.AddMenuItem("&About...");
-            aboutMenuItem.Click += AboutMenuItem_Click;
-        }
-
-        private void ExitMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void LargeIconMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.LargeIcon;
-        }
-
-        private void SmallIconMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.SmallIcon;
-        }
-
-        private void ListMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.List;
-        }
-
-        private void DetailMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.Details;
-        }
-
-        private void TileMenuItem_Click(object sender, EventArgs e)
-        {
-            listView.View = View.Tile;
+            aboutMenuItem.Click += Feature_AboutApp;
         }
 
         private void ViewMenu_DropDownOpening(object sender, EventArgs e)
@@ -130,21 +112,6 @@ namespace WslManager.Screens.MainForm
                     tileMenuItem.Checked = true;
                     break;
             }
-        }
-
-        private void RefreshMenuItem_Click(object sender, EventArgs e)
-        {
-            RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
-        }
-
-        private void AboutMenuItem_Click(object sender, EventArgs e)
-        {
-            var message = string.Join(Environment.NewLine,
-                "WSL Manager v0.1",
-                "(c) 2019 rkttu.com, All rights reserved.");
-
-            MessageBox.Show(this, message, Text,
-                MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
         }
     }
 }
