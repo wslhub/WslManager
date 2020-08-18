@@ -1,4 +1,8 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace WslManager.Extensions
 {
@@ -19,5 +23,90 @@ namespace WslManager.Extensions
 
         public static void AddSeparator(this ToolStripItemCollection parent)
             => parent.Add(new ToolStripSeparator());
+
+        public static TControl PlaceAt<TControl>(this TControl control, TableLayoutPanel layout,
+            int row = 0, int column = 0, int rowSpan = 1, int columnSpan = 1)
+            where TControl : Control
+        {
+            layout.SetCellPosition(control, new TableLayoutPanelCellPosition(
+                column: Math.Min(layout.ColumnCount, Math.Max(0, column)),
+                row: Math.Min(layout.RowCount, Math.Max(0, row))));
+            layout.SetColumnSpan(control, Math.Max(1, columnSpan));
+            layout.SetRowSpan(control, Math.Max(1, rowSpan));
+            return control;
+        }
+
+        public static void SetupLayout(
+            this TableLayoutPanel tableLayoutPanel,
+            string columnStyles = default,
+            string rowStyles = default)
+        {
+            if (tableLayoutPanel.ColumnStyles.Count > 0)
+                tableLayoutPanel.ColumnStyles.Clear();
+
+            if (tableLayoutPanel.RowStyles.Count > 0)
+                tableLayoutPanel.RowStyles.Clear();
+
+            var columnStyleFragments = (columnStyles ?? string.Empty).Split(new char[] { ' ', '\t', }, StringSplitOptions.RemoveEmptyEntries);
+            var rowStyleFragments = (rowStyles ?? string.Empty).Split(new char[] { ' ', '\t', }, StringSplitOptions.RemoveEmptyEntries);
+            var floatRegex = new Regex(@"^(^[0-9]*(?:\.[0-9]*)?)", RegexOptions.Compiled);
+
+            foreach (var eachFragment in columnStyleFragments)
+            {
+                switch (eachFragment)
+                {
+                    case var absolute when absolute.EndsWith("px", StringComparison.OrdinalIgnoreCase) &&
+                        float.TryParse(floatRegex.Match(absolute).Value, out float parsedAbsolute):
+                        tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, parsedAbsolute));
+                        break;
+
+                    case var percentage when percentage.EndsWith("%", StringComparison.Ordinal) &&
+                        float.TryParse(floatRegex.Match(percentage).Value, out float parsedPercentage):
+                        tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, parsedPercentage / 100f));
+                        break;
+
+                    case var onlyNumeric when float.TryParse(floatRegex.Match(onlyNumeric).Value, out float pasredNumericValue):
+                        tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, pasredNumericValue));
+                        break;
+
+                    case var auto when auto.Trim().Equals("*"):
+                        tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+                        break;
+
+                    default:
+                        throw new InvalidDataException($"Unexpected column expression `{eachFragment}` found.");
+                }
+            }
+
+            foreach (var eachFragment in rowStyleFragments)
+            {
+                switch (eachFragment)
+                {
+                    case var absolute when absolute.EndsWith("px", StringComparison.OrdinalIgnoreCase) &&
+                        float.TryParse(floatRegex.Match(absolute).Value, out float parsedAbsolute):
+                        tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, parsedAbsolute));
+                        break;
+
+                    case var percentage when percentage.EndsWith("%", StringComparison.Ordinal) &&
+                        float.TryParse(floatRegex.Match(percentage).Value, out float parsedPercentage):
+                        tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, parsedPercentage / 100f));
+                        break;
+
+                    case var onlyNumeric when float.TryParse(floatRegex.Match(onlyNumeric).Value, out float pasredNumericValue):
+                        tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, pasredNumericValue));
+                        break;
+
+                    case var auto when auto.Trim().Equals("*"):
+                        tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                        break;
+
+                    default:
+                        throw new InvalidDataException($"Unexpected row style expression `{eachFragment}` found.");
+                }
+            }
+
+            tableLayoutPanel.ColumnCount = tableLayoutPanel.ColumnStyles.Count;
+            tableLayoutPanel.RowCount = tableLayoutPanel.RowStyles.Count;
+        }
     }
 }

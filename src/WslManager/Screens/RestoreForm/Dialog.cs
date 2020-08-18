@@ -53,15 +53,9 @@ namespace WslManager.Screens.RestoreForm
                 Dock = DockStyle.Fill,
             };
 
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180f));
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 0.65f));
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 90f));
-
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 0.2f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 0.2f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 0.2f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 0.2f));
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 0.2f));
+            layout.SetupLayout(
+                columnStyles: "180px 65% 90px",
+                rowStyles: "20% 20% 20% 20% 20%");
 
             tarFileLabel = new Label()
             {
@@ -70,8 +64,8 @@ namespace WslManager.Screens.RestoreForm
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleRight,
                 Dock = DockStyle.Fill,
-            };
-            layout.SetCellPosition(tarFileLabel, new TableLayoutPanelCellPosition(0, 0));
+            }
+            .PlaceAt(layout, column: 0, row: 0);
 
             tarFilePath = new TextBox()
             {
@@ -79,17 +73,17 @@ namespace WslManager.Screens.RestoreForm
                 Dock = DockStyle.Fill,
                 AutoCompleteMode = AutoCompleteMode.SuggestAppend,
                 AutoCompleteSource = AutoCompleteSource.FileSystem,
-            };
+            }
+            .PlaceAt(layout, column: 1, row: 0);
             tarFilePath.DataBindings.Add(nameof(tarFilePath.Text), Model, nameof(Model.TarFilePath), false, DataSourceUpdateMode.OnPropertyChanged);
-            layout.SetCellPosition(tarFilePath, new TableLayoutPanelCellPosition(1, 0));
 
             tarFileOpenButton = new Button()
             {
                 Parent = layout,
                 Text = "&Open...",
                 Dock = DockStyle.Fill,
-            };
-            layout.SetCellPosition(tarFileOpenButton, new TableLayoutPanelCellPosition(2, 0));
+            }
+            .PlaceAt(layout, column: 2, row: 0);
 
             tarFileOpenButton.Click += TarFileOpenButton_Click;
 
@@ -100,8 +94,8 @@ namespace WslManager.Screens.RestoreForm
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleRight,
                 Dock = DockStyle.Fill,
-            };
-            layout.SetCellPosition(installDirLabel, new TableLayoutPanelCellPosition(0, 1));
+            }
+            .PlaceAt(layout, column: 0, row: 1);
 
             installDirPath = new TextBox()
             {
@@ -109,20 +103,18 @@ namespace WslManager.Screens.RestoreForm
                 Dock = DockStyle.Fill,
                 AutoCompleteMode = AutoCompleteMode.SuggestAppend,
                 AutoCompleteSource = AutoCompleteSource.FileSystemDirectories,
-            };
+            }
+            .PlaceAt(layout, column: 1, row: 1);
             installDirPath.DataBindings.Add(nameof(installDirPath.Text), Model, nameof(Model.RestoreDirPath), false, DataSourceUpdateMode.OnPropertyChanged);
-            layout.SetCellPosition(installDirPath, new TableLayoutPanelCellPosition(1, 1));
 
             installDirBrowseButton = new Button()
             {
                 Parent = layout,
                 Text = "&Browse...",
                 Dock = DockStyle.Fill,
-            };
-
+            }
+            .PlaceAt(layout, column: 2, row: 1);
             installDirBrowseButton.Click += InstallDirBrowseButton_Click;
-
-            layout.SetCellPosition(installDirBrowseButton, new TableLayoutPanelCellPosition(2, 1));
 
             distroNameLabel = new Label()
             {
@@ -131,28 +123,27 @@ namespace WslManager.Screens.RestoreForm
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleRight,
                 Dock = DockStyle.Fill,
-            };
-            layout.SetCellPosition(distroNameLabel, new TableLayoutPanelCellPosition(0, 2));
+            }
+            .PlaceAt(layout, column: 0, row: 2);
 
             distroNameValue = new TextBox()
             {
                 Parent = layout,
                 Dock = DockStyle.Fill,
                 Text = NameGenerator.Value.GetRandomName(),
-            };
+            }
+            .PlaceAt(layout, column: 1, row: 2);
             distroNameValue.DataBindings.Add(nameof(distroNameValue.Text), Model, nameof(Model.DistroName), false, DataSourceUpdateMode.OnPropertyChanged);
-            layout.SetCellPosition(distroNameValue, new TableLayoutPanelCellPosition(1, 2));
 
             distroNameSuggestButton = new Button()
             {
                 Parent = layout,
                 Text = "&Suggest",
                 Dock = DockStyle.Fill,
-            };
+            }
+            .PlaceAt(layout, column: 2, row: 2);
 
             distroNameSuggestButton.Click += DistroNameSuggestButton_Click;
-
-            layout.SetCellPosition(distroNameSuggestButton, new TableLayoutPanelCellPosition(2, 2));
 
             setAsDefaultLabel = new Label()
             {
@@ -161,8 +152,8 @@ namespace WslManager.Screens.RestoreForm
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleRight,
                 Dock = DockStyle.Fill,
-            };
-            layout.SetCellPosition(setAsDefaultLabel, new TableLayoutPanelCellPosition(0, 3));
+            }
+            .PlaceAt(layout, column: 0, row: 3);
 
             setAsDefaultCheckBox = new CheckBox()
             {
@@ -171,19 +162,17 @@ namespace WslManager.Screens.RestoreForm
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Dock = DockStyle.Fill,
-            };
+            }
+            .PlaceAt(layout, column: 1, row: 3, columnSpan: 2);
             setAsDefaultCheckBox.DataBindings.Add(nameof(setAsDefaultCheckBox.Checked), Model, nameof(Model.SetAsDefault), false, DataSourceUpdateMode.OnPropertyChanged);
-            layout.SetCellPosition(setAsDefaultCheckBox, new TableLayoutPanelCellPosition(1, 3));
-            layout.SetColumnSpan(setAsDefaultCheckBox, 2);
 
             actionPanel = new FlowLayoutPanel()
             {
                 Parent = layout,
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.RightToLeft,
-            };
-            layout.SetCellPosition(actionPanel, new TableLayoutPanelCellPosition(0, 4));
-            layout.SetColumnSpan(actionPanel, 3);
+            }
+            .PlaceAt(layout, column: 0, row: 4, columnSpan: 3);
 
             cancelButton = new Button()
             {
