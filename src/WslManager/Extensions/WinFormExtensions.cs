@@ -125,7 +125,9 @@ namespace WslManager.Extensions
             {
                 for (int column = 0; column < ctrlArray.GetLength(1); column++)
                 {
-                    switch (ctrlArray[row, column])
+                    var o = ctrlArray[row, column];
+
+                    switch (o)
                     {
                         case Control c:
                             c.Parent = tableLayoutPanel;
@@ -136,6 +138,23 @@ namespace WslManager.Extensions
                             i.Control.Parent = tableLayoutPanel;
                             i.Control.PlaceAt(tableLayoutPanel, row: row, column: column, rowSpan: i.RowSpan, columnSpan: i.ColumnSpan);
                             break;
+
+                        case string s when !string.IsNullOrWhiteSpace(s):
+                            new Label()
+                            {
+                                Parent = tableLayoutPanel,
+                                Text = s,
+                                AutoSize = true,
+                                TextAlign = ContentAlignment.MiddleCenter,
+                            }
+                            .PlaceAt(tableLayoutPanel, row: row, column: column);
+                            break;
+
+                        case null:
+                            break;
+
+                        default:
+                            throw new Exception($"Unsupported content type `{o?.GetType()?.ToString() ?? "<null>"}` found.");
                     }
                 }
             }
