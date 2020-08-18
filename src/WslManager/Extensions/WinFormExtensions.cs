@@ -26,6 +26,14 @@ namespace WslManager.Extensions
         public static void AddSeparator(this ToolStripItemCollection parent)
             => parent.Add(new ToolStripSeparator());
 
+        public static TControl AssociateLabel<TControl>(this TControl targetControl, Label label)
+            where TControl : Control
+        {
+            label.Cursor = Cursors.Hand;
+            label.Click += new EventHandler((s, e) => targetControl?.Focus());
+            return targetControl;
+        }
+
         public static TFlowLayoutPanel ReverseOrder<TFlowLayoutPanel>(this TFlowLayoutPanel flowLayoutPanel)
             where TFlowLayoutPanel : FlowLayoutPanel
         {
