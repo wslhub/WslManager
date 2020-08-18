@@ -34,26 +34,14 @@ namespace WslManager.Screens.RestoreForm
 
         partial void InitializeDialog()
         {
-            ClientSize = new Size(640, 220);
-            Text = "Restore Distro";
-            StartPosition = FormStartPosition.CenterParent;
-            Padding = new Padding(5);
-            ShowIcon = false;
-            ShowInTaskbar = false;
-            MinimizeBox = false;
-            MaximizeBox = false;
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-
-            MinimumSize = new Size(Width, Height);
-            MaximumSize = new Size(Width * 2, Height);
+            var form = this.SetupAsDialog(640, 220, "Restore Distro");
 
             layout = new TableLayoutPanel()
             {
                 Parent = this,
                 Dock = DockStyle.Fill,
-            };
-
-            layout.SetupLayout(
+            }
+            .SetupLayout(
                 columnStyles: "180px 65% 90px",
                 rowStyles: "20% 20% 20% 20% 20%");
 

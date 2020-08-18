@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -24,6 +25,25 @@ namespace WslManager.Extensions
         public static void AddSeparator(this ToolStripItemCollection parent)
             => parent.Add(new ToolStripSeparator());
 
+        public static TForm SetupAsDialog<TForm>(
+            this TForm form,
+            int width, int height, string dialogTitle)
+            where TForm : Form
+        {
+            form.ClientSize = new Size(width, height);
+            form.Text = dialogTitle;
+            form.StartPosition = FormStartPosition.CenterParent;
+            form.Padding = new Padding(5);
+            form.ShowIcon = false;
+            form.ShowInTaskbar = false;
+            form.MinimizeBox = false;
+            form.MaximizeBox = false;
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.MinimumSize = new Size(form.Width, form.Height);
+            form.MaximumSize = new Size(form.Width, form.Height);
+            return form;
+        }
+
         public static TControl PlaceAt<TControl>(this TControl control, TableLayoutPanel layout,
             int row = 0, int column = 0, int rowSpan = 1, int columnSpan = 1)
             where TControl : Control
@@ -36,10 +56,11 @@ namespace WslManager.Extensions
             return control;
         }
 
-        public static void SetupLayout(
-            this TableLayoutPanel tableLayoutPanel,
+        public static TTableLayoutPanel SetupLayout<TTableLayoutPanel>(
+            this TTableLayoutPanel tableLayoutPanel,
             string columnStyles = default,
             string rowStyles = default)
+            where TTableLayoutPanel: TableLayoutPanel
         {
             if (tableLayoutPanel.ColumnStyles.Count > 0)
                 tableLayoutPanel.ColumnStyles.Clear();
@@ -107,6 +128,7 @@ namespace WslManager.Extensions
 
             tableLayoutPanel.ColumnCount = tableLayoutPanel.ColumnStyles.Count;
             tableLayoutPanel.RowCount = tableLayoutPanel.RowStyles.Count;
+            return tableLayoutPanel;
         }
     }
 }
