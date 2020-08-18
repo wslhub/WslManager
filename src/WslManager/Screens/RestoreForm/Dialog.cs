@@ -51,14 +51,14 @@ namespace WslManager.Screens.RestoreForm
                 Text = "Backup File: ",
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleRight,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Right,
             }
             .PlaceAt(layout, column: 0, row: 0);
 
             tarFilePath = new TextBox()
             {
                 Parent = layout,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 AutoCompleteMode = AutoCompleteMode.SuggestAppend,
                 AutoCompleteSource = AutoCompleteSource.FileSystem,
             }
@@ -69,7 +69,8 @@ namespace WslManager.Screens.RestoreForm
             {
                 Parent = layout,
                 Text = "&Open...",
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Left,
+                Height = tarFilePath.Height,
             }
             .PlaceAt(layout, column: 2, row: 0);
 
@@ -81,14 +82,14 @@ namespace WslManager.Screens.RestoreForm
                 Text = "Install Directory: ",
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleRight,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Right,
             }
             .PlaceAt(layout, column: 0, row: 1);
 
             installDirPath = new TextBox()
             {
                 Parent = layout,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 AutoCompleteMode = AutoCompleteMode.SuggestAppend,
                 AutoCompleteSource = AutoCompleteSource.FileSystemDirectories,
             }
@@ -99,7 +100,7 @@ namespace WslManager.Screens.RestoreForm
             {
                 Parent = layout,
                 Text = "&Browse...",
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Left,
             }
             .PlaceAt(layout, column: 2, row: 1);
             installDirBrowseButton.Click += InstallDirBrowseButton_Click;
@@ -110,14 +111,14 @@ namespace WslManager.Screens.RestoreForm
                 Text = "Distro Name: ",
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleRight,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Right,
             }
             .PlaceAt(layout, column: 0, row: 2);
 
             distroNameValue = new TextBox()
             {
                 Parent = layout,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 Text = NameGenerator.Value.GetRandomName(),
             }
             .PlaceAt(layout, column: 1, row: 2);
@@ -127,7 +128,7 @@ namespace WslManager.Screens.RestoreForm
             {
                 Parent = layout,
                 Text = "&Suggest",
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Left,
             }
             .PlaceAt(layout, column: 2, row: 2);
 
@@ -139,7 +140,7 @@ namespace WslManager.Screens.RestoreForm
                 Text = "Set As Default: ",
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleRight,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Right,
             }
             .PlaceAt(layout, column: 0, row: 3);
 
@@ -149,7 +150,7 @@ namespace WslManager.Screens.RestoreForm
                 Text = "&Check to set as a default",
                 AutoEllipsis = true,
                 TextAlign = ContentAlignment.MiddleLeft,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
             }
             .PlaceAt(layout, column: 1, row: 3, columnSpan: 2);
             setAsDefaultCheckBox.DataBindings.Add(nameof(setAsDefaultCheckBox.Checked), Model, nameof(Model.SetAsDefault), false, DataSourceUpdateMode.OnPropertyChanged);
@@ -157,7 +158,7 @@ namespace WslManager.Screens.RestoreForm
             actionPanel = new FlowLayoutPanel()
             {
                 Parent = layout,
-                Dock = DockStyle.Fill,
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
                 FlowDirection = FlowDirection.RightToLeft,
             }
             .PlaceAt(layout, column: 0, row: 4, columnSpan: 3);
