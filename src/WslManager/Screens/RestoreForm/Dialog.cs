@@ -163,6 +163,15 @@ namespace WslManager.Screens.RestoreForm
             }
             .PlaceAt(layout, column: 0, row: 4, columnSpan: 3);
 
+            confirmButton = new Button()
+            {
+                Parent = actionPanel,
+                Text = "&Restore",
+                DialogResult = DialogResult.OK,
+                AutoSize = true,
+            };
+            AcceptButton = confirmButton;
+
             cancelButton = new Button()
             {
                 Parent = actionPanel,
@@ -172,14 +181,7 @@ namespace WslManager.Screens.RestoreForm
             };
             CancelButton = cancelButton;
 
-            confirmButton = new Button()
-            {
-                Parent = actionPanel,
-                Text = "&Restore",
-                DialogResult = DialogResult.OK,
-                AutoSize = true,
-            };
-            AcceptButton = confirmButton;
+            actionPanel.ReverseOrder();
 
             FormClosing += RestoreForm_FormClosing;
         }

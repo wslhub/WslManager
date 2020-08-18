@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -24,6 +25,15 @@ namespace WslManager.Extensions
 
         public static void AddSeparator(this ToolStripItemCollection parent)
             => parent.Add(new ToolStripSeparator());
+
+        public static TFlowLayoutPanel ReverseOrder<TFlowLayoutPanel>(this TFlowLayoutPanel flowLayoutPanel)
+            where TFlowLayoutPanel : FlowLayoutPanel
+        {
+            foreach (var eachControl in flowLayoutPanel.Controls.OfType<Control>().OrderBy(c => flowLayoutPanel.Controls.GetChildIndex(c)))
+                eachControl.BringToFront();
+
+            return flowLayoutPanel;
+        }
 
         public static TForm SetupAsDialog<TForm>(
             this TForm form,
