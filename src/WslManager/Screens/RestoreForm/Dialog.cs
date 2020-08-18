@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
 using WslManager.Models;
+using static WslManager.Extensions.WinFormExtensions;
 
 namespace WslManager.Screens.RestoreForm
 {
@@ -41,131 +42,126 @@ namespace WslManager.Screens.RestoreForm
                 Parent = this,
                 Dock = DockStyle.Fill,
             }
+
             .SetupLayout(
                 columnStyles: "180px 65% 90px",
-                rowStyles: "20% 20% 20% 20% 20%");
+                rowStyles: "20% 20% 20% 20% 20%")
 
-            tarFileLabel = new Label()
+            .Place(new object[,]
             {
-                Parent = layout,
-                Text = "Backup File: ",
-                AutoEllipsis = true,
-                TextAlign = ContentAlignment.MiddleRight,
-                Anchor = AnchorStyles.Right,
-            }
-            .PlaceAt(layout, column: 0, row: 0);
+                {
+                    tarFileLabel = new Label()
+                    {
+                        Text = "Backup File: ",
+                        TextAlign = ContentAlignment.MiddleRight,
+                        Anchor = AnchorStyles.Right,
+                    },
 
-            tarFilePath = new TextBox()
-            {
-                Parent = layout,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                AutoCompleteMode = AutoCompleteMode.SuggestAppend,
-                AutoCompleteSource = AutoCompleteSource.FileSystem,
-            }
-            .PlaceAt(layout, column: 1, row: 0)
-            .AssociateLabel(tarFileLabel)
-            .SetTextBoxBinding(this.Model, m => m.TarFilePath);
+                    tarFilePath = new TextBox()
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                        AutoCompleteSource = AutoCompleteSource.FileSystem,
+                    }
+                    .AssociateLabel(tarFileLabel)
+                    .SetTextBoxBinding(this.Model, m => m.TarFilePath),
 
-            tarFileOpenButton = new Button()
-            {
-                Parent = layout,
-                Text = "&Open...",
-                Anchor = AnchorStyles.Left,
-                Height = tarFilePath.Height,
-            }
-            .PlaceAt(layout, column: 2, row: 0);
+                    tarFileOpenButton = new Button()
+                    {
+                        Text = "&Open...",
+                        Anchor = AnchorStyles.Left,
+                        Height = tarFilePath.Height,
+                    },
+                },
+                {
+                    installDirLabel = new Label()
+                    {
+                        Text = "Install Directory: ",
+                        TextAlign = ContentAlignment.MiddleRight,
+                        Anchor = AnchorStyles.Right,
+                    },
+
+                    installDirPath = new TextBox()
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                        AutoCompleteSource = AutoCompleteSource.FileSystemDirectories,
+                    }
+                    .AssociateLabel(installDirLabel)
+                    .SetTextBoxBinding(this.Model, m => m.RestoreDirPath),
+
+                    installDirBrowseButton = new Button()
+                    {
+                        Text = "&Browse...",
+                        Anchor = AnchorStyles.Left,
+                    },
+                },
+                {
+                    distroNameLabel = new Label()
+                    {
+                        Text = "Distro Name: ",
+                        TextAlign = ContentAlignment.MiddleRight,
+                        Anchor = AnchorStyles.Right,
+                    },
+
+                    distroNameValue = new TextBox()
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        Text = NameGenerator.Value.GetRandomName(),
+                    }
+                    .AssociateLabel(distroNameLabel)
+                    .SetTextBoxBinding(this.Model, m => m.DistroName),
+
+                    distroNameSuggestButton = new Button()
+                    {
+                        Text = "&Suggest",
+                        Anchor = AnchorStyles.Left,
+                    },
+                },
+                {
+                    setAsDefaultLabel = new Label()
+                    {
+                        Text = "Set As Default: ",
+                        TextAlign = ContentAlignment.MiddleRight,
+                        Anchor = AnchorStyles.Right,
+                    },
+
+                    new TableLayoutCell
+                    {
+                        ColumnSpan = 2,
+                        Control = setAsDefaultCheckBox = new CheckBox()
+                        {
+                            Text = "&Check to set as a default",
+                            AutoEllipsis = true,
+                            TextAlign = ContentAlignment.MiddleLeft,
+                            Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        }
+                        .AssociateLabel(setAsDefaultLabel)
+                        .SetCheckBoxBinding(this.Model, m => m.SetAsDefault),
+                    },
+
+                    default,
+                },
+                {
+                    new TableLayoutCell
+                    {
+                        ColumnSpan = 3,
+                        Control = actionPanel = new FlowLayoutPanel()
+                        {
+                            Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                            FlowDirection = FlowDirection.RightToLeft,
+                        },
+                    },
+
+                    default,
+
+                    default,
+                },
+            });
 
             tarFileOpenButton.Click += TarFileOpenButton_Click;
-
-            installDirLabel = new Label()
-            {
-                Parent = layout,
-                Text = "Install Directory: ",
-                AutoEllipsis = true,
-                TextAlign = ContentAlignment.MiddleRight,
-                Anchor = AnchorStyles.Right,
-            }
-            .PlaceAt(layout, column: 0, row: 1);
-
-            installDirPath = new TextBox()
-            {
-                Parent = layout,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                AutoCompleteMode = AutoCompleteMode.SuggestAppend,
-                AutoCompleteSource = AutoCompleteSource.FileSystemDirectories,
-            }
-            .PlaceAt(layout, column: 1, row: 1)
-            .AssociateLabel(installDirLabel)
-            .SetTextBoxBinding(this.Model, m => m.RestoreDirPath);
-
-            installDirBrowseButton = new Button()
-            {
-                Parent = layout,
-                Text = "&Browse...",
-                Anchor = AnchorStyles.Left,
-            }
-            .PlaceAt(layout, column: 2, row: 1);
             installDirBrowseButton.Click += InstallDirBrowseButton_Click;
-
-            distroNameLabel = new Label()
-            {
-                Parent = layout,
-                Text = "Distro Name: ",
-                AutoEllipsis = true,
-                TextAlign = ContentAlignment.MiddleRight,
-                Anchor = AnchorStyles.Right,
-            }
-            .PlaceAt(layout, column: 0, row: 2);
-
-            distroNameValue = new TextBox()
-            {
-                Parent = layout,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                Text = NameGenerator.Value.GetRandomName(),
-            }
-            .PlaceAt(layout, column: 1, row: 2)
-            .AssociateLabel(distroNameLabel)
-            .SetTextBoxBinding(this.Model, m => m.DistroName);
-
-            distroNameSuggestButton = new Button()
-            {
-                Parent = layout,
-                Text = "&Suggest",
-                Anchor = AnchorStyles.Left,
-            }
-            .PlaceAt(layout, column: 2, row: 2);
-
             distroNameSuggestButton.Click += DistroNameSuggestButton_Click;
-
-            setAsDefaultLabel = new Label()
-            {
-                Parent = layout,
-                Text = "Set As Default: ",
-                AutoEllipsis = true,
-                TextAlign = ContentAlignment.MiddleRight,
-                Anchor = AnchorStyles.Right,
-            }
-            .PlaceAt(layout, column: 0, row: 3);
-
-            setAsDefaultCheckBox = new CheckBox()
-            {
-                Parent = layout,
-                Text = "&Check to set as a default",
-                AutoEllipsis = true,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right,
-            }
-            .PlaceAt(layout, column: 1, row: 3, columnSpan: 2)
-            .AssociateLabel(setAsDefaultLabel)
-            .SetCheckBoxBinding(this.Model, m => m.SetAsDefault);
-
-            actionPanel = new FlowLayoutPanel()
-            {
-                Parent = layout,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                FlowDirection = FlowDirection.RightToLeft,
-            }
-            .PlaceAt(layout, column: 0, row: 4, columnSpan: 3);
 
             confirmButton = new Button()
             {

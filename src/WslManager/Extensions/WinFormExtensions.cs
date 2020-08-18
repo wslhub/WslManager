@@ -113,6 +113,43 @@ namespace WslManager.Extensions
             return form;
         }
 
+        public static TTableLayoutPanel Place<TTableLayoutPanel>(
+            this TTableLayoutPanel tableLayoutPanel,
+            object[,] ctrlArray)
+            where TTableLayoutPanel : TableLayoutPanel
+        {
+            if (ctrlArray == null)
+                return tableLayoutPanel;
+
+            for (int row = 0; row < ctrlArray.GetLength(0); row++)
+            {
+                for (int column = 0; column < ctrlArray.GetLength(1); column++)
+                {
+                    switch (ctrlArray[row, column])
+                    {
+                        case Control c:
+                            c.Parent = tableLayoutPanel;
+                            c.PlaceAt(tableLayoutPanel, row: row, column: column);
+                            break;
+
+                        case TableLayoutCell i:
+                            i.Control.Parent = tableLayoutPanel;
+                            i.Control.PlaceAt(tableLayoutPanel, row: row, column: column, rowSpan: i.RowSpan, columnSpan: i.ColumnSpan);
+                            break;
+                    }
+                }
+            }
+
+            return tableLayoutPanel;
+        }
+
+        public sealed class TableLayoutCell
+        {
+            public int ColumnSpan { get; set; } = 1;
+            public int RowSpan { get; set; } = 1;
+            public Control Control { get; set; } = default;
+        }
+
         public static TControl PlaceAt<TControl>(this TControl control, TableLayoutPanel layout,
             int row = 0, int column = 0, int rowSpan = 1, int columnSpan = 1)
             where TControl : Control
