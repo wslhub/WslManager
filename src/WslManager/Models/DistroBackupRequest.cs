@@ -2,7 +2,7 @@
 
 namespace WslManager.Models
 {
-    public sealed class DistroBackupRequest : DistroInfoBase, INotifyPropertyChanged
+    public sealed class DistroBackupRequest : DistroInfoBase
     {
         private string _saveFilePath;
         private bool _succeed;
