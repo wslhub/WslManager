@@ -3,6 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -25,6 +27,55 @@ namespace WslManager.Extensions
 
         public static void AddSeparator(this ToolStripItemCollection parent)
             => parent.Add(new ToolStripSeparator());
+
+        public static TControl SetBinding<TControl, TDataSource>(
+            this TControl control,
+            Expression<Func<TControl, object>> propertyNameExpression,
+            TDataSource dataSource,
+            Expression<Func<TDataSource, object>> dataMemberExpression)
+            where TControl : Control
+            where TDataSource : class
+        {
+            var sourcePropertyName = propertyNameExpression.GetMemberName();
+            var targetPropertyName = dataMemberExpression.GetMemberName();
+            control.DataBindings.Add(sourcePropertyName, dataSource, targetPropertyName, false, DataSourceUpdateMode.OnPropertyChanged);
+            return control;
+        }
+
+        public static TTextBox SetTextBoxBinding<TTextBox, TDataSource>(
+            this TTextBox textBox,
+            TDataSource dataSource,
+            Expression<Func<TDataSource, object>> dataMemberExpression)
+            where TTextBox : TextBox
+            where TDataSource : class
+        {
+            return SetBinding<TTextBox, TDataSource>(
+                textBox, x => x.Text, dataSource, dataMemberExpression);
+        }
+
+        public static TCheckBox SetCheckBoxBinding<TCheckBox, TDataSource>(
+            this TCheckBox checkBox,
+            TDataSource dataSource,
+            Expression<Func<TDataSource, object>> dataMemberExpression)
+            where TCheckBox : CheckBox
+            where TDataSource : class
+        {
+            return SetBinding<TCheckBox, TDataSource>(
+                checkBox, x => x.Checked, dataSource, dataMemberExpression);
+        }
+
+        public static string GetMemberName<T>(this Expression<T> expression)
+        {
+            switch (expression.Body)
+            {
+                case MemberExpression m:
+                    return m.Member.Name;
+                case UnaryExpression u when u.Operand is MemberExpression m:
+                    return m.Member.Name;
+                default:
+                    throw new NotImplementedException(expression.GetType().ToString());
+            }
+        }
 
         public static TControl AssociateLabel<TControl>(this TControl targetControl, Label label)
             where TControl : Control

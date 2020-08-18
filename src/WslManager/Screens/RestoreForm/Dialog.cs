@@ -63,9 +63,8 @@ namespace WslManager.Screens.RestoreForm
                 AutoCompleteSource = AutoCompleteSource.FileSystem,
             }
             .PlaceAt(layout, column: 1, row: 0)
-            .AssociateLabel(tarFileLabel);
-
-            tarFilePath.DataBindings.Add(nameof(tarFilePath.Text), Model, nameof(Model.TarFilePath), false, DataSourceUpdateMode.OnPropertyChanged);
+            .AssociateLabel(tarFileLabel)
+            .SetTextBoxBinding(this.Model, m => m.TarFilePath);
 
             tarFileOpenButton = new Button()
             {
@@ -96,9 +95,8 @@ namespace WslManager.Screens.RestoreForm
                 AutoCompleteSource = AutoCompleteSource.FileSystemDirectories,
             }
             .PlaceAt(layout, column: 1, row: 1)
-            .AssociateLabel(installDirLabel);
-
-            installDirPath.DataBindings.Add(nameof(installDirPath.Text), Model, nameof(Model.RestoreDirPath), false, DataSourceUpdateMode.OnPropertyChanged);
+            .AssociateLabel(installDirLabel)
+            .SetTextBoxBinding(this.Model, m => m.RestoreDirPath);
 
             installDirBrowseButton = new Button()
             {
@@ -126,9 +124,8 @@ namespace WslManager.Screens.RestoreForm
                 Text = NameGenerator.Value.GetRandomName(),
             }
             .PlaceAt(layout, column: 1, row: 2)
-            .AssociateLabel(distroNameLabel);
-
-            distroNameValue.DataBindings.Add(nameof(distroNameValue.Text), Model, nameof(Model.DistroName), false, DataSourceUpdateMode.OnPropertyChanged);
+            .AssociateLabel(distroNameLabel)
+            .SetTextBoxBinding(this.Model, m => m.DistroName);
 
             distroNameSuggestButton = new Button()
             {
@@ -159,9 +156,8 @@ namespace WslManager.Screens.RestoreForm
                 Anchor = AnchorStyles.Left | AnchorStyles.Right,
             }
             .PlaceAt(layout, column: 1, row: 3, columnSpan: 2)
-            .AssociateLabel(setAsDefaultLabel);
-
-            setAsDefaultCheckBox.DataBindings.Add(nameof(setAsDefaultCheckBox.Checked), Model, nameof(Model.SetAsDefault), false, DataSourceUpdateMode.OnPropertyChanged);
+            .AssociateLabel(setAsDefaultLabel)
+            .SetCheckBoxBinding(this.Model, m => m.SetAsDefault);
 
             actionPanel = new FlowLayoutPanel()
             {
