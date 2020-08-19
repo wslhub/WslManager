@@ -8,10 +8,32 @@ namespace WslManager.Screens.MainForm
     // Features
     partial class MainForm
     {
+        private DistroInfo GetSelectedDistroBySender(object sender)
+        {
+            var targetItem = default(DistroInfo);
+
+            if (sender is ToolStripMenuItem)
+            {
+                var menuItem = (ToolStripMenuItem)sender;
+                var toolStrip = menuItem.GetCurrentParent();
+
+                if (object.ReferenceEquals(toolStrip, pointContextMenuStrip))
+                {
+                    var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
+                    targetItem = hitTest?.Item?.Tag as DistroInfo;
+                }
+                else if (object.ReferenceEquals(toolStrip, menuStrip))
+                {
+                    targetItem = listView.GetSelectedItem()?.Tag as DistroInfo;
+                }
+            }
+
+            return targetItem;
+        }
+
         private void Feature_LaunchDistro(object sender, EventArgs e)
         {
-            var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
-            var targetItem = hitTest?.Item?.Tag as DistroInfo;
+            var targetItem = GetSelectedDistroBySender(sender);
 
             if (targetItem == null)
                 return;
@@ -22,8 +44,7 @@ namespace WslManager.Screens.MainForm
 
         private void Feature_OpenDistroFileSystem(object sender, EventArgs e)
         {
-            var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
-            var targetItem = hitTest?.Item?.Tag as DistroInfo;
+            var targetItem = GetSelectedDistroBySender(sender);
 
             if (targetItem == null)
                 return;
@@ -43,8 +64,7 @@ namespace WslManager.Screens.MainForm
                 return;
             }
 
-            var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
-            var targetItem = hitTest?.Item?.Tag as DistroInfo;
+            var targetItem = GetSelectedDistroBySender(sender);
 
             if (targetItem == null)
                 return;
@@ -70,8 +90,7 @@ namespace WslManager.Screens.MainForm
 
         private void Feature_UnregisterDistro(object sender, EventArgs e)
         {
-            var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
-            var targetItem = hitTest?.Item?.Tag as DistroInfo;
+            var targetItem = GetSelectedDistroBySender(sender);
 
             if (targetItem == null)
                 return;
@@ -89,8 +108,7 @@ namespace WslManager.Screens.MainForm
 
         private void Feature_SetAsDefaultDistro(object sender, EventArgs e)
         {
-            var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
-            var targetItem = hitTest?.Item?.Tag as DistroInfo;
+            var targetItem = GetSelectedDistroBySender(sender);
 
             if (targetItem == null)
                 return;
