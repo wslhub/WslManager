@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WslManager.Models
+namespace WslManager.ViewModels
 {
     public abstract class NotifiableModel : INotifyPropertyChanged
     {

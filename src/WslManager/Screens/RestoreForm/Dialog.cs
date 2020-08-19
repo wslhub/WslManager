@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
-using WslManager.Models;
+using WslManager.ViewModels;
 using static WslManager.Extensions.WinFormExtensions;
 
 namespace WslManager.Screens.RestoreForm

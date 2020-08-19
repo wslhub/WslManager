@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using WslManager.Models;
+using WslManager.ViewModels;
 
 namespace WslManager.Extensions
 {

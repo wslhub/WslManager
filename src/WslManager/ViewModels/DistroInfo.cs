@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WslManager.Models
+namespace WslManager.ViewModels
 {
     public sealed class DistroInfo : DistroInfoBase
     {

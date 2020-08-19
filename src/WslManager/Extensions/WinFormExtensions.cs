@@ -208,13 +208,6 @@ namespace WslManager.Extensions
             return tableLayoutPanel;
         }
 
-        public sealed class TableLayoutCell
-        {
-            public int ColumnSpan { get; set; } = 1;
-            public int RowSpan { get; set; } = 1;
-            public Control Control { get; set; } = default;
-        }
-
         public static TControl PlaceAt<TControl>(this TControl control, TableLayoutPanel layout,
             int row = 0, int column = 0, int rowSpan = 1, int columnSpan = 1)
             where TControl : Control

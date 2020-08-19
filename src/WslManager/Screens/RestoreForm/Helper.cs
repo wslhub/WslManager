@@ -1,5 +1,5 @@
 ﻿using System;
-using WslManager.Helpers;
+using WslManager.Extensions;
 
 namespace WslManager.Screens.RestoreForm
 {

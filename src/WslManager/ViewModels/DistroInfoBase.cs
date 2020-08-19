@@ -1,4 +1,4 @@
-﻿namespace WslManager.Models
+﻿namespace WslManager.ViewModels
 {
     public abstract class DistroInfoBase : NotifiableModel
     {

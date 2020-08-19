@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using WslManager.Helpers;
-using WslManager.Models;
+using WslManager.Extensions;
+using WslManager.ViewModels;
 
 namespace WslManager.Screens.RestoreForm
 {
