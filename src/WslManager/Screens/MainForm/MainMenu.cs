@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using WslManager.Extensions;
+using WslManager.Models;
 
 namespace WslManager.Screens.MainForm
 {
@@ -9,12 +12,23 @@ namespace WslManager.Screens.MainForm
     partial class MainForm
     {
         private MenuStrip menuStrip;
+
+        private ToolStripItem[] distroSelectedMenuItems;
+
         private ToolStripMenuItem distroMenu;
+        private ToolStripMenuItem openDistroMenuItem;
+        private ToolStripMenuItem openDistroFolderMenuItem;
+        private ToolStripMenuItem backupDistroMenuItem;
+        private ToolStripMenuItem unregisterDistroMenuItem;
+        private ToolStripMenuItem setAsDefaultDistroMenuItem;
+
+        private ToolStripItem[] genericDistroMenuItems;
+
         private ToolStripMenuItem restoreDistroMenuItem;
         private ToolStripMenuItem shutdownMenuItem;
         private ToolStripMenuItem exitMenuItem;
 
-        private List<ToolStripMenuItem> viewTypeMenuItems;
+        private ToolStripMenuItem[] viewTypeMenuItems;
 
         private ToolStripMenuItem viewMenu;
         private ToolStripMenuItem largeIconMenuItem;
@@ -37,52 +51,81 @@ namespace WslManager.Screens.MainForm
 
             distroMenu = menuStrip.Items.AddMenuItem("&Distro");
 
-            restoreDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Restore Distro...");
+            distroSelectedMenuItems = new ToolStripItem[]
+            {
+                openDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Open Distro..."),
+                distroMenu.DropDownItems.AddSeparator(),
+                openDistroFolderMenuItem = distroMenu.DropDownItems.AddMenuItem("E&xplore Distro File System..."),
+                backupDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Backup Distro..."),
+                unregisterDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Unregister Distro..."),
+                distroMenu.DropDownItems.AddSeparator(),
+                setAsDefaultDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("Set as &default distro"),
+                distroMenu.DropDownItems.AddSeparator(),
+            };
+
+            genericDistroMenuItems = new ToolStripItem[]
+            {
+                restoreDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Restore Distro..."),
+                distroMenu.DropDownItems.AddSeparator(),
+                shutdownMenuItem = distroMenu.DropDownItems.AddMenuItem("&Shutdown WSL"),
+                distroMenu.DropDownItems.AddSeparator(),
+                exitMenuItem = distroMenu.DropDownItems.AddMenuItem("E&xit"),
+            };
+
+            distroMenu.DropDownItems.AddRange(distroSelectedMenuItems.Concat(genericDistroMenuItems).ToArray());
+            distroMenu.DropDownOpening += DistroMenu_DropDownOpening;
+
+            openDistroMenuItem.Click += Feature_LaunchDistro;
+            openDistroFolderMenuItem.Click += Feature_OpenDistroFileSystem;
+            backupDistroMenuItem.Click += Feature_BackupDistro;
+            unregisterDistroMenuItem.Click += Feature_UnregisterDistro;
+            setAsDefaultDistroMenuItem.Click += Feature_SetAsDefaultDistro;
             restoreDistroMenuItem.Click += Feature_RestoreDistro;
-
-            distroMenu.DropDownItems.AddSeparator();
-
-            shutdownMenuItem = distroMenu.DropDownItems.AddMenuItem("&Shutdown WSL");
             shutdownMenuItem.Click += Feature_ShutdownWsl;
-
-            distroMenu.DropDownItems.AddSeparator();
-
-            exitMenuItem = distroMenu.DropDownItems.AddMenuItem("E&xit");
             exitMenuItem.Click += Feature_ExitApp;
 
             viewMenu = menuStrip.Items.AddMenuItem("&View");
+            viewMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                largeIconMenuItem = viewMenu.DropDownItems.AddMenuItem("La&rge Icon"),
+                smallIconMenuItem = viewMenu.DropDownItems.AddMenuItem("&Small Icon"),
+                listMenuItem = viewMenu.DropDownItems.AddMenuItem("&List"),
+                detailMenuItem = viewMenu.DropDownItems.AddMenuItem("&Detail"),
+                tileMenuItem = viewMenu.DropDownItems.AddMenuItem("&Tile"),
+                viewMenu.DropDownItems.AddSeparator(),
+                refreshMenuItem = viewMenu.DropDownItems.AddMenuItem("&Refresh List"),
+            });
+
+            viewTypeMenuItems = new[]
+            {
+                largeIconMenuItem,
+                smallIconMenuItem,
+                listMenuItem,
+                detailMenuItem,
+                tileMenuItem,
+            };
+
             viewMenu.DropDownOpening += ViewMenu_DropDownOpening;
-            viewTypeMenuItems = new List<ToolStripMenuItem>();
-
-            largeIconMenuItem = viewMenu.DropDownItems.AddMenuItem("La&rge Icon");
-            viewTypeMenuItems.Add(largeIconMenuItem);
             largeIconMenuItem.Click += Feature_SetListView_LargeIcon;
-
-            smallIconMenuItem = viewMenu.DropDownItems.AddMenuItem("&Small Icon");
-            viewTypeMenuItems.Add(smallIconMenuItem);
             smallIconMenuItem.Click += Feature_SetListView_SmallIcon;
-
-            listMenuItem = viewMenu.DropDownItems.AddMenuItem("&List");
-            viewTypeMenuItems.Add(listMenuItem);
             listMenuItem.Click += Feature_SetListView_List;
-
-            detailMenuItem = viewMenu.DropDownItems.AddMenuItem("&Detail");
-            viewTypeMenuItems.Add(detailMenuItem);
             detailMenuItem.Click += Feature_SetListView_Details;
-
-            tileMenuItem = viewMenu.DropDownItems.AddMenuItem("&Tile");
-            viewTypeMenuItems.Add(tileMenuItem);
             tileMenuItem.Click += Feature_SetListView_Tile;
-
-            viewMenu.DropDownItems.AddSeparator();
-
-            refreshMenuItem = viewMenu.DropDownItems.AddMenuItem("&Refresh List");
             refreshMenuItem.Click += Feature_RefreshDistroList;
 
             helpMenu = menuStrip.Items.AddMenuItem("&Help");
+            helpMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                aboutMenuItem = helpMenu.DropDownItems.AddMenuItem("&About..."),
+            });
 
-            aboutMenuItem = helpMenu.DropDownItems.AddMenuItem("&About...");
             aboutMenuItem.Click += Feature_AboutApp;
+        }
+
+        private void DistroMenu_DropDownOpening(object sender, EventArgs e)
+        {
+            var isDistroSelected = listView.GetSelectedItem()?.Tag as DistroInfo != null;
+
+            foreach (var eachMenu in distroSelectedMenuItems)
+                eachMenu.Visible = isDistroSelected;
         }
 
         private void ViewMenu_DropDownOpening(object sender, EventArgs e)

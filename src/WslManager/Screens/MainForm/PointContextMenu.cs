@@ -16,24 +16,21 @@ namespace WslManager.Screens.MainForm
         partial void InitializePointContextMenu()
         {
             pointContextMenuStrip = new ContextMenuStrip();
+            pointContextMenuStrip.Items.AddRange(new ToolStripItem[]
+            {
+                openDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Open Distro..."),
+                pointContextMenuStrip.Items.AddSeparator(),
+                openDistroFolderContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("E&xplore Distro File System..."),
+                backupDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Backup Distro..."),
+                unregisterDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Unregister Distro..."),
+                pointContextMenuStrip.Items.AddSeparator(),
+                setAsDefaultDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("Set as &default distro"),
+            });
 
-            openDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Open Distro...");
             openDistroContextMenuItem.Click += Feature_LaunchDistro;
-
-            pointContextMenuStrip.Items.AddSeparator();
-
-            openDistroFolderContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("E&xplore Distro File System...");
             openDistroFolderContextMenuItem.Click += Feature_OpenDistroFileSystem;
-
-            backupDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Backup Distro...");
             backupDistroContextMenuItem.Click += Feature_BackupDistro;
-
-            unregisterDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Unregister Distro...");
             unregisterDistroContextMenuItem.Click += Feature_UnregisterDistro;
-
-            pointContextMenuStrip.Items.AddSeparator();
-
-            setAsDefaultDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("Set as &default distro");
             setAsDefaultDistroContextMenuItem.Click += Feature_SetAsDefaultDistro;
         }
     }

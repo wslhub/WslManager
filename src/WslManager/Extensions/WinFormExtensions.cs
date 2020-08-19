@@ -25,8 +25,12 @@ namespace WslManager.Extensions
         public static ToolStripMenuItem AddMenuItem(this ToolStripItemCollection parent, string text)
             => (ToolStripMenuItem)parent.Add(text);
 
-        public static void AddSeparator(this ToolStripItemCollection parent)
-            => parent.Add(new ToolStripSeparator());
+        public static ToolStripSeparator AddSeparator(this ToolStripItemCollection parent)
+        {
+            var separator = new ToolStripSeparator();
+            parent.Add(separator);
+            return separator;
+        }
 
         public static TControl SetBinding<TControl, TDataSource>(
             this TControl control,

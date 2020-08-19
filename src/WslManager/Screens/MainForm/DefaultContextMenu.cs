@@ -21,37 +21,35 @@ namespace WslManager.Screens.MainForm
         partial void InitializeDefaultContextMenu()
         {
             defaultContextMenuStrip = new ContextMenuStrip();
+            defaultContextMenuStrip.Items.AddRange(new ToolStripItem[]
+            {
+                viewTypeContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&View"),
+                refreshListContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("Refresh &List"),
+                defaultContextMenuStrip.Items.AddSeparator(),
+                restoreDistroContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Restore Distro..."),
+                defaultContextMenuStrip.Items.AddSeparator(),
+                shutdownContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Shutdown WSL..."),
+            });
 
-            viewTypeContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&View");
-            viewTypeContextMenuItem.DropDownOpened += ViewTypeContextMenuItem_DropDownOpened;
-
-            largeIconViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Large Icon");
-            largeIconViewTypeContextMenuItem.Click += Feature_SetListView_LargeIcon;
-
-            smallIconViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Small Icon");
-            smallIconViewTypeContextMenuItem.Click += Feature_SetListView_SmallIcon;
-
-            listViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&List");
-            listViewTypeContextMenuItem.Click += Feature_SetListView_List;
-
-            detailViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Detail");
-            detailViewTypeContextMenuItem.Click += Feature_SetListView_Details;
-
-            tileViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Tile");
-            tileViewTypeContextMenuItem.Click += Feature_SetListView_Tile;
-
-            refreshListContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("Refresh &List");
             refreshListContextMenuItem.Click += Feature_RefreshDistroList;
-
-            defaultContextMenuStrip.Items.AddSeparator();
-
-            restoreDistroContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Restore Distro...");
             restoreDistroContextMenuItem.Click += Feature_RestoreDistro;
-
-            defaultContextMenuStrip.Items.AddSeparator();
-
-            shutdownContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Shutdown WSL...");
             shutdownContextMenuItem.Click += Feature_ShutdownWsl;
+
+            viewTypeContextMenuItem.DropDownOpened += ViewTypeContextMenuItem_DropDownOpened;
+            viewTypeContextMenuItem.DropDownItems.AddRange(new ToolStripItem[]
+            {
+                largeIconViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Large Icon"),
+                smallIconViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Small Icon"),
+                listViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&List"),
+                detailViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Detail"),
+                tileViewTypeContextMenuItem = viewTypeContextMenuItem.DropDownItems.AddMenuItem("&Tile"),
+            });
+
+            largeIconViewTypeContextMenuItem.Click += Feature_SetListView_LargeIcon;
+            smallIconViewTypeContextMenuItem.Click += Feature_SetListView_SmallIcon;
+            listViewTypeContextMenuItem.Click += Feature_SetListView_List;
+            detailViewTypeContextMenuItem.Click += Feature_SetListView_Details;
+            tileViewTypeContextMenuItem.Click += Feature_SetListView_Tile;
         }
 
         private void ViewTypeContextMenuItem_DropDownOpened(object sender, EventArgs e)
