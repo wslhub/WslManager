@@ -150,7 +150,21 @@ namespace WslManager.Screens.RestoreForm
                         {
                             Anchor = AnchorStyles.Left | AnchorStyles.Right,
                             FlowDirection = FlowDirection.RightToLeft,
-                        },
+                        }
+                        .SetupAsActionPanel(
+                            confirmButton = new Button()
+                            {
+                                Text = "&Restore",
+                                AutoSize = true,
+                            }
+                            .SetAsConfirmButton(this),
+
+                            cancelButton = new Button()
+                            {
+                                Text = "&Cancel",
+                                AutoSize = true,
+                            }
+                            .SetAsCancelButton(this)),
                     },
 
                     default,
@@ -162,26 +176,6 @@ namespace WslManager.Screens.RestoreForm
             tarFileOpenButton.Click += TarFileOpenButton_Click;
             installDirBrowseButton.Click += InstallDirBrowseButton_Click;
             distroNameSuggestButton.Click += DistroNameSuggestButton_Click;
-
-            confirmButton = new Button()
-            {
-                Parent = actionPanel,
-                Text = "&Restore",
-                DialogResult = DialogResult.OK,
-                AutoSize = true,
-            };
-            AcceptButton = confirmButton;
-
-            cancelButton = new Button()
-            {
-                Parent = actionPanel,
-                Text = "&Cancel",
-                DialogResult = DialogResult.Cancel,
-                AutoSize = true,
-            };
-            CancelButton = cancelButton;
-
-            actionPanel.ReverseOrder();
 
             FormClosing += RestoreForm_FormClosing;
         }

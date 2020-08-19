@@ -113,6 +113,48 @@ namespace WslManager.Extensions
             return form;
         }
 
+        public static TFlowLayoutPanel SetupAsActionPanel<TFlowLayoutPanel>(
+            this TFlowLayoutPanel flowLayoutPanel,
+            params Control[] controls)
+            where TFlowLayoutPanel : FlowLayoutPanel
+        {
+            flowLayoutPanel.FlowDirection = FlowDirection.RightToLeft;
+
+            for (int i = 0; i < controls.Length; i++)
+                flowLayoutPanel.Controls.Add(controls[i]);
+
+            flowLayoutPanel.ReverseOrder();
+            return flowLayoutPanel;
+        }
+
+        public static TButtonControl SetAsConfirmButton<TButtonControl>(
+            this TButtonControl buttonControl,
+            Form targetScreen,
+            DialogResult? dialogResult = DialogResult.OK)
+            where TButtonControl : IButtonControl
+        {
+            targetScreen.AcceptButton = buttonControl;
+
+            if (dialogResult.HasValue)
+                buttonControl.DialogResult = dialogResult.Value;
+
+            return buttonControl;
+        }
+
+        public static TButtonControl SetAsCancelButton<TButtonControl>(
+            this TButtonControl buttonControl,
+            Form targetScreen,
+            DialogResult? dialogResult = DialogResult.Cancel)
+            where TButtonControl : IButtonControl
+        {
+            targetScreen.CancelButton = buttonControl;
+
+            if (dialogResult.HasValue)
+                buttonControl.DialogResult = dialogResult.Value;
+
+            return buttonControl;
+        }
+
         public static TTableLayoutPanel Place<TTableLayoutPanel>(
             this TTableLayoutPanel tableLayoutPanel,
             object[,] ctrlArray)
