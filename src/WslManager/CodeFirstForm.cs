@@ -1,33 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace WslManager
 {
-    public abstract class CodeFirstForm<T> : CodeFirstForm
-        where T : class
-    {
-        protected override void InitializeFields()
-        {
-            base.InitializeFields();
-
-            _model = CreateDefaultModel();
-        }
-
-        private T _model;
-
-        public abstract T CreateDefaultModel();
-
-        public override object GetModel() => _model;
-
-        public override void SetModel(object model) => _model = (T)model;
-
-        public T Model
-        {
-            get => _model;
-            set => _model = value;
-        }
-    }
-
     [DesignerCategory(default)]
     public abstract class CodeFirstForm : Form
     {
@@ -67,9 +43,39 @@ namespace WslManager
 
             base.Dispose(disposing);
         }
+    }
 
-        public virtual object GetModel() { return default; }
+    public abstract class CodeFirstForm<T> : CodeFirstForm
+        where T : class, INotifyPropertyChanged
+    {
+        public CodeFirstForm(T viewModel)
+            : base()
+        {
+            _viewModel = viewModel;
+        }
 
-        public virtual void SetModel(object model) { }
+        public CodeFirstForm()
+            : this(default)
+        { }
+
+        protected override void InitializeFields()
+        {
+            base.InitializeFields();
+
+            if (_viewModel == default)
+                _viewModel = CreateDefaultViewModel();
+
+            if (_viewModel == default)
+                throw new InvalidOperationException("View model should not be a null reference.");
+        }
+
+        private T _viewModel;
+
+        public abstract T CreateDefaultViewModel();
+
+        public T ViewModel
+        {
+            get => _viewModel;
+        }
     }
 }

@@ -64,7 +64,7 @@ namespace WslManager.Screens.RestoreForm
                         AutoCompleteSource = AutoCompleteSource.FileSystem,
                     }
                     .AssociateLabel(tarFileLabel)
-                    .SetTextBoxBinding(this.Model, m => m.TarFilePath),
+                    .SetTextBoxBinding(this.ViewModel, m => m.TarFilePath),
 
                     tarFileOpenButton = new Button()
                     {
@@ -88,7 +88,7 @@ namespace WslManager.Screens.RestoreForm
                         AutoCompleteSource = AutoCompleteSource.FileSystemDirectories,
                     }
                     .AssociateLabel(installDirLabel)
-                    .SetTextBoxBinding(this.Model, m => m.RestoreDirPath),
+                    .SetTextBoxBinding(this.ViewModel, m => m.RestoreDirPath),
 
                     installDirBrowseButton = new Button()
                     {
@@ -110,7 +110,7 @@ namespace WslManager.Screens.RestoreForm
                         Text = NameGenerator.Value.GetRandomName(),
                     }
                     .AssociateLabel(distroNameLabel)
-                    .SetTextBoxBinding(this.Model, m => m.DistroName),
+                    .SetTextBoxBinding(this.ViewModel, m => m.DistroName),
 
                     distroNameSuggestButton = new Button()
                     {
@@ -137,7 +137,7 @@ namespace WslManager.Screens.RestoreForm
                             Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         }
                         .AssociateLabel(setAsDefaultLabel)
-                        .SetCheckBoxBinding(this.Model, m => m.SetAsDefault),
+                        .SetCheckBoxBinding(this.ViewModel, m => m.SetAsDefault),
                     },
 
                     default,

@@ -147,7 +147,7 @@ namespace WslManager.Screens.MainForm
             if (dialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            var restoreRequest = dialog.Model;
+            var restoreRequest = dialog.ViewModel;
 
             if (restoreRequest == null)
                 return;

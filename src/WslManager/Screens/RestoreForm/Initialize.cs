@@ -12,7 +12,7 @@ namespace WslManager.Screens.RestoreForm
         {
         }
 
-        public override DistroRestoreRequest CreateDefaultModel()
+        public override DistroRestoreRequest CreateDefaultViewModel()
         {
             return new DistroRestoreRequest()
             {
