@@ -10,6 +10,7 @@ namespace WslManager.Screens.MainForm
     // Helpers
     partial class MainForm
     {
+        /*
         public static void ConfigureListViewColumns(
             ListView listView)
         {
@@ -89,5 +90,6 @@ namespace WslManager.Screens.MainForm
             stateLabel.Text = $"Total {distroInfoList.Count()} distros found. - {DateTime.Now}";
             listView.EndUpdate();
         }
+        */
     }
 }

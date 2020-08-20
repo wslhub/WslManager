@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using WslManager.Controls;
 using WslManager.Extensions;
 using WslManager.ViewModels;
 
@@ -19,7 +20,7 @@ namespace WslManager.Screens.MainForm
     partial class MainForm
     {
         private ToolStripContainer layout;
-        private ListView listView;
+        private BindableListView listView;
         private StatusStrip statusStrip;
         private ToolStripStatusLabel statusItem;
 
@@ -37,7 +38,7 @@ namespace WslManager.Screens.MainForm
                 Dock = DockStyle.Fill,
             };
 
-            listView = new ListView()
+            listView = new BindableListView()
             {
                 Parent = layout.ContentPanel,
                 Dock = DockStyle.Fill,
@@ -48,9 +49,10 @@ namespace WslManager.Screens.MainForm
                 LargeImageList = largeImageList,
                 SmallImageList = smallImageList,
                 StateImageList = stateImageList,
+                DataSource = bindingSource,
             };
 
-            ConfigureListViewColumns(listView);
+            //ConfigureListViewColumns(listView);
 
             listView.KeyUp += ListView_KeyUp;
             listView.MouseDown += ListView_MouseDown;
@@ -86,14 +88,14 @@ namespace WslManager.Screens.MainForm
                 return;
             }
 
-            RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
         }
 
         private void ListView_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F5)
             {
-                RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+                //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
                 return;
             }
         }

@@ -74,7 +74,7 @@ namespace WslManager.Screens.MainForm
             if (targetItem == null)
                 return;
 
-            var found = false;
+            //var found = false;
 
             foreach (ListViewItem eachItem in listView.Items)
             {
@@ -84,12 +84,12 @@ namespace WslManager.Screens.MainForm
                     continue;
 
                 eachItem.SubItems["status"].Text = targetItem.DistroStatus;
-                found = true;
+                //found = true;
                 break;
             }
 
-            if (!found)
-                AddDistroInfoIntoListView(listView, targetItem);
+            //if (!found)
+                //AddDistroInfoIntoListView(listView, targetItem);
         }
 
         private void RestoreWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -125,7 +125,7 @@ namespace WslManager.Screens.MainForm
 
             if (result.Succeed)
             {
-                RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+                //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
                 var process = result.CreateLaunchSpecificDistroProcess();
                 process.Start();
             }

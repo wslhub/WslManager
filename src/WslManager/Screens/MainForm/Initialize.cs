@@ -5,6 +5,7 @@ namespace WslManager.Screens.MainForm
     // Initialize
     public sealed partial class MainForm : CodeFirstForm
     {
+        partial void InitializeBindingSource(IContainer components);
         partial void InitializeImageList(IContainer components);
         partial void InitializeBackupWorker(IContainer components);
         partial void InitializeRestoreWorker(IContainer components);
@@ -16,6 +17,7 @@ namespace WslManager.Screens.MainForm
             InitializeImageList(components);
             InitializeBackupWorker(components);
             InitializeRestoreWorker(components);
+            InitializeBindingSource(components);
         }
 
         partial void InitializeMainWindow();

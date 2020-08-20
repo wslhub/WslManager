@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.IO;
 using System.Windows.Forms;
 using WslManager.Screens.MainForm;
 
@@ -15,16 +17,10 @@ namespace WslManager
         }
 
         [STAThread]
-        private static void Main()
+        private static void Main(string[] args)
         {
             InitApplication();
-
-            var appContext = new ApplicationContext()
-            {
-                MainForm = new MainForm(),
-            };
-
-            Application.Run(appContext);
+            Application.Run(new AppContext(args));
         }
     }
 }

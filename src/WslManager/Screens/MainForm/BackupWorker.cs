@@ -105,7 +105,7 @@ namespace WslManager.Screens.MainForm
 
             if (result.Succeed)
             {
-                RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+                //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
                 var itemPath = result.SaveFilePath.Replace(@"/", @"\");
                 Process.Start("explorer.exe", "/select," + itemPath);
             }

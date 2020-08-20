@@ -103,7 +103,7 @@ namespace WslManager.Screens.MainForm
             var process = targetItem.CreateUnregisterDistroProcess();
             process.Start();
             process.WaitForExit();
-            RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
         }
 
         private void Feature_SetAsDefaultDistro(object sender, EventArgs e)
@@ -116,7 +116,7 @@ namespace WslManager.Screens.MainForm
             var process = targetItem.CreateSetAsDefaultProcess();
             process.Start();
             process.WaitForExit();
-            RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
         }
 
         private void Feature_SetListView_LargeIcon(object sender, EventArgs e)
@@ -146,7 +146,7 @@ namespace WslManager.Screens.MainForm
 
         private void Feature_RefreshDistroList(object sender, EventArgs e)
         {
-            RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
         }
 
         private void Feature_RestoreDistro(object sender, EventArgs e)
@@ -183,7 +183,7 @@ namespace WslManager.Screens.MainForm
             var process = WslExtensions.CreateShutdownDistroProcess();
             process.Start();
             process.WaitForExit();
-            RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
         }
 
         private void Feature_AboutApp(object sender, EventArgs e)
