@@ -1,8 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.IO;
 using System.Windows.Forms;
-using WslManager.Screens.MainForm;
 
 namespace WslManager
 {

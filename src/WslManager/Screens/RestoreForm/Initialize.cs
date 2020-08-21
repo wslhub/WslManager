@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using WslManager.Extensions;
+﻿using System.ComponentModel;
 using WslManager.ViewModels;
 
 namespace WslManager.Screens.RestoreForm
@@ -16,7 +14,7 @@ namespace WslManager.Screens.RestoreForm
         {
             return new DistroRestoreRequest()
             {
-                DistroName = NameGenerator.Value.GetRandomName(),
+                NewName = NameGenerator.Value.GetRandomName(),
             };
         }
 

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using BrightIdeasSoftware;
+using System;
 using System.Windows.Forms;
 using WslManager.Extensions;
+using WslManager.Models;
 using WslManager.ViewModels;
 
 namespace WslManager.Screens.MainForm
@@ -8,9 +10,9 @@ namespace WslManager.Screens.MainForm
     // Features
     partial class MainForm
     {
-        private DistroInfo GetSelectedDistroBySender(object sender)
+        private WslDistro GetSelectedDistroBySender(object sender)
         {
-            var targetItem = default(DistroInfo);
+            var targetItem = default(WslDistro);
 
             if (sender is ToolStripMenuItem)
             {
@@ -19,12 +21,12 @@ namespace WslManager.Screens.MainForm
 
                 if (object.ReferenceEquals(toolStrip, pointContextMenuStrip))
                 {
-                    var hitTest = pointContextMenuStrip.Tag as ListViewHitTestInfo;
-                    targetItem = hitTest?.Item?.Tag as DistroInfo;
+                    var hitTest = pointContextMenuStrip.Tag as OlvListViewHitTestInfo;
+                    targetItem = hitTest?.Item?.RowObject as WslDistro;
                 }
                 else if (object.ReferenceEquals(toolStrip, menuStrip))
                 {
-                    targetItem = listView.GetSelectedItem()?.Tag as DistroInfo;
+                    targetItem = listView.SelectedItem?.RowObject as WslDistro;
                 }
             }
 
@@ -38,7 +40,7 @@ namespace WslManager.Screens.MainForm
             if (targetItem == null)
                 return;
 
-            var process = targetItem.CreateLaunchSpecificDistroProcess();
+            var process = WslHelpers.CreateLaunchSpecificDistroProcess(targetItem.DistroName);
             var result = process.Start();
         }
 
@@ -49,7 +51,7 @@ namespace WslManager.Screens.MainForm
             if (targetItem == null)
                 return;
 
-            var process = targetItem.CreateLaunchSpecificDistroExplorerProcess();
+            var process = WslHelpers.CreateLaunchSpecificDistroExplorerProcess(targetItem.DistroName);
             var result = process.Start();
         }
 
@@ -100,10 +102,10 @@ namespace WslManager.Screens.MainForm
                 MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return;
 
-            var process = targetItem.CreateUnregisterDistroProcess();
+            var process = WslHelpers.CreateUnregisterDistroProcess(targetItem.DistroName);
             process.Start();
             process.WaitForExit();
-            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_SetAsDefaultDistro(object sender, EventArgs e)
@@ -113,10 +115,10 @@ namespace WslManager.Screens.MainForm
             if (targetItem == null)
                 return;
 
-            var process = targetItem.CreateSetAsDefaultProcess();
+            var process = WslHelpers.CreateSetAsDefaultProcess(targetItem.DistroName);
             process.Start();
             process.WaitForExit();
-            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_SetListView_LargeIcon(object sender, EventArgs e)
@@ -146,7 +148,7 @@ namespace WslManager.Screens.MainForm
 
         private void Feature_RefreshDistroList(object sender, EventArgs e)
         {
-            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_RestoreDistro(object sender, EventArgs e)
@@ -180,10 +182,10 @@ namespace WslManager.Screens.MainForm
                     MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return;
 
-            var process = WslExtensions.CreateShutdownDistroProcess();
+            var process = WslHelpers.CreateShutdownDistroProcess();
             process.Start();
             process.WaitForExit();
-            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_AboutApp(object sender, EventArgs e)

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BrightIdeasSoftware;
+using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using WslManager.Controls;
 using WslManager.Extensions;
-using WslManager.ViewModels;
+using WslManager.Models;
 
 namespace WslManager.Screens.MainForm
 {
@@ -20,7 +15,7 @@ namespace WslManager.Screens.MainForm
     partial class MainForm
     {
         private ToolStripContainer layout;
-        private BindableListView listView;
+        private CustomListView listView;
         private StatusStrip statusStrip;
         private ToolStripStatusLabel statusItem;
 
@@ -38,7 +33,7 @@ namespace WslManager.Screens.MainForm
                 Dock = DockStyle.Fill,
             };
 
-            listView = new BindableListView()
+            listView = new CustomListView()
             {
                 Parent = layout.ContentPanel,
                 Dock = DockStyle.Fill,
@@ -48,15 +43,45 @@ namespace WslManager.Screens.MainForm
                 FullRowSelect = true,
                 LargeImageList = largeImageList,
                 SmallImageList = smallImageList,
+                BaseSmallImageList = smallImageList,
                 StateImageList = stateImageList,
                 DataSource = bindingSource,
+                EnableAutoScaleColumn = true,
+                ColumnScaleList = new Collection<float>(new float[] { 3f, 1f, 1f, 1f, }),
+                UseExplorerTheme = true,
+                UseTranslucentHotItem = true,
+                UseTranslucentSelection = true,
+                ShowHeaderInAllViews = false,
             };
 
-            //ConfigureListViewColumns(listView);
+            listView.AlwaysGroupByColumn = listView.AllColumns.Find(x => string.Equals(
+                x.Name, nameof(WslDistro.DistroStatus), StringComparison.Ordinal));
+
+            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+
+            var defaultDistroColumn = listView.AllColumns.Find(x => string.Equals(
+                x.Name, nameof(WslDistro.IsDefault), StringComparison.Ordinal));
+
+            if (defaultDistroColumn != null)
+                defaultDistroColumn.IsEditable = false;
+
+            var distroNameColumn = listView.AllColumns.Find(x => string.Equals(
+                x.Name, nameof(WslDistro.DistroName), StringComparison.Ordinal));
+
+            if (distroNameColumn != null)
+            {
+                distroNameColumn.ImageGetter = new ImageGetterDelegate(o =>
+                {
+                    var modelName = ((o as WslDistro)?.DistroName ?? string.Empty).Trim();
+                    var keyList = Resources.LogoImages.Keys.ToArray();
+                    return keyList.FirstOrDefault(x => modelName.Contains(x, StringComparison.OrdinalIgnoreCase)) ?? string.Empty;
+                });
+            }
 
             listView.KeyUp += ListView_KeyUp;
             listView.MouseDown += ListView_MouseDown;
             listView.ItemActivate += ListView_ItemActivate;
+            listView.FormatRow += ListView_FormatRow;
 
             statusStrip = new StatusStrip()
             {
@@ -74,6 +99,46 @@ namespace WslManager.Screens.MainForm
             statusStrip.Items.Add(statusItem);
         }
 
+        private void ListView_FormatRow(object sender, FormatRowEventArgs e)
+        {
+            var dataRow = e.Model as WslDistro;
+            var lvItem = e.Item;
+
+            if (dataRow != null)
+            {
+                var roughName = dataRow?.DistroName?.Trim() ?? string.Empty;
+
+                foreach (var eachKey in Resources.LogoImages.Keys)
+                {
+                    if (roughName.Contains(eachKey, StringComparison.OrdinalIgnoreCase))
+                        lvItem.ImageKey = eachKey;
+                }
+
+                if (dataRow.IsDefault)
+                    lvItem.StateImageIndex = 0;
+                else if (string.Equals(dataRow.DistroStatus, "Installing", StringComparison.OrdinalIgnoreCase))
+                    lvItem.StateImageIndex = 1;
+
+                foreach (ColumnHeader eachSubItem in listView.Columns)
+                {
+                    switch (eachSubItem.Name)
+                    {
+                        case "status":
+                            lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = dataRow.DistroStatus, });
+                            break;
+
+                        case "wslver":
+                            lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = dataRow.WSLVersion, });
+                            break;
+
+                        case "default":
+                            lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = dataRow.IsDefault ? "*" : string.Empty, });
+                            break;
+                    }
+                }
+            }
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             var wslHostPath = Path.Combine(
@@ -88,14 +153,14 @@ namespace WslManager.Screens.MainForm
                 return;
             }
 
-            //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+            AppContext.RefreshDistroList();
         }
 
         private void ListView_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F5)
             {
-                //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+                AppContext.RefreshDistroList();
                 return;
             }
         }
@@ -104,7 +169,7 @@ namespace WslManager.Screens.MainForm
         {
             if (e.Button == MouseButtons.Right)
             {
-                var hitTest = listView.HitTest(e.Location);
+                var hitTest = listView.OlvHitTest(e.Location.X, e.Location.Y);
 
                 if (hitTest.Location == ListViewHitTestLocations.None)
                     defaultContextMenuStrip.Show(Cursor.Position);
@@ -121,12 +186,12 @@ namespace WslManager.Screens.MainForm
             if (listView.SelectedItems.Count != 1)
                 return;
 
-            var targetItem = listView.SelectedItems[0].Tag as DistroInfo;
+            var targetItem = listView.SelectedItem?.RowObject as WslDistro;
 
             if (targetItem == null)
                 return;
 
-            var process = targetItem.CreateLaunchSpecificDistroProcess();
+            var process = WslHelpers.CreateLaunchSpecificDistroProcess(targetItem.DistroName);
             process.Start();
         }
     }

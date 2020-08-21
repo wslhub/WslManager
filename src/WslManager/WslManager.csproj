@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.7" />
+    <PackageReference Include="ObjectListView.Repack.Core3" Version="2.9.2" />
   </ItemGroup>
 
 </Project>

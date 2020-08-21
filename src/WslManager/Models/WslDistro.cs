@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace WslManager.Models
 {
@@ -11,15 +9,19 @@ namespace WslManager.Models
     {
         [Key]
         [Required(AllowEmptyStrings = false)]
+        [DisplayName("Distro Name")]
         public string DistroName { get; set; }
 
         [Required(AllowEmptyStrings = false)]
+        [DisplayName("Distro Status")]
         public string DistroStatus { get; set; }
 
         [Required(AllowEmptyStrings = false)]
+        [DisplayName("WSL Version")]
         public string WSLVersion { get; set; } = "1";
 
         [Required]
+        [DisplayName("Is Default?")]
         public bool IsDefault { get; set; } = false;
     }
 }

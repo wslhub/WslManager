@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using WslManager.Extensions;
+using WslManager.Models;
 using WslManager.ViewModels;
 
 namespace WslManager.Screens.MainForm
@@ -30,31 +31,31 @@ namespace WslManager.Screens.MainForm
         private void RestoreWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             var request = (DistroRestoreRequest)e.Argument;
-            var process = request.CreateImportDistroProcess(request.RestoreDirPath, request.TarFilePath);
+            var process = WslHelpers.CreateImportDistroProcess(request.NewName, request.RestoreDirPath, request.TarFilePath);
             process.Start();
 
-            var list = WslExtensions.GetDistroList();
-            var installingItem = list.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
+            var list = WslHelpers.GetDistroList();
+            var installingItem = list.Where(x => string.Equals(x.DistroName, request.NewName, StringComparison.Ordinal)).FirstOrDefault();
 
             if (installingItem == null)
-                installingItem = new DistroInfo() { DistroName = request.DistroName, DistroStatus = "Installing", IsDefault = false, WSLVersion = "?" };
+                installingItem = new WslDistro() { DistroName = request.NewName, DistroStatus = "Installing", IsDefault = false, WSLVersion = "?" };
 
             restoreWorker.ReportProgress(0, installingItem);
 
             while (!process.HasExited && !restoreWorker.CancellationPending)
             {
-                list = WslExtensions.GetDistroList();
-                installingItem = list.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
+                list = WslHelpers.GetDistroList();
+                installingItem = list.Where(x => string.Equals(x.DistroName, request.NewName, StringComparison.Ordinal)).FirstOrDefault();
                 restoreWorker.ReportProgress(50, installingItem);
                 Thread.Sleep(TimeSpan.FromSeconds(1d));
             }
 
-            list = WslExtensions.GetDistroList();
-            installingItem = list.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
+            list = WslHelpers.GetDistroList();
+            installingItem = list.Where(x => string.Equals(x.DistroName, request.NewName, StringComparison.Ordinal)).FirstOrDefault();
 
             if (request.SetAsDefault)
             {
-                process = request.CreateSetAsDefaultProcess();
+                process = WslHelpers.CreateSetAsDefaultProcess(request.NewName);
                 process.Start();
                 process.WaitForExit();
             }
@@ -69,7 +70,7 @@ namespace WslManager.Screens.MainForm
             if (IsDisposed)
                 return;
 
-            var targetItem = (DistroInfo)e.UserState;
+            var targetItem = (WslDistro)e.UserState;
 
             if (targetItem == null)
                 return;
@@ -78,7 +79,7 @@ namespace WslManager.Screens.MainForm
 
             foreach (ListViewItem eachItem in listView.Items)
             {
-                var boundItem = (DistroInfo)eachItem.Tag;
+                var boundItem = (WslDistro)eachItem.Tag;
 
                 if (!string.Equals(boundItem.DistroName, targetItem.DistroName))
                     continue;
@@ -125,8 +126,8 @@ namespace WslManager.Screens.MainForm
 
             if (result.Succeed)
             {
-                //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
-                var process = result.CreateLaunchSpecificDistroProcess();
+                AppContext.RefreshDistroList();
+                var process = WslHelpers.CreateLaunchSpecificDistroProcess(result.NewName);
                 process.Start();
             }
             else

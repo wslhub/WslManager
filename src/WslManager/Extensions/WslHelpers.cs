@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using WslManager.ViewModels;
+using WslManager.Models;
 
 namespace WslManager.Extensions
 {
-    internal static class WslExtensions
+    internal static class WslHelpers
     {
         private static readonly char[] NewLineChars = new char[] { '\r', '\n', };
 
@@ -39,12 +39,12 @@ namespace WslManager.Extensions
                 .Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public static IEnumerable<string> ExecuteAndGetResultForWsl(this DistroInfoBase distro, string userName, string oneLinerBashScript)
+        public static IEnumerable<string> ExecuteAndGetResultForWsl(string distroName, string userName, string oneLinerBashScript)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return ExecuteAndGetResult("wsl.exe", $"--distribution {distro.DistroName} -- {oneLinerBashScript}");
+                return ExecuteAndGetResult("wsl.exe", $"--distribution {distroName} -- {oneLinerBashScript}");
             else
-                return ExecuteAndGetResult("wsl.exe", $"--distribution {distro.DistroName} --user {userName} -- {oneLinerBashScript}");
+                return ExecuteAndGetResult("wsl.exe", $"--distribution {distroName} --user {userName} -- {oneLinerBashScript}");
         }
 
         public static IEnumerable<string> GetDistroNames()
@@ -52,19 +52,19 @@ namespace WslManager.Extensions
             return ExecuteAndGetResult("wsl.exe", "--list --quiet");
         }
 
-        public static IEnumerable<DistroInfo> GetDistroList()
+        public static IEnumerable<WslDistro> GetDistroList()
         {
             return ParseDistroList(ExecuteAndGetResult("wsl.exe", "--list --verbose"));
         }
 
-        public static IEnumerable<DistroInfo> ParseDistroList(IEnumerable<string> lines)
+        public static IEnumerable<WslDistro> ParseDistroList(IEnumerable<string> lines)
         {
-            var o = new List<DistroInfo>();
+            var o = new List<WslDistro>();
 
             if (lines == null)
                 throw new ArgumentNullException(nameof(lines));
 
-            var list = new List<DistroInfo>(Math.Max(0, lines.Count() - 1));
+            var list = new List<WslDistro>(Math.Max(0, lines.Count() - 1));
 
             foreach (var eachLine in lines)
             {
@@ -72,7 +72,7 @@ namespace WslManager.Extensions
 
                 if (3 <= items.Length && items.Length <= 4)
                 {
-                    var info = new DistroInfo();
+                    var info = new WslDistro();
 
                     if (items[0] == "*")
                     {
@@ -96,9 +96,9 @@ namespace WslManager.Extensions
             return list.AsReadOnly();
         }
 
-        public static Process CreateLaunchSpecificDistroProcess(this DistroInfoBase distroInfo)
+        public static Process CreateLaunchSpecificDistroProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {distroInfo.DistroName}")
+            var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {distroName}")
             {
                 UseShellExecute = false,
                 WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
@@ -113,9 +113,9 @@ namespace WslManager.Extensions
             return process;
         }
 
-        public static Process CreateLaunchSpecificDistroExplorerProcess(this DistroInfoBase distroInfo)
+        public static Process CreateLaunchSpecificDistroExplorerProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo($"\\\\wsl$\\{distroInfo.DistroName}")
+            var startInfo = new ProcessStartInfo($"\\\\wsl$\\{distroName}")
             {
                 UseShellExecute = true,
             };
@@ -128,9 +128,9 @@ namespace WslManager.Extensions
             return process;
         }
 
-        public static Process CreateExportDistroProcess(this DistroInfoBase distroInfo, string tarFilePath)
+        public static Process CreateExportDistroProcess(string distroName, string tarFilePath)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--export {distroInfo.DistroName} \"{tarFilePath}\"")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--export {distroName} \"{tarFilePath}\"")
             {
                 UseShellExecute = false,
             };
@@ -144,9 +144,9 @@ namespace WslManager.Extensions
             return process;
         }
 
-        public static Process CreateImportDistroProcess(this DistroInfoBase distroInfo, string installDirectoryPath, string tarFilePath)
+        public static Process CreateImportDistroProcess(string newName, string installDirectoryPath, string tarFilePath)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--import {distroInfo.DistroName} \"{installDirectoryPath}\" \"{tarFilePath}\"")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--import {newName} \"{installDirectoryPath}\" \"{tarFilePath}\"")
             {
                 UseShellExecute = false,
             };
@@ -160,9 +160,9 @@ namespace WslManager.Extensions
             return process;
         }
 
-        public static Process CreateSetAsDefaultProcess(this DistroInfoBase distroInfo)
+        public static Process CreateSetAsDefaultProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--set-default {distroInfo.DistroName}")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--set-default {distroName}")
             {
                 UseShellExecute = false,
             };
@@ -176,9 +176,9 @@ namespace WslManager.Extensions
             return process;
         }
 
-        public static Process CreateUnregisterDistroProcess(this DistroInfoBase distroInfo)
+        public static Process CreateUnregisterDistroProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--unregister {distroInfo.DistroName}")
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--unregister {distroName}")
             {
                 UseShellExecute = false,
             };
@@ -208,9 +208,9 @@ namespace WslManager.Extensions
             return process;
         }
 
-        public static IEnumerable<string> GetRegularUserList(this DistroInfoBase distroInfo)
+        public static IEnumerable<string> GetRegularUserList(string distroName)
         {
-            return distroInfo.ExecuteAndGetResultForWsl("root", "cat /etc/passwd | grep \":[0-9][0-9][0-9][0-9]:\" | cut -d: -f1 -");
+            return ExecuteAndGetResultForWsl(distroName, "root", "cat /etc/passwd | grep \":[0-9][0-9][0-9][0-9]:\" | cut -d: -f1 -");
         }
     }
 }

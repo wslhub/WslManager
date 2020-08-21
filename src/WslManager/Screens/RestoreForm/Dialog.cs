@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
-using WslManager.ViewModels;
 using static WslManager.Extensions.WinFormExtensions;
 
 namespace WslManager.Screens.RestoreForm
@@ -110,7 +109,7 @@ namespace WslManager.Screens.RestoreForm
                         Text = NameGenerator.Value.GetRandomName(),
                     }
                     .AssociateLabel(distroNameLabel)
-                    .SetTextBoxBinding(this.ViewModel, m => m.DistroName),
+                    .SetTextBoxBinding(this.ViewModel, m => m.NewName),
 
                     distroNameSuggestButton = new Button()
                     {
@@ -249,7 +248,7 @@ namespace WslManager.Screens.RestoreForm
                 e.Cancel = true;
                 return;
             }
-            else if (WslExtensions.GetDistroNames().Contains(distroNameValue.Text, StringComparer.Ordinal))
+            else if (WslHelpers.GetDistroNames().Contains(distroNameValue.Text, StringComparer.Ordinal))
             {
                 errorProvider.SetError(distroNameValue, "Already taken distro name.");
                 distroNameValue.Focus();

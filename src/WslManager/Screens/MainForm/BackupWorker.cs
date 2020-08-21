@@ -31,22 +31,22 @@ namespace WslManager.Screens.MainForm
         private void BackupWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             var request = (DistroBackupRequest)e.Argument;
-            var process = request.CreateExportDistroProcess(request.SaveFilePath);
+            var process = WslHelpers.CreateExportDistroProcess(request.DistroName, request.SaveFilePath);
             process.Start();
 
-            var list = WslExtensions.GetDistroList();
+            var list = WslHelpers.GetDistroList();
             var convertingItem = list.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
             backupWorker.ReportProgress(0, convertingItem);
 
             while (!process.HasExited && !backupWorker.CancellationPending)
             {
-                list = WslExtensions.GetDistroList();
+                list = WslHelpers.GetDistroList();
                 convertingItem = list.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
                 backupWorker.ReportProgress(50, convertingItem);
                 Thread.Sleep(TimeSpan.FromSeconds(1d));
             }
 
-            list = WslExtensions.GetDistroList();
+            list = WslHelpers.GetDistroList();
             convertingItem = list.Where(x => string.Equals(x.DistroName, request.DistroName, StringComparison.Ordinal)).FirstOrDefault();
             backupWorker.ReportProgress(100, convertingItem);
             request.Succeed = true;
@@ -58,18 +58,7 @@ namespace WslManager.Screens.MainForm
             if (IsDisposed)
                 return;
 
-            var targetItem = (DistroInfo)e.UserState;
-
-            foreach (ListViewItem eachItem in listView.Items)
-            {
-                var boundItem = (DistroInfo)eachItem.Tag;
-
-                if (!string.Equals(boundItem.DistroName, targetItem.DistroName))
-                    continue;
-
-                eachItem.SubItems["status"].Text = targetItem.DistroStatus;
-                break;
-            }
+            // TODO: Refresh Binding Source
         }
 
         private void BackupWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -105,7 +94,7 @@ namespace WslManager.Screens.MainForm
 
             if (result.Succeed)
             {
-                //RefreshListView(listView, statusItem, WslExtensions.GetDistroList());
+                AppContext.RefreshDistroList();
                 var itemPath = result.SaveFilePath.Replace(@"/", @"\");
                 Process.Start("explorer.exe", "/select," + itemPath);
             }

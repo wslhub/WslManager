@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using WslManager.Extensions;
-using WslManager.ViewModels;
+using WslManager.Models;
 
 namespace WslManager.Screens.MainForm
 {
@@ -122,7 +120,7 @@ namespace WslManager.Screens.MainForm
 
         private void DistroMenu_DropDownOpening(object sender, EventArgs e)
         {
-            var isDistroSelected = listView.GetSelectedItem()?.Tag as DistroInfo != null;
+            var isDistroSelected = listView.SelectedItem?.RowObject as WslDistro != null;
 
             foreach (var eachMenu in distroSelectedMenuItems)
                 eachMenu.Visible = isDistroSelected;

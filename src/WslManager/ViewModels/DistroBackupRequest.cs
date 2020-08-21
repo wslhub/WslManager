@@ -1,11 +1,23 @@
-﻿using System.ComponentModel;
-
-namespace WslManager.ViewModels
+﻿namespace WslManager.ViewModels
 {
-    public sealed class DistroBackupRequest : DistroInfoBase
+    public sealed class DistroBackupRequest : NotifiableModel
     {
+        private string _distroName;
         private string _saveFilePath;
         private bool _succeed;
+
+        public string DistroName
+        {
+            get => _distroName;
+            set
+            {
+                if (value != _distroName)
+                {
+                    _distroName = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         public string SaveFilePath
         {

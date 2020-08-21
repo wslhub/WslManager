@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using WslManager.Extensions;
 using WslManager.Models;
@@ -21,8 +18,8 @@ namespace WslManager
         }
 
         private static WslDistroContext dbContext;
-
-        public static WslDistroContext DbContext => dbContext;
+        public static BindingList<WslDistro> WslDistroList
+            => dbContext.WslDistros.Local.ToBindingList();
 
         private static void InitLocalDatabase()
         {
@@ -65,9 +62,15 @@ namespace WslManager
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            var table = DbContext.WslDistros;
+            RefreshDistroList();
+        }
 
-            foreach (var eachDistroInfo in WslExtensions.GetDistroList())
+        public static void RefreshDistroList()
+        {
+            var table = dbContext.WslDistros;
+            var distroList = WslHelpers.GetDistroList();
+
+            foreach (var eachDistroInfo in distroList)
             {
                 var distro = table.Where(x => x.DistroName == eachDistroInfo.DistroName).FirstOrDefault();
 
@@ -90,7 +93,7 @@ namespace WslManager
                 }
             }
 
-            DbContext.SaveChanges();
+            dbContext.SaveChanges();
         }
 
         private readonly string[] _arguments;
