@@ -113,6 +113,22 @@ namespace WslManager.Extensions
             return process;
         }
 
+        public static Process CreateTerminateSpecificDistroProcess(string distroName)
+        {
+            var startInfo = new ProcessStartInfo("wsl.exe", $"--terminate {distroName}")
+            {
+                UseShellExecute = false,
+            };
+
+            var process = new Process()
+            {
+                StartInfo = startInfo,
+                EnableRaisingEvents = true,
+            };
+
+            return process;
+        }
+
         public static Process CreateLaunchSpecificDistroExplorerProcess(string distroName)
         {
             var startInfo = new ProcessStartInfo($"\\\\wsl$\\{distroName}")

@@ -44,6 +44,17 @@ namespace WslManager.Screens.MainForm
             var result = process.Start();
         }
 
+        private void Feature_TerminateDistro(object sender, EventArgs e)
+        {
+            var targetItem = GetSelectedDistroBySender(sender);
+
+            if (targetItem == null)
+                return;
+
+            var process = WslHelpers.CreateTerminateSpecificDistroProcess(targetItem.DistroName);
+            var result = process.Start();
+        }
+
         private void Feature_OpenDistroFileSystem(object sender, EventArgs e)
         {
             var targetItem = GetSelectedDistroBySender(sender);

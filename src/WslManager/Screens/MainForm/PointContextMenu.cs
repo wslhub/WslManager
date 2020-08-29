@@ -10,6 +10,7 @@ namespace WslManager.Screens.MainForm
         private ToolStripMenuItem openDistroContextMenuItem;
         private ToolStripMenuItem openDistroFolderContextMenuItem;
         private ToolStripMenuItem backupDistroContextMenuItem;
+        private ToolStripMenuItem terminateDistroContextMenuItem;
         private ToolStripMenuItem unregisterDistroContextMenuItem;
         private ToolStripMenuItem setAsDefaultDistroContextMenuItem;
 
@@ -22,6 +23,7 @@ namespace WslManager.Screens.MainForm
                 pointContextMenuStrip.Items.AddSeparator(),
                 openDistroFolderContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("E&xplore Distro File System..."),
                 backupDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Backup Distro..."),
+                terminateDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Terminate Distro..."),
                 unregisterDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Unregister Distro..."),
                 pointContextMenuStrip.Items.AddSeparator(),
                 setAsDefaultDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("Set as &default distro"),
@@ -30,6 +32,7 @@ namespace WslManager.Screens.MainForm
             openDistroContextMenuItem.Click += Feature_LaunchDistro;
             openDistroFolderContextMenuItem.Click += Feature_OpenDistroFileSystem;
             backupDistroContextMenuItem.Click += Feature_BackupDistro;
+            terminateDistroContextMenuItem.Click += Feature_TerminateDistro;
             unregisterDistroContextMenuItem.Click += Feature_UnregisterDistro;
             setAsDefaultDistroContextMenuItem.Click += Feature_SetAsDefaultDistro;
         }
