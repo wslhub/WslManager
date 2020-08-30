@@ -35,6 +35,13 @@ namespace WslManager.Screens.MainForm
         private ToolStripMenuItem listMenuItem;
         private ToolStripMenuItem detailMenuItem;
         private ToolStripMenuItem tileMenuItem;
+        private ToolStripMenuItem sortByMenuItem;
+        private ToolStripMenuItem sortByDistroNameMenuItem;
+        private ToolStripMenuItem sortByDistroStatusMenuItem;
+        private ToolStripMenuItem sortByWSLVersionMenuItem;
+        private ToolStripMenuItem sortByIsDefaultDistroMenuItem;
+        private ToolStripMenuItem sortByAscendingMenuItem;
+        private ToolStripMenuItem sortByDescendingMenuItem;
         private ToolStripMenuItem refreshMenuItem;
 
         private ToolStripMenuItem helpMenu;
@@ -93,8 +100,29 @@ namespace WslManager.Screens.MainForm
                 detailMenuItem = viewMenu.DropDownItems.AddMenuItem("&Detail"),
                 tileMenuItem = viewMenu.DropDownItems.AddMenuItem("&Tile"),
                 viewMenu.DropDownItems.AddSeparator(),
+                sortByMenuItem = viewMenu.DropDownItems.AddMenuItem("&Sort by..."),
+                viewMenu.DropDownItems.AddSeparator(),
                 refreshMenuItem = viewMenu.DropDownItems.AddMenuItem("&Refresh List"),
             });
+
+            sortByMenuItem.DropDownItems.AddRange(new ToolStripItem[]
+            {
+                sortByDistroNameMenuItem = sortByMenuItem.DropDownItems.AddMenuItem("Distro &Name"),
+                sortByDistroStatusMenuItem = sortByMenuItem.DropDownItems.AddMenuItem("Distro &Status"),
+                sortByWSLVersionMenuItem = sortByMenuItem.DropDownItems.AddMenuItem("WSL &Version"),
+                sortByIsDefaultDistroMenuItem = sortByMenuItem.DropDownItems.AddMenuItem("&Is Default Distro"),
+                sortByMenuItem.DropDownItems.AddSeparator(),
+                sortByAscendingMenuItem = sortByMenuItem.DropDownItems.AddMenuItem("&Ascending"),
+                sortByDescendingMenuItem = sortByMenuItem.DropDownItems.AddMenuItem("&Descending"),
+            });
+
+            sortByMenuItem.DropDownOpened += SortByMenuItem_DropDownOpened;
+            sortByDistroNameMenuItem.Click += Feature_SortBy_DistroName;
+            sortByDistroStatusMenuItem.Click += Feature_SortBy_DistroStatus;
+            sortByWSLVersionMenuItem.Click += Feature_SortBy_WSLVersion;
+            sortByIsDefaultDistroMenuItem.Click += Feature_SortBy_IsDefaultDistro;
+            sortByAscendingMenuItem.Click += Feature_SortBy_Ascending;
+            sortByDescendingMenuItem.Click += Feature_SortBy_Descending;
 
             viewTypeMenuItems = new[]
             {
@@ -119,6 +147,43 @@ namespace WslManager.Screens.MainForm
             });
 
             aboutMenuItem.Click += Feature_AboutApp;
+        }
+
+        private void SortByMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            foreach (var eachItem in sortByMenuItem.DropDownItems)
+                if (eachItem is ToolStripMenuItem)
+                    ((ToolStripMenuItem)eachItem).Checked = false;
+
+            switch (listView.PrimarySortColumn?.Name)
+            {
+                case nameof(WslDistro.DistroName):
+                    sortByDistroNameMenuItem.Checked = true;
+                    break;
+
+                case nameof(WslDistro.DistroStatus):
+                    sortByDistroStatusMenuItem.Checked = true;
+                    break;
+
+                case nameof(WslDistro.WSLVersion):
+                    sortByWSLVersionMenuItem.Checked = true;
+                    break;
+
+                case nameof(WslDistro.IsDefault):
+                    sortByIsDefaultDistroMenuItem.Checked = true;
+                    break;
+            }
+
+            switch (listView.PrimarySortOrder)
+            {
+                case SortOrder.Ascending:
+                    sortByAscendingMenuItem.Checked = true;
+                    break;
+
+                case SortOrder.Descending:
+                    sortByDescendingMenuItem.Checked = true;
+                    break;
+            }
         }
 
         private void DistroMenu_DropDownOpening(object sender, EventArgs e)

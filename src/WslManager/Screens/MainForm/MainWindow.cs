@@ -52,10 +52,13 @@ namespace WslManager.Screens.MainForm
                 UseTranslucentHotItem = true,
                 UseTranslucentSelection = true,
                 ShowHeaderInAllViews = false,
+                ShowGroups = false,
             };
 
-            listView.AlwaysGroupByColumn = listView.AllColumns.Find(x => string.Equals(
-                x.Name, nameof(WslDistro.DistroStatus), StringComparison.Ordinal));
+            listView.PrimarySortColumn = listView.AllColumns.Find(x => string.Equals(
+                x.Name, nameof(WslDistro.DistroName), StringComparison.Ordinal));
+
+            listView.PrimarySortOrder = SortOrder.Ascending;
 
             listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
 

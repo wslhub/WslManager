@@ -157,6 +157,52 @@ namespace WslManager.Screens.MainForm
             listView.View = View.Tile;
         }
 
+        private void Feature_SortBy_DistroName(object sender, EventArgs e)
+        {
+            var targetColumn = listView.AllColumns.Find(
+                x => string.Equals(x.Name, nameof(WslDistro.DistroName), StringComparison.Ordinal));
+
+            if (targetColumn != null)
+                listView.Sort(targetColumn, listView.PrimarySortOrder);
+        }
+
+        private void Feature_SortBy_DistroStatus(object sender, EventArgs e)
+        {
+            var targetColumn = listView.AllColumns.Find(
+                x => string.Equals(x.Name, nameof(WslDistro.DistroStatus), StringComparison.Ordinal));
+
+            if (targetColumn != null)
+                listView.Sort(targetColumn, listView.PrimarySortOrder);
+        }
+
+        private void Feature_SortBy_WSLVersion(object sender, EventArgs e)
+        {
+            var targetColumn = listView.AllColumns.Find(
+                x => string.Equals(x.Name, nameof(WslDistro.WSLVersion), StringComparison.Ordinal));
+
+            if (targetColumn != null)
+                listView.Sort(targetColumn, listView.PrimarySortOrder);
+        }
+
+        private void Feature_SortBy_IsDefaultDistro(object sender, EventArgs e)
+        {
+            var targetColumn = listView.AllColumns.Find(
+                x => string.Equals(x.Name, nameof(WslDistro.IsDefault), StringComparison.Ordinal));
+
+            if (targetColumn != null)
+                listView.Sort(targetColumn, listView.PrimarySortOrder);
+        }
+
+        private void Feature_SortBy_Ascending(object sender, EventArgs e)
+        {
+            listView.Sort(listView.PrimarySortColumn, SortOrder.Ascending);
+        }
+
+        private void Feature_SortBy_Descending(object sender, EventArgs e)
+        {
+            listView.Sort(listView.PrimarySortColumn, SortOrder.Descending);
+        }
+
         private void Feature_RefreshDistroList(object sender, EventArgs e)
         {
             AppContext.RefreshDistroList();
