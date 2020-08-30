@@ -144,11 +144,53 @@ namespace WslManager.Screens
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            var wslHostPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.System),
-                    "lxss", "wslhost.exe");
+            var commonErrorMessage = "This application requires 64-bit system and latest version of Windows 10 2004 or higher than Windows Server 2004.";
 
-            if (!File.Exists(wslHostPath))
+            if (!Environment.Is64BitOperatingSystem || !Environment.Is64BitProcess)
+            {
+                MessageBox.Show(this, commonErrorMessage,
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+                Close();
+                return;
+            }
+
+            var osVersion = Environment.OSVersion;
+
+            if (osVersion.Platform != PlatformID.Win32NT)
+            {
+                MessageBox.Show(this, commonErrorMessage,
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+                Close();
+                return;
+            }
+
+            var versionNumber = osVersion.Version;
+
+            if (versionNumber.Major < 10 || versionNumber.Minor < 0 || versionNumber.Build < 19041)
+            {
+                MessageBox.Show(this, commonErrorMessage,
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+                Close();
+                return;
+            }
+
+            if (!File.Exists(Path.Combine(Environment.SystemDirectory, "wslapi.dll")))
+            {
+                MessageBox.Show(this, "This system does not have WSL enabled.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+                Close();
+                return;
+            }
+
+            if (!File.Exists(Path.Combine(Environment.SystemDirectory, "wsl.exe")))
+            {
+                MessageBox.Show(this, "This system does not have wsl.exe CLI.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+                Close();
+                return;
+            }
+
+            if (!File.Exists(Path.Combine(Environment.SystemDirectory, "lxss", "wslhost.exe")))
             {
                 MessageBox.Show(this, "It looks like WSL does not available on this system. Please install WSL first.",
                     Text, MessageBoxButtons.OK, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);

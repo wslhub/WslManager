@@ -12,6 +12,7 @@
     <Product>WslManager</Product>
     <AssemblyName>WslManager</AssemblyName>
     <RootNamespace>WslManager</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
