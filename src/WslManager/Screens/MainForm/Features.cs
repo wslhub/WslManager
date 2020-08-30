@@ -24,10 +24,8 @@ namespace WslManager.Screens.MainForm
                     var hitTest = pointContextMenuStrip.Tag as OlvListViewHitTestInfo;
                     targetItem = hitTest?.Item?.RowObject as WslDistro;
                 }
-                else if (object.ReferenceEquals(toolStrip, menuStrip))
-                {
+                else
                     targetItem = listView.SelectedItem?.RowObject as WslDistro;
-                }
             }
 
             return targetItem;
