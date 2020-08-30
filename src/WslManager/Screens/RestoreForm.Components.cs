@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace WslManager.Screens.RestoreForm
+namespace WslManager.Screens
 {
     // Components
     partial class RestoreForm
@@ -10,8 +10,10 @@ namespace WslManager.Screens.RestoreForm
         private OpenFileDialog distroBackupFileOpenDialog;
         private FolderBrowserDialog distroRestoreDirOpenDialog;
 
-        partial void _InitializeComponents(IContainer components)
+        protected override void InitializeComponents(IContainer components)
         {
+            base.InitializeComponents(components);
+
             errorProvider = new ErrorProvider(this)
             {
                 BlinkStyle = ErrorBlinkStyle.BlinkIfDifferentError,

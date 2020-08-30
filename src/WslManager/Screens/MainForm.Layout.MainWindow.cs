@@ -9,7 +9,7 @@ using WslManager.Controls;
 using WslManager.Extensions;
 using WslManager.Models;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
     // Main Window
     partial class MainForm

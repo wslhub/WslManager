@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
-    // Initialize
-    public sealed partial class MainForm : CodeFirstForm
+    // Components
+    partial class MainForm
     {
         partial void InitializeBindingSource(IContainer components);
         partial void InitializeImageList(IContainer components);
@@ -18,21 +18,6 @@ namespace WslManager.Screens.MainForm
             InitializeBackupWorker(components);
             InitializeRestoreWorker(components);
             InitializeBindingSource(components);
-        }
-
-        partial void InitializeMainWindow();
-        partial void InitializeMainMenu();
-        partial void InitializePointContextMenu();
-        partial void InitializeDefaultContextMenu();
-
-        protected override void InitializeUserInterface()
-        {
-            base.InitializeUserInterface();
-
-            InitializeMainWindow();
-            InitializeMainMenu();
-            InitializePointContextMenu();
-            InitializeDefaultContextMenu();
         }
     }
 }

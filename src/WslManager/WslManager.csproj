@@ -19,4 +19,13 @@
     <PackageReference Include="ObjectListView.Repack.Core3" Version="2.9.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="**/MainForm.*.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="**/RestoreForm.*.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

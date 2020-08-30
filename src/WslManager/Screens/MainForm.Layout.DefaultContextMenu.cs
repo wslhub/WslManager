@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using WslManager.Extensions;
 using WslManager.Models;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
     // Default Context Menu
     partial class MainForm

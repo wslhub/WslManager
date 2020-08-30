@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
 using WslManager.Models;
-using WslManager.Screens.MainForm;
+using WslManager.Screens;
 
 namespace WslManager
 {

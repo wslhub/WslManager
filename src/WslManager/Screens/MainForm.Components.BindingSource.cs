@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
     // Binding Source
     partial class MainForm

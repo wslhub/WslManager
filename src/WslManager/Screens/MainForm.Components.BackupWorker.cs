@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using WslManager.Extensions;
 using WslManager.ViewModels;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
     // Backup Worker
     partial class MainForm

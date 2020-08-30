@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using WslManager.Extensions;
 using WslManager.Models;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
     // Main Menu
     partial class MainForm

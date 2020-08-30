@@ -7,7 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
     // Image List
     partial class MainForm

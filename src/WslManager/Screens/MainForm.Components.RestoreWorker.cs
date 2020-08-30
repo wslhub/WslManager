@@ -7,7 +7,7 @@ using WslManager.Extensions;
 using WslManager.Models;
 using WslManager.ViewModels;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
     // Restore Worker
     partial class MainForm

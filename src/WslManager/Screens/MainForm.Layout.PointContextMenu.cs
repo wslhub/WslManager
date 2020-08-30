@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using WslManager.Extensions;
 
-namespace WslManager.Screens.MainForm
+namespace WslManager.Screens
 {
     // Point Contex Menu
     partial class MainForm

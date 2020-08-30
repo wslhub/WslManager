@@ -1,9 +1,9 @@
 ﻿using System;
 using WslManager.Extensions;
 
-namespace WslManager.Screens.RestoreForm
+namespace WslManager.Screens
 {
-    // Helper
+    // Helpers
     partial class RestoreForm
     {
         private static readonly Lazy<NamesGenerator> NameGenerator =

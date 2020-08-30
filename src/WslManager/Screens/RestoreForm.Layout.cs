@@ -6,9 +6,9 @@ using System.Windows.Forms;
 using WslManager.Extensions;
 using static WslManager.Extensions.WinFormExtensions;
 
-namespace WslManager.Screens.RestoreForm
+namespace WslManager.Screens
 {
-    // Dialog
+    // Layout
     partial class RestoreForm
     {
         private TableLayoutPanel layout;
@@ -32,9 +32,11 @@ namespace WslManager.Screens.RestoreForm
         private Button cancelButton;
         private Button confirmButton;
 
-        partial void InitializeDialog()
+        protected override void InitializeUserInterface()
         {
-            var form = this.SetupAsDialog(640, 220, "Restore Distro");
+            base.InitializeUserInterface();
+
+            this.SetupAsDialog(640, 220, "Restore Distro");
 
             layout = new TableLayoutPanel()
             {
