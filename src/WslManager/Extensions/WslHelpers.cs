@@ -20,7 +20,7 @@ namespace WslManager.Extensions
                 LoadUserProfile = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                StandardOutputEncoding = Encoding.UTF8,
+                StandardOutputEncoding = Encoding.Unicode,
                 CreateNoWindow = true,
             };
 
@@ -35,7 +35,6 @@ namespace WslManager.Extensions
 
             return process.StandardOutput
                 .ReadToEnd()
-                .Replace("\0", string.Empty)
                 .Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
         }
 
