@@ -8,6 +8,7 @@ namespace WslManager.Screens
     {
         private ContextMenuStrip pointContextMenuStrip;
         private ToolStripMenuItem openDistroContextMenuItem;
+        private ToolStripMenuItem runAsDistroContextMenuItem;
         private ToolStripMenuItem openDistroFolderContextMenuItem;
         private ToolStripMenuItem backupDistroContextMenuItem;
         private ToolStripMenuItem terminateDistroContextMenuItem;
@@ -20,6 +21,7 @@ namespace WslManager.Screens
             pointContextMenuStrip.Items.AddRange(new ToolStripItem[]
             {
                 openDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Open Distro..."),
+                runAsDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Run As..."),
                 pointContextMenuStrip.Items.AddSeparator(),
                 openDistroFolderContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("E&xplore Distro File System..."),
                 backupDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Backup Distro..."),
@@ -30,6 +32,7 @@ namespace WslManager.Screens
             });
 
             openDistroContextMenuItem.Click += Feature_LaunchDistro;
+            runAsDistroContextMenuItem.Click += Feature_RunAsDistro;
             openDistroFolderContextMenuItem.Click += Feature_OpenDistroFileSystem;
             backupDistroContextMenuItem.Click += Feature_BackupDistro;
             terminateDistroContextMenuItem.Click += Feature_TerminateDistro;

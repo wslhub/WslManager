@@ -45,6 +45,19 @@ namespace WslManager.Extensions
                 textBox, x => x.Text, dataSource, dataMemberExpression);
         }
 
+        public static TComboBox SetComboBoxBinding<TComboBox, TDataSource>(
+            this TComboBox comboBox,
+            TDataSource dataSource,
+            Expression<Func<TDataSource, object>> dataMemberExpression,
+            object comboBoxDataSource = default)
+            where TComboBox : ComboBox
+            where TDataSource : class
+        {
+            comboBox.DataSource = comboBoxDataSource;
+            return SetBinding<TComboBox, TDataSource>(
+                comboBox, x => x.Text, dataSource, dataMemberExpression);
+        }
+
         public static TCheckBox SetCheckBoxBinding<TCheckBox, TDataSource>(
             this TCheckBox checkBox,
             TDataSource dataSource,

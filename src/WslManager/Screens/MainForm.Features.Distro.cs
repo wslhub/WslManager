@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
 using WslManager.ViewModels;
@@ -16,6 +17,33 @@ namespace WslManager.Screens
                 return;
 
             var process = WslHelpers.CreateLaunchSpecificDistroProcess(targetItem.DistroName);
+            var result = process.Start();
+        }
+
+        private void Feature_RunAsDistro(object sender, EventArgs e)
+        {
+            var targetItem = GetSelectedDistroBySender(sender);
+
+            if (targetItem == null)
+                return;
+
+            using var dialog = new RunAsForm(new DistroRunAsRequest()
+            {
+                DistroName = targetItem.DistroName,
+                DistroList = AppContext.WslDistroList.Select(x => x.DistroName).Distinct().ToArray(),
+                User = "root",
+                ExecCommandLine = "",
+            });
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            var targetDistro = dialog.ViewModel.DistroName;
+            var targetUserId = dialog.ViewModel.User;
+            var execCommandLine = dialog.ViewModel.ExecCommandLine;
+
+            var process = WslHelpers.CreateLaunchSpecificDistroAsUserProcess(
+                targetDistro, targetUserId, execCommandLine);
             var result = process.Start();
         }
 

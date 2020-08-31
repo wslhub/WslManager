@@ -7,17 +7,21 @@ namespace WslManager
     [DesignerCategory(default)]
     public abstract class CodeFirstForm : Form
     {
-        public CodeFirstForm()
+        public CodeFirstForm() : this(default) { }
+
+        protected CodeFirstForm(object providedModel)
             : base()
         {
+            _providedModel = providedModel;
             Initialize();
         }
 
         private IContainer _components = default;
+        private object _providedModel = default;
 
         private void Initialize()
         {
-            InitializeFields();
+            InitializeFields(_providedModel);
 
             _components = new Container();
             InitializeComponents(_components);
@@ -27,7 +31,7 @@ namespace WslManager
             ResumeLayout();
         }
 
-        protected virtual void InitializeFields() { }
+        protected virtual void InitializeFields(object model) { }
 
         protected virtual void InitializeComponents(IContainer components) { }
 
@@ -48,19 +52,15 @@ namespace WslManager
     public abstract class CodeFirstForm<T> : CodeFirstForm
         where T : class, INotifyPropertyChanged
     {
-        public CodeFirstForm(T viewModel)
-            : base()
-        {
-            _viewModel = viewModel;
-        }
+        public CodeFirstForm(T viewModel) : base(viewModel) { }
 
-        public CodeFirstForm()
-            : this(default)
-        { }
+        public CodeFirstForm() : this(default) { }
 
-        protected override void InitializeFields()
+        protected override void InitializeFields(object providedModel)
         {
-            base.InitializeFields();
+            base.InitializeFields(providedModel);
+
+            _viewModel = providedModel as T;
 
             if (_viewModel == default)
                 _viewModel = CreateDefaultViewModel();

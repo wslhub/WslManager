@@ -27,6 +27,42 @@
     <Compile Update="**/RestoreForm.*.cs">
       <DependentUpon>RestoreForm.cs</DependentUpon>
     </Compile>
+    <Compile Update="**/RunAsForm.*.cs">
+      <DependentUpon>RunAsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="**/UserFindForm.*.cs">
+      <DependentUpon>UserFindForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="**/RunAsForm.*.cs">
+      <DependentUpon>RunAsForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Screens\RestoreForm - 복사.Components.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RestoreForm - 복사.Helpers.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RestoreForm - 복사.Layout.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RestoreForm - 복사.Models.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RunAsForm - 복사.Components.cs">
+      <DependentUpon>RunAsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RunAsForm - 복사.Helpers.cs">
+      <DependentUpon>RunAsForm.Helpers.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RunAsForm - 복사.Layout.cs">
+      <DependentUpon>RunAsForm.Layout.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RunAsForm - 복사.Models.cs">
+      <DependentUpon>RunAsForm.Models.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

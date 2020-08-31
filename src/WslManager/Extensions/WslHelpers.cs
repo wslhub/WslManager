@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using WslManager.Models;
+using WslManager.ViewModels;
 
 namespace WslManager.Extensions
 {
@@ -38,12 +39,38 @@ namespace WslManager.Extensions
                 .Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static IEnumerable<string> ExecuteAndGetResultForLinux(string executablePath, string commandLineArguments)
+        {
+            var processStartInfo = new ProcessStartInfo(executablePath, commandLineArguments)
+            {
+                LoadUserProfile = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                StandardOutputEncoding = new UTF8Encoding(false),
+                CreateNoWindow = true,
+            };
+
+            using var process = new Process()
+            {
+                StartInfo = processStartInfo,
+                EnableRaisingEvents = true,
+            };
+
+            if (!process.Start())
+                throw new Exception("Cannot start the WSL process.");
+
+            return process.StandardOutput
+                .ReadToEnd()
+                .Replace("\0", string.Empty)
+                .Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         public static IEnumerable<string> ExecuteAndGetResultForWsl(string distroName, string userName, string oneLinerBashScript)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return ExecuteAndGetResult("wsl.exe", $"--distribution {distroName} -- {oneLinerBashScript}");
+                return ExecuteAndGetResultForLinux("wsl.exe", $"--distribution {distroName} -- {oneLinerBashScript}");
             else
-                return ExecuteAndGetResult("wsl.exe", $"--distribution {distroName} --user {userName} -- {oneLinerBashScript}");
+                return ExecuteAndGetResultForLinux("wsl.exe", $"--distribution {distroName} --user {userName} -- {oneLinerBashScript}");
         }
 
         public static IEnumerable<string> GetDistroNames()
@@ -54,6 +81,22 @@ namespace WslManager.Extensions
         public static IEnumerable<WslDistro> GetDistroList()
         {
             return ParseDistroList(ExecuteAndGetResult("wsl.exe", "--list --verbose"));
+        }
+
+        public static IEnumerable<LinuxUserInfo> GetLinuxUserInfo(string distroName, string userName = "root")
+        {
+            var results = new List<LinuxUserInfo>();
+
+            try
+            {
+                var passwdContents = ExecuteAndGetResultForWsl(distroName, userName, "cat /etc/passwd");
+
+                foreach (var eachLine in passwdContents)
+                    results.Add(new LinuxUserInfo(eachLine));
+            }
+            catch { }
+
+            return results.AsReadOnly();
         }
 
         public static IEnumerable<WslDistro> ParseDistroList(IEnumerable<string> lines)
@@ -98,6 +141,23 @@ namespace WslManager.Extensions
         public static Process CreateLaunchSpecificDistroProcess(string distroName)
         {
             var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {distroName}")
+            {
+                UseShellExecute = false,
+                WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            };
+
+            var process = new Process()
+            {
+                StartInfo = startInfo,
+                EnableRaisingEvents = true,
+            };
+
+            return process;
+        }
+
+        public static Process CreateLaunchSpecificDistroAsUserProcess(string distroName, string userName, string execCommandLine)
+        {
+            var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {distroName} --user {userName} -- {execCommandLine}")
             {
                 UseShellExecute = false,
                 WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
