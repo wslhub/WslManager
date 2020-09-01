@@ -27,7 +27,6 @@ namespace WslManager.Screens
 
         private ToolStripMenuItem refreshListContextMenuItem;
         private ToolStripMenuItem restoreDistroContextMenuItem;
-        private ToolStripMenuItem shutdownContextMenuItem;
 
         partial void InitializeDefaultContextMenu()
         {
@@ -39,8 +38,6 @@ namespace WslManager.Screens
                 refreshListContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("Refresh &List"),
                 defaultContextMenuStrip.Items.AddSeparator(),
                 restoreDistroContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Restore Distro..."),
-                defaultContextMenuStrip.Items.AddSeparator(),
-                shutdownContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Shutdown WSL..."),
             });
 
             viewTypeContextMenuItem.DropDownOpened += ViewTypeContextMenuItem_DropDownOpened;
@@ -80,7 +77,6 @@ namespace WslManager.Screens
 
             refreshListContextMenuItem.Click += Feature_RefreshDistroList;
             restoreDistroContextMenuItem.Click += Feature_RestoreDistro;
-            shutdownContextMenuItem.Click += Feature_ShutdownWsl;
         }
 
         private void SortByContextMenuItem_DropDownOpened(object sender, EventArgs e)
