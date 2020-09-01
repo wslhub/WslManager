@@ -121,24 +121,8 @@ namespace WslManager.Screens
                     lvItem.StateImageIndex = 0;
                 else if (string.Equals(dataRow.DistroStatus, "Installing", StringComparison.OrdinalIgnoreCase))
                     lvItem.StateImageIndex = 1;
-
-                foreach (ColumnHeader eachSubItem in listView.Columns)
-                {
-                    switch (eachSubItem.Name)
-                    {
-                        case "status":
-                            lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = dataRow.DistroStatus, });
-                            break;
-
-                        case "wslver":
-                            lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = dataRow.WSLVersion, });
-                            break;
-
-                        case "default":
-                            lvItem.SubItems.Add(new ListViewItem.ListViewSubItem() { Name = eachSubItem.Name, Text = dataRow.IsDefault ? "*" : string.Empty, });
-                            break;
-                    }
-                }
+                else
+                    lvItem.StateImageIndex = (-1);
             }
         }
 
