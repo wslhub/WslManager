@@ -1,6 +1,6 @@
 # WslManager
 
-You can access or contribute to the source code of this project from the GitHub repository: [https://github.com/rkttu/WslManager](https://github.com/rkttu/WslManager)
+You can access or contribute to the source code of this project from the GitHub repository: [https://github.com/wslhub/WslManager](https://github.com/wslhub/WslManager)
 
 <a target="_blank" href="docs/images/screenshot.png">
 	<img src="docs/images/screenshot.png" alt="Screen" style="width: 40%;" />
