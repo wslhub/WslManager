@@ -114,7 +114,10 @@ namespace WslManager.Screens
                 foreach (var eachKey in Resources.LogoImages.Keys)
                 {
                     if (roughName.Contains(eachKey, StringComparison.OrdinalIgnoreCase))
+                    {
                         lvItem.ImageKey = eachKey;
+                        break;
+                    }
                 }
 
                 if (dataRow.IsDefault)
