@@ -282,10 +282,5 @@ namespace WslManager.Extensions
 
             return process;
         }
-
-        public static IEnumerable<string> GetRegularUserList(string distroName)
-        {
-            return ExecuteAndGetResultForWsl(distroName, "root", "cat /etc/passwd | grep \":[0-9][0-9][0-9][0-9]:\" | cut -d: -f1 -");
-        }
     }
 }
