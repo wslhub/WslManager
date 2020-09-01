@@ -25,6 +25,7 @@ namespace WslManager.Screens
         private ToolStripItem[] genericDistroMenuItems;
 
         private ToolStripMenuItem restoreDistroMenuItem;
+        private ToolStripMenuItem editWslConfigMenuItem;
         private ToolStripMenuItem shutdownMenuItem;
         private ToolStripMenuItem exitMenuItem;
 
@@ -46,6 +47,12 @@ namespace WslManager.Screens
         private ToolStripMenuItem refreshMenuItem;
 
         private ToolStripMenuItem helpMenu;
+        private ToolStripMenuItem wslHelpMenuItem;
+        private ToolStripMenuItem gnuLinuxHelpMenuItem;
+        private ToolStripMenuItem wslGeneralFaqMenuItem;
+        private ToolStripMenuItem wslVersion2FaqMenuItem;
+        private ToolStripMenuItem wslTroubleshootMenuItem;
+        private ToolStripMenuItem globalWsl2ConfigOptionHelpMenuItem;
         private ToolStripMenuItem aboutMenuItem;
 
         partial void InitializeMainMenu()
@@ -76,6 +83,7 @@ namespace WslManager.Screens
             {
                 restoreDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Restore Distro..."),
                 distroMenu.DropDownItems.AddSeparator(),
+                editWslConfigMenuItem = distroMenu.DropDownItems.AddMenuItem("&Edit WSL Configuration..."),
                 shutdownMenuItem = distroMenu.DropDownItems.AddMenuItem("&Shutdown WSL"),
                 distroMenu.DropDownItems.AddSeparator(),
                 exitMenuItem = distroMenu.DropDownItems.AddMenuItem("E&xit"),
@@ -92,6 +100,8 @@ namespace WslManager.Screens
             unregisterDistroMenuItem.Click += Feature_UnregisterDistro;
             setAsDefaultDistroMenuItem.Click += Feature_SetAsDefaultDistro;
             restoreDistroMenuItem.Click += Feature_RestoreDistro;
+
+            editWslConfigMenuItem.Click += Feature_EditWslConfiguration;
             shutdownMenuItem.Click += Feature_ShutdownWsl;
             exitMenuItem.Click += Feature_ExitApp;
 
@@ -146,9 +156,24 @@ namespace WslManager.Screens
 
             helpMenu = menuStrip.Items.AddMenuItem("&Help");
             helpMenu.DropDownItems.AddRange(new ToolStripItem[] {
+                wslHelpMenuItem = helpMenu.DropDownItems.AddMenuItem("Windows Subsystem for Linux &Help..."),
+                gnuLinuxHelpMenuItem = helpMenu.DropDownItems.AddMenuItem("&GNU/Linux Tutorial..."),
+                helpMenu.DropDownItems.AddSeparator(),
+                wslGeneralFaqMenuItem = helpMenu.DropDownItems.AddMenuItem("&Frequently Asked Questions..."),
+                wslVersion2FaqMenuItem = helpMenu.DropDownItems.AddMenuItem("F&AQ for WSL v2..."),
+                helpMenu.DropDownItems.AddSeparator(),
+                wslTroubleshootMenuItem = helpMenu.DropDownItems.AddMenuItem("&Troubleshoot WSL..."),
+                globalWsl2ConfigOptionHelpMenuItem = helpMenu.DropDownItems.AddMenuItem("Configuring &Global WSL 2 settings..."),
+                helpMenu.DropDownItems.AddSeparator(),
                 aboutMenuItem = helpMenu.DropDownItems.AddMenuItem("&About..."),
             });
 
+            wslHelpMenuItem.Click += Feature_OpenWslHelp;
+            gnuLinuxHelpMenuItem.Click += Feature_OpenGnuLinuxHelp;
+            wslGeneralFaqMenuItem.Click += Feature_OpenGeneralFaqHelp;
+            wslVersion2FaqMenuItem.Click += Feature_OpenWSLV2FaqHelp;
+            wslTroubleshootMenuItem.Click += Feature_OpenWslTroubleshoot;
+            globalWsl2ConfigOptionHelpMenuItem.Click += Feature_OpenGlobalWsl2ConfigOptionHelp;
             aboutMenuItem.Click += Feature_AboutApp;
         }
 
