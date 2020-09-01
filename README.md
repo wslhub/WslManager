@@ -1,4 +1,4 @@
-# WSL Manager
+# WslManager
 
 You can access or contribute to the source code of this project from the GitHub repository: [https://github.com/rkttu/WslManager](https://github.com/rkttu/WslManager)
 
