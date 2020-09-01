@@ -12,16 +12,13 @@ This program helps you install and manage multiple versions of the same Linux di
 
 ## Features
 
-Latest features introduced at [here](https://www.wslhub.com/)
-
 * Run your linux distro easily with GUI based interface.
 * Open your linux distro directly.
 * Import your own system tarball archive to Windows Subsystem for Linux.
-* Export/Backup your existing distro to tarball archive file.
+* Export your existing distro to tarball archive file.
 * Issue a command or script into distro directly.
 * Set default distro for wsl.exe.
 * Run distro as a specific user.
-* Add new user into distro.
 
 ## Planned features/enhancements
 
