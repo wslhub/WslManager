@@ -14,9 +14,8 @@ This program helps you install and manage multiple versions of the same Linux di
 
 Latest features introduced at [here](https://www.wslhub.com/)
 
-* Install official linux distros directly.
 * Run your linux distro easily with GUI based interface.
-* Open/mount your linux distro directly without running each distro instance.
+* Open your linux distro directly.
 * Import your own system tarball archive to Windows Subsystem for Linux.
 * Export/Backup your existing distro to tarball archive file.
 * Issue a command or script into distro directly.
