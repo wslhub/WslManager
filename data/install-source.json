@@ -1,0 +1,185 @@
+{
+	"microsoftStoreUrls": {
+		"ubuntu-latest": {
+			"displayName": "Ubuntu (Latest)",
+			"providerName": "Canonical",
+			"url": "https://www.microsoft.com/store/productId/9NBLGGH4MSV6"
+		},
+		"ubutnu-2004": {
+			"displayName": "Ubuntu 20.04 LTS (Focal Fossa)",
+			"providerName": "Canonical",
+			"url": "https://www.microsoft.com/store/productId/9N6SVWS3RX71"
+		},
+		"ubuntu-1804": {
+			"displayName": "Ubuntu 18.04 LTS (Bionic Beaver)",
+			"providerName": "Canonical",
+			"url": "https://www.microsoft.com/store/productId/9N9TNGVNDL3Q"
+		},
+		"ubuntu-1604": {
+			"displayName": "Ubuntu 16.04 LTS (Xenial Xerus)",
+			"providerName": "Canonical",
+			"url": "https://www.microsoft.com/store/productId/9PJN388HP8C9"
+		},
+		"debian-gnu-linux-latest": {
+			"displayName": "Debian GNU/Linux (Latest)",
+			"providerName": "Debian Project",
+			"url": "https://www.microsoft.com/store/productId/9MSVKQC78PK6"
+		},
+		"kali-linux-latest": {
+			"displayName": "Kali Linux (Latest)",
+			"providerName": "Kali Linux",
+			"url": "https://www.microsoft.com/store/productId/9PKR34TNCV07"
+		},
+		"opensuse-leap-15-2": {
+			"displayName": "OpenSUSE LEAP 15.2",
+			"providerName": "SUSE",
+			"url": "https://www.microsoft.com/store/productId/9MZD0N9Z4M4H"
+		},
+		"opensuse-leap-15-1": {
+			"displayName": "OpenSUSE LEAP 15.1",
+			"providerName": "SUSE",
+			"url": "https://www.microsoft.com/store/productId/9NJFZK00FGKV"
+		},
+		"suse-enterprise-linux-15-sp2": {
+			"displayName": "SUSE Enterprise Linux 15 SP2",
+			"providerName": "SUSE",
+			"url": "https://www.microsoft.com/store/productId/9N05LVVPVC9P"
+		},
+		"suse-enterprise-linux-15-sp1": {
+			"displayName": "SUSE Enterprise Linux 15 SP1",
+			"providerName": "SUSE",
+			"url": "https://www.microsoft.com/store/productId/9PN498VPMF3Z"
+		},
+		"suse-enterprise-linux-12-sp5": {
+			"displayName": "SUSE Enterprise Linux 12 SP5",
+			"providerName": "SUSE",
+			"url": "https://www.microsoft.com/store/productId/9MZ3D1TRP8T1"
+		},
+		"fedora-remix-latest": {
+			"displayName": "Fedora Remix for WSL (Latest, Payment Required)",
+			"providerName": "Whitewater Foundry, Ltd. Co.",
+			"url": "https://www.microsoft.com/store/productId/9N6GDM4K2HNC"
+		},
+		"pengwin-latest": {
+			"displayName": "Pengwin (Latest, Payment Required)",
+			"providerName": "Whitewater Foundry, Ltd. Co.",
+			"url": "https://www.microsoft.com/store/productId/9NV1GV1PXZ6P"
+		},
+		"pengwin-enterprise-latest": {
+			"displayName": "Pengwin Enterprise (Latest, Payment Required)",
+			"providerName": "Whitewater Foundry, Ltd. Co.",
+			"url": "https://www.microsoft.com/store/productId/9N8LP0X93VCP"
+		},
+		"alpine-linux-custom": {
+			"displayName": "Alpine Linux (Latest, by agowa338)",
+			"providerName": "agowa338",
+			"url": "https://www.microsoft.com/store/productId/9P804CRF0395"
+		}
+	},
+	"appxSideload": {
+		"ubuntu-2004-amd64": {
+			"architecture": "amd64",
+			"displayName": "Ubuntu 20.04 LTS AMD64 (Focal Fossa)",
+			"providerName": "Canonical",
+			"url": "https://aka.ms/wslubuntu2004"
+		},
+		"ubuntu-2004-arm64": {
+			"architecture": "arm64",
+			"displayName": "Ubuntu 20.04 LTS ARM64 (Focal Fossa)",
+			"providerName": "Canonical",
+			"url": "https://aka.ms/wslubuntu2004arm"
+		},
+		"ubuntu-1804-amd64": {
+			"architecture": "amd64",
+			"displayName": "Ubuntu 18.04 LTS AMD64 (Bionic Beaver)",
+			"providerName": "Canonical",
+			"url": "https://aka.ms/wsl-ubuntu-1804"
+		},
+		"ubuntu-1804-arm64": {
+			"architecture": "arm64",
+			"displayName": "Ubuntu 18.04 LTS ARM64 (Bionic Beaver)",
+			"providerName": "Canonical",
+			"url": "https://aka.ms/wsl-ubuntu-1804-arm"
+		},
+		"ubuntu-1604-amd64": {
+			"architecture": "amd64",
+			"displayName": "Ubuntu 16.04 LTS AMD64 (Xenial Xerus)",
+			"providerName": "Canonical",
+			"url": "https://aka.ms/wsl-ubuntu-1604"
+		},
+		"debian-gnu-linux-latest-amd64": {
+			"architecture": "amd64",
+			"displayName": "Debian GNU/Linux AMD64 Latest",
+			"providerName": "The Debian Project",
+			"url": "https://aka.ms/wsl-debian-gnulinux"
+		},
+		"kali-linux-latest-amd64": {
+			"architecture": "amd64",
+			"displayName": "Kali Linux AMD64 Latest",
+			"providerName": "Kali Linux",
+			"url": "https://aka.ms/wsl-kali-linux-new"
+		},
+		"opensuse-leap-42-amd64": {
+			"architecture": "amd64",
+			"displayName": "OpenSUSE Leap 42 AMD64",
+			"providerName": "SUSE",
+			"url": "https://aka.ms/wsl-opensuse-42"
+		},
+		"suse-enterprise-linux-12-amd64": {
+			"architecture": "amd64",
+			"displayName": "SUSE Enterprise Linux 12 AMD64",
+			"providerName": "SUSE",
+			"url": "https://aka.ms/wsl-sles-12"
+		},
+		"fedora-remix-31-5-amd64": {
+			"architecture": "amd64",
+			"displayName": "Fedora Remix 31.5 Final AMD64",
+			"providerName": "Whitewater Foundry, Ltd. Co.",
+			"url": "https://github.com/WhitewaterFoundry/Fedora-Remix-for-WSL/releases/download/31.5.0/Fedora-Remix-for-WSL_31.5.0.0_x64_arm64.appxbundle"
+		}
+	},
+	"rootFs": {
+		"ubuntu-2004-amd64": {
+			"architecture": "amd64",
+			"displayName": "Ubuntu 20.04 LTS AMD64 (Focal Fossa)",
+			"providerName": "Canonical",
+			"url": "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-wsl.rootfs.tar.gz",
+			"manifestUrl": "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-wsl.rootfs.manifest"
+		},
+		"ubuntu-2004-arm64": {
+			"architecture": "arm64",
+			"displayName": "Ubuntu 20.04 LTS ARM64 (Focal Fossa)",
+			"providerName": "Canonical",
+			"url": "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-arm64-wsl.rootfs.tar.gz",
+			"manifestUrl": "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-arm64-wsl.rootfs.manifest"
+		},
+		"ubuntu-1804-amd64": {
+			"architecture": "amd64",
+			"displayName": "Ubuntu 18.04 LTS AMD64 (Bionic Beaver)",
+			"providerName": "Canonical",
+			"url": "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-wsl.rootfs.tar.gz",
+			"manifestUrl": "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-wsl.rootfs.manifest"
+		},
+		"ubuntu-1804-arm64": {
+			"architecture": "arm64",
+			"displayName": "Ubuntu 18.04 LTS ARM64 (Bionic Beaver)",
+			"providerName": "Canonical",
+			"url": "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-arm64-wsl.rootfs.tar.gz",
+			"manifestUrl": "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-arm64-wsl.rootfs.manifest"
+		},
+		"ubuntu-1604-amd64": {
+			"architecture": "amd64",
+			"displayName": "Ubuntu 16.04 LTS AMD64 (Xenial Xerus)",
+			"providerName": "Canonical",
+			"url": "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-wsl.rootfs.tar.gz",
+			"manifestUrl": "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-wsl.rootfs.manifest"
+		},
+		"ubuntu-1604-arm64": {
+			"architecture": "arm64",
+			"displayName": "Ubuntu 16.04 LTS ARM64 (Xenial Xerus)",
+			"providerName": "Canonical",
+			"url": "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-arm64-wsl.rootfs.tar.gz",
+			"manifestUrl": "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-arm64-wsl.rootfs.manifest"
+		}
+	}
+}
