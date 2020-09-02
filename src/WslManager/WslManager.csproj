@@ -36,6 +36,9 @@
     <Compile Update="**/RunAsForm.*.cs">
       <DependentUpon>RunAsForm.cs</DependentUpon>
     </Compile>
+    <Compile Update="**/InstallForm.*.cs">
+      <DependentUpon>InstallForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
