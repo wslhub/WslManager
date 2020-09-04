@@ -137,15 +137,6 @@ namespace WslManager.Screens
 
         private void Feature_RestoreDistro(object sender, EventArgs e)
         {
-            if (restoreWorker.IsBusy)
-            {
-                MessageBox.Show(
-                    this, "Already one or more restore in progress. Please try again later.",
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop);
-
-                return;
-            }
-
             using var dialog = new RestoreForm();
 
             if (dialog.ShowDialog(this) != DialogResult.OK)
@@ -156,7 +147,9 @@ namespace WslManager.Screens
             if (restoreRequest == null)
                 return;
 
-            restoreWorker.RunWorkerAsync(restoreRequest);
+            var process = WslHelpers.CreateImportDistroProcess(restoreRequest.NewName, restoreRequest.RestoreDirPath, restoreRequest.TarFilePath);
+            process.Start();
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_RefreshDistroList(object sender, EventArgs e)
