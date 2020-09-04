@@ -93,6 +93,9 @@ namespace WslManager
                 }
             }
 
+            var distroNames = distroList.Select(x => x.DistroName);
+            var unregisteredDistroList = table.Where(x => !distroNames.Contains(x.DistroName));
+            table.RemoveRange(unregisteredDistroList);
             dbContext.SaveChanges();
         }
 
