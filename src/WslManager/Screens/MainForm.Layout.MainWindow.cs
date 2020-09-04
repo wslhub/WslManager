@@ -110,15 +110,20 @@ namespace WslManager.Screens
             if (dataRow != null)
             {
                 var roughName = dataRow?.DistroName?.Trim() ?? string.Empty;
+                var found = false;
 
                 foreach (var eachKey in Resources.LogoImages.Keys)
                 {
                     if (roughName.Contains(eachKey, StringComparison.OrdinalIgnoreCase))
                     {
                         lvItem.ImageKey = eachKey;
+                        found = true;
                         break;
                     }
                 }
+
+                if (!found)
+                    lvItem.ImageKey = Resources.GenericLinuxLogoImage.Key;
 
                 if (dataRow.IsDefault)
                     lvItem.StateImageIndex = 0;
