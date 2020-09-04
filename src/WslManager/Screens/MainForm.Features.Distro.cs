@@ -71,15 +71,6 @@ namespace WslManager.Screens
 
         private void Feature_BackupDistro(object sender, EventArgs e)
         {
-            if (backupWorker.IsBusy)
-            {
-                MessageBox.Show(
-                    this, "Already one or more backup in progress. Please try again later.",
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop);
-
-                return;
-            }
-
             var targetItem = GetSelectedDistroBySender(sender);
 
             if (targetItem == null)
@@ -97,11 +88,9 @@ namespace WslManager.Screens
             if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            backupWorker.RunWorkerAsync(new DistroBackupRequest()
-            {
-                DistroName = targetItem.DistroName,
-                SaveFilePath = saveFileDialog.FileName,
-            });
+            var backupProcess = WslHelpers.CreateExportDistroProcess(targetItem.DistroName, saveFileDialog.FileName);
+            backupProcess.Start();
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_UnregisterDistro(object sender, EventArgs e)
