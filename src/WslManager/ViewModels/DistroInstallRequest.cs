@@ -4,11 +4,9 @@
     {
         private string _rootFsUrl;
         private string _newName;
-        private string _tarFilePath;
-        private string _restoreDirPath;
+        private string _installDirPath;
         private bool _setAsDefault;
-        private bool _succeed;
-
+        
         public string RootFsUrl
         {
             get => _rootFsUrl;
@@ -35,27 +33,14 @@
             }
         }
 
-        public string TarFilePath
+        public string InstallDirPath
         {
-            get => _tarFilePath;
+            get => _installDirPath;
             set
             {
-                if (value != _tarFilePath)
+                if (value != _installDirPath)
                 {
-                    _tarFilePath = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-        public string RestoreDirPath
-        {
-            get => _restoreDirPath;
-            set
-            {
-                if (value != _restoreDirPath)
-                {
-                    _restoreDirPath = value;
+                    _installDirPath = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -69,19 +54,6 @@
                 if (value != _setAsDefault)
                 {
                     _setAsDefault = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-        public bool Succeed
-        {
-            get => _succeed;
-            set
-            {
-                if (value != _succeed)
-                {
-                    _succeed = value;
                     NotifyPropertyChanged();
                 }
             }

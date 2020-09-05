@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
+using WslManager.ViewModels;
 using static WslManager.Extensions.WinFormExtensions;
 
 namespace WslManager.Screens
@@ -13,9 +14,9 @@ namespace WslManager.Screens
     {
         private TableLayoutPanel layout;
 
-        private Label tarFileLabel;
-        private TextBox tarFilePath;
-        private Button tarFileOpenButton;
+        private Label rootFsUrlLabel;
+        private TextBox rootFsUrl;
+        private Button rootFsSelectButton;
 
         private Label installDirLabel;
         private TextBox installDirPath;
@@ -28,6 +29,7 @@ namespace WslManager.Screens
         private Label setAsDefaultLabel;
         private CheckBox setAsDefaultCheckBox;
 
+        private ProgressBar downloadProgressBar;
         private FlowLayoutPanel actionPanel;
         private Button cancelButton;
         private Button confirmButton;
@@ -36,7 +38,7 @@ namespace WslManager.Screens
         {
             base.InitializeUserInterface();
 
-            this.SetupAsDialog(640, 220, "Restore Distro");
+            this.SetupAsDialog(640, 220, "Install Distro");
 
             layout = new TableLayoutPanel()
             {
@@ -51,27 +53,26 @@ namespace WslManager.Screens
             .Place(new object[,]
             {
                 {
-                    tarFileLabel = new Label()
+                    rootFsUrlLabel = new Label()
                     {
-                        Text = "Backup File: ",
+                        Text = "RootFS URL: ",
                         TextAlign = ContentAlignment.MiddleRight,
                         Anchor = AnchorStyles.Right,
                     },
 
-                    tarFilePath = new TextBox()
+                    rootFsUrl = new TextBox()
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoCompleteMode = AutoCompleteMode.SuggestAppend,
                         AutoCompleteSource = AutoCompleteSource.FileSystem,
                     }
-                    .AssociateLabel(tarFileLabel)
-                    .SetTextBoxBinding(this.ViewModel, m => m.TarFilePath),
+                    .AssociateLabel(rootFsUrlLabel)
+                    .SetTextBoxBinding(this.ViewModel, m => m.RootFsUrl),
 
-                    tarFileOpenButton = new Button()
+                    rootFsSelectButton = new Button()
                     {
-                        Text = "&Open...",
+                        Text = "&Catalog...",
                         Anchor = AnchorStyles.Left,
-                        Height = tarFilePath.Height,
                     },
                 },
                 {
@@ -89,7 +90,7 @@ namespace WslManager.Screens
                         AutoCompleteSource = AutoCompleteSource.FileSystemDirectories,
                     }
                     .AssociateLabel(installDirLabel)
-                    .SetTextBoxBinding(this.ViewModel, m => m.RestoreDirPath),
+                    .SetTextBoxBinding(this.ViewModel, m => m.InstallDirPath),
 
                     installDirBrowseButton = new Button()
                     {
@@ -144,9 +145,15 @@ namespace WslManager.Screens
                     default,
                 },
                 {
+                    downloadProgressBar = new ProgressBar()
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        Visible = false,
+                    },
+
                     new TableLayoutCell
                     {
-                        ColumnSpan = 3,
+                        ColumnSpan = 2,
                         Control = actionPanel = new FlowLayoutPanel()
                         {
                             Anchor = AnchorStyles.Left | AnchorStyles.Right,
@@ -155,7 +162,7 @@ namespace WslManager.Screens
                         .SetupAsActionPanel(
                             confirmButton = new Button()
                             {
-                                Text = "&Restore",
+                                Text = "&Install",
                                 AutoSize = true,
                             }
                             .SetAsConfirmButton(this),
@@ -169,42 +176,39 @@ namespace WslManager.Screens
                     },
 
                     default,
-
-                    default,
                 },
             });
 
-            tarFileOpenButton.Click += TarFileOpenButton_Click;
+            rootFsSelectButton.Click += RootFsSelectButton_Click;
             installDirBrowseButton.Click += InstallDirBrowseButton_Click;
             distroNameSuggestButton.Click += DistroNameSuggestButton_Click;
 
-            FormClosing += RestoreForm_FormClosing;
+            FormClosing += InstallForm_FormClosing;
         }
 
-        private void TarFileOpenButton_Click(object sender, EventArgs e)
+        private void RootFsSelectButton_Click(object sender, EventArgs e)
         {
-            var selectedFilePath = tarFilePath.Text;
+            var model = new DistroRootFsFindRequest();
 
-            if (File.Exists(selectedFilePath))
-                distroBackupFileOpenDialog.FileName = selectedFilePath;
+            using var distroFindForm = new DistroFindForm(model);
 
-            if (distroBackupFileOpenDialog.ShowDialog(this) != DialogResult.OK)
+            if (distroFindForm.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            tarFilePath.Text = distroBackupFileOpenDialog.FileName;
+            ViewModel.RootFsUrl = model.DistroRootFsUrl;
         }
 
         private void InstallDirBrowseButton_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(installDirPath.Text))
-                distroRestoreDirOpenDialog.SelectedPath = installDirPath.Text;
+                distroInstallDirOpenDialog.SelectedPath = installDirPath.Text;
             else
-                distroRestoreDirOpenDialog.SelectedPath = Path.GetPathRoot(Environment.CurrentDirectory);
+                distroInstallDirOpenDialog.SelectedPath = Path.GetPathRoot(Environment.CurrentDirectory);
 
-            if (distroRestoreDirOpenDialog.ShowDialog(this) != DialogResult.OK)
+            if (distroInstallDirOpenDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            installDirPath.Text = distroRestoreDirOpenDialog.SelectedPath;
+            installDirPath.Text = distroInstallDirOpenDialog.SelectedPath;
         }
 
         private void DistroNameSuggestButton_Click(object sender, EventArgs e)
@@ -212,17 +216,17 @@ namespace WslManager.Screens
             distroNameValue.Text = NameGenerator.Value.GetRandomName();
         }
 
-        private void RestoreForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void InstallForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (this.DialogResult != DialogResult.OK)
                 return;
 
             errorProvider.Clear();
 
-            if (!File.Exists(tarFilePath.Text))
+            if (!File.Exists(rootFsUrl.Text))
             {
-                errorProvider.SetError(tarFilePath, "Selected file does not exists.");
-                tarFilePath.Focus();
+                errorProvider.SetError(rootFsUrl, "Selected file does not exists.");
+                rootFsUrl.Focus();
                 e.Cancel = true;
                 return;
             }

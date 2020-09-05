@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using WslManager.Models;
 using WslManager.ViewModels;
@@ -281,6 +282,17 @@ namespace WslManager.Extensions
             };
 
             return process;
+        }
+
+        public static string GetArchitectureName()
+        {
+            var value = RuntimeInformation.OSArchitecture;
+
+            switch (value)
+            {
+                case Architecture.X64: return "amd64";
+                default: return value.ToString().ToLowerInvariant();
+            }
         }
     }
 }
