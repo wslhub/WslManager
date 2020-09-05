@@ -49,13 +49,22 @@ namespace WslManager.Extensions
             this TComboBox comboBox,
             TDataSource dataSource,
             Expression<Func<TDataSource, object>> dataMemberExpression,
-            object comboBoxDataSource = default)
+            object comboBoxDataSource = default,
+            string displayMemberName = default,
+            string valueMemberName = default)
             where TComboBox : ComboBox
             where TDataSource : class
         {
+            comboBox.DisplayMember = displayMemberName;
+            comboBox.ValueMember = valueMemberName;
             comboBox.DataSource = comboBoxDataSource;
-            return SetBinding<TComboBox, TDataSource>(
-                comboBox, x => x.Text, dataSource, dataMemberExpression);
+
+            if (string.IsNullOrWhiteSpace(valueMemberName))
+                SetBinding<TComboBox, TDataSource>(comboBox, x => x.Text, dataSource, dataMemberExpression);
+            else
+                SetBinding<TComboBox, TDataSource>(comboBox, x => x.SelectedValue, dataSource, dataMemberExpression);
+
+            return comboBox;
         }
 
         public static TCheckBox SetCheckBoxBinding<TCheckBox, TDataSource>(

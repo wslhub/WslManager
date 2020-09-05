@@ -124,6 +124,24 @@ namespace WslManager.Screens
             AppContext.RefreshDistroList();
         }
 
+        private void Feature_InstallDistro(object sender, EventArgs e)
+        {
+            using var dialog = new InstallForm();
+
+            if (dialog.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            var installRequest = dialog.ViewModel;
+
+            if (installRequest == null)
+                return;
+
+            // TODO
+            var process = WslHelpers.CreateImportDistroProcess(installRequest.NewName, installRequest.InstallDirPath, installRequest.RootFsUrl);
+            process.Start();
+            AppContext.RefreshDistroList();
+        }
+
         private void Feature_RestoreDistro(object sender, EventArgs e)
         {
             using var dialog = new RestoreForm();

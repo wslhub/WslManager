@@ -7,8 +7,8 @@ namespace WslManager.Screens
     partial class InstallForm
     {
         private ErrorProvider errorProvider;
-        private OpenFileDialog distroBackupFileOpenDialog;
-        private FolderBrowserDialog distroRestoreDirOpenDialog;
+        private FolderBrowserDialog distroInstallDirOpenDialog;
+        private BackgroundWorker rootFsDownloadWorker;
 
         protected override void InitializeComponents(IContainer components)
         {
@@ -20,24 +20,21 @@ namespace WslManager.Screens
             };
             components.Add(errorProvider);
 
-            distroBackupFileOpenDialog = new OpenFileDialog()
-            {
-                Title = "Open WSL Backup File",
-                SupportMultiDottedExtensions = true,
-                DefaultExt = ".tar",
-                Filter = "Tape Archive File|*.tar",
-                AutoUpgradeEnabled = true,
-            };
-            components.Add(distroBackupFileOpenDialog);
-
-            distroRestoreDirOpenDialog = new FolderBrowserDialog()
+            distroInstallDirOpenDialog = new FolderBrowserDialog()
             {
                 ShowNewFolderButton = true,
                 AutoUpgradeEnabled = true,
-                Description = "Select a directory to restore WSL distro.",
+                Description = "Select a directory to install WSL distro.",
                 UseDescriptionForTitle = true,
             };
-            components.Add(distroRestoreDirOpenDialog);
+            components.Add(distroInstallDirOpenDialog);
+
+            rootFsDownloadWorker = new BackgroundWorker()
+            {
+                WorkerSupportsCancellation = true,
+                WorkerReportsProgress = true,
+            };
+            components.Add(rootFsDownloadWorker);
         }
     }
 }

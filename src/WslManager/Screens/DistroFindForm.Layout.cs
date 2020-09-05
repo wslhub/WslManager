@@ -4,20 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
+using WslManager.ViewModels;
 using static WslManager.Extensions.WinFormExtensions;
 
 namespace WslManager.Screens
 {
     // Layout
-    partial class UserFindForm
+    partial class DistroFindForm
     {
         private TableLayoutPanel layout;
 
-        private Label distroNameLabel;
-        private TextBox distroNameValue;
-
-        private Label userLabel;
-        private ComboBox userList;
+        private Label distroRootFsLabel;
+        private ComboBox distroRootFsList;
 
         private FlowLayoutPanel actionPanel;
         private Button cancelButton;
@@ -27,7 +25,7 @@ namespace WslManager.Screens
         {
             base.InitializeUserInterface();
 
-            this.SetupAsDialog(480, 120, "Find User");
+            this.SetupAsDialog(480, 120, "Find Distro");
 
             layout = new TableLayoutPanel()
             {
@@ -36,44 +34,27 @@ namespace WslManager.Screens
             }
 
             .SetupLayout(
-                columnStyles: "180px 65% 90px",
-                rowStyles: "20% 20% 20%")
+                columnStyles: "180px 65% 50px",
+                rowStyles: "20% 20%")
 
             .Place(new object[,]
             {
                 {
-                    distroNameLabel = new Label()
+                    distroRootFsLabel = new Label()
                     {
-                        Text = "Distro Name: ",
+                        Text = "Distro RootFS: ",
                         TextAlign = ContentAlignment.MiddleRight,
                         Anchor = AnchorStyles.Right,
                     },
 
-                    distroNameValue = new TextBox()
-                    {
-                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                        ReadOnly = true,
-                    }
-                    .AssociateLabel(distroNameLabel)
-                    .SetTextBoxBinding(this.ViewModel, m => m.DistroName),
-
-                    default,
-                },
-                {
-                    userLabel = new Label()
-                    {
-                        Text = "Username: ",
-                        TextAlign = ContentAlignment.MiddleRight,
-                        Anchor = AnchorStyles.Right,
-                    },
-
-                    userList = new ComboBox()
+                    distroRootFsList = new ComboBox()
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         DropDownStyle = ComboBoxStyle.DropDownList,
                     }
-                    .AssociateLabel(userLabel)
-                    .SetComboBoxBinding(this.ViewModel, m => m.User),
+                    .AssociateLabel(distroRootFsLabel)
+                    .SetComboBoxBinding(this.ViewModel, m => m.DistroRootFsUrl,
+                        this.ViewModel.RootFsCandidates, nameof(RootFsModel.DisplayName), nameof(RootFsModel.Url)),
 
                     default,
                 },
@@ -108,29 +89,24 @@ namespace WslManager.Screens
                 },
             });
 
-            userQueryWorker.RunWorkerAsync(ViewModel);
-            FormClosing += UserFindForm_FormClosing;
+            distroRootFsList.DisplayMember = nameof(RootFsModel.DisplayName);
+            distroRootFsList.ValueMember = nameof(RootFsModel.Url);
+
+            distroCatalogQueryWorker.RunWorkerAsync(ViewModel);
+            FormClosing += DistroFindForm_FormClosing;
         }
 
-        private void UserFindForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void DistroFindForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (this.DialogResult != DialogResult.OK)
                 return;
 
             errorProvider.Clear();
 
-            if (string.IsNullOrWhiteSpace(distroNameValue.Text))
+            if (string.IsNullOrWhiteSpace(distroRootFsList.Text))
             {
-                errorProvider.SetError(distroNameValue, "Distro name cannot be empty.");
-                distroNameValue.Focus();
-                e.Cancel = true;
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(userList.Text))
-            {
-                errorProvider.SetError(userList, "Username cannot be empty.");
-                userList.Focus();
+                errorProvider.SetError(distroRootFsList, "RootFS URL cannot be empty.");
+                distroRootFsList.Focus();
                 e.Cancel = true;
                 return;
             }

@@ -24,6 +24,7 @@ namespace WslManager.Screens
 
         private ToolStripItem[] genericDistroMenuItems;
 
+        private ToolStripMenuItem installDistroMenuItem;
         private ToolStripMenuItem restoreDistroMenuItem;
         private ToolStripMenuItem editWslConfigMenuItem;
         private ToolStripMenuItem shutdownMenuItem;
@@ -81,6 +82,7 @@ namespace WslManager.Screens
 
             genericDistroMenuItems = new ToolStripItem[]
             {
+                installDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Install Distro..."),
                 restoreDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Restore Distro..."),
                 distroMenu.DropDownItems.AddSeparator(),
                 editWslConfigMenuItem = distroMenu.DropDownItems.AddMenuItem("&Edit WSL Configuration..."),
@@ -99,6 +101,7 @@ namespace WslManager.Screens
             terminateDistroMenuItem.Click += Feature_TerminateDistro;
             unregisterDistroMenuItem.Click += Feature_UnregisterDistro;
             setAsDefaultDistroMenuItem.Click += Feature_SetAsDefaultDistro;
+            installDistroMenuItem.Click += Feature_InstallDistro;
             restoreDistroMenuItem.Click += Feature_RestoreDistro;
 
             editWslConfigMenuItem.Click += Feature_EditWslConfiguration;

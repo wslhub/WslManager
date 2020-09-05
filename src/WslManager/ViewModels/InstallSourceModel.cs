@@ -8,13 +8,10 @@ namespace WslManager.ViewModels
     {
         // https://wslhub.com/WslManager/data/install-source.json
 
-        public List<MicrosoftStoreModel> MicrosoftStoreUrls { get; set; }
-            = new List<MicrosoftStoreModel>();
+        public Dictionary<string, MicrosoftStoreModel> MicrosoftStoreUrls { get; set; } = new Dictionary<string, MicrosoftStoreModel> { };
 
-        public List<AppxSideloadModel> AppxSideload { get; set; }
-            = new List<AppxSideloadModel>();
+        public Dictionary<string, AppxSideloadModel> AppxSideload { get; set; } = new Dictionary<string, AppxSideloadModel> { };
 
-        public List<RootFsModel> RootFs { get; set; }
-            = new List<RootFsModel>();
+        public Dictionary<string, RootFsModel> RootFs { get; set; } = new Dictionary<string, RootFsModel> { };
     }
 }
