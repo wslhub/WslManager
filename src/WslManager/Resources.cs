@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WslManager
 {
@@ -7,14 +9,38 @@ namespace WslManager
         public static readonly Dictionary<string, string> StateImages = new Dictionary<string, string>
         {
             {
-                "default_distro",
-                "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAt0lEQVR4Xr3ToQrCUBTH4eNNNvtcU9/AYBUfQPAtLIO9hsE4tIhRLHsELcsG41YWZnBJkFuP5whD5Qp/p+BgHC673+9ywxrMTH9/rLXNCpgv8FTGUaZfO6C4vJbR9rDpCthrxNTFYRzQIolIIh0BO+PcC+DTpSCv1aZhb6RsXmFf3lQ3vsP5OefJcsyDWf8+da3RZ5ytk9XLB4wfm1LBTh1idArCKAIwjgCMIwDjCMI48in++Xe+AVbCHNkHNb8AAAAAAElFTkSuQmCC"
+                "Stopped",
+                "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAANUlEQVR4Xu2SIQoAUAhDvaPX85yr/2MxGESwiGywsBdemuwKgNdpKRC1qO/EKKAg2PyJt/IBgutBfCp73dAAAAAASUVORK5CYII="
             },
             {
-                "hourglass",
+                "Running",
+                "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAm0lEQVR4XrWTPQqDYBBEPUKOYpHCMoWHsEiRiwRrtcoFzAlCilTiHRIQa4s0Eghs8/2Um1SL3TCCC9M+5u2yyXJCCC/nXJrwYwD9R2KMp9WAY1vo9JnUe38VkR0NyOq95peD9mOnpkQCLE1XmRIJsAAlDABKGACUSED5OBuAVrg/b6ZAL3F4D/QSrfL8nakzgsoYACpv/0z8O/8Au3wolvjnFWsAAAAASUVORK5CYII="
+            },
+            {
+                "Converting",
+                "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAByElEQVR4XpWTPYsiQRCGX2UjTXYxMfAXKFyisKeZIIKsH6GcYnAox4KRHHLIhcKCOGhicAyIY3CnRiIYqKihu4Emov4A01OYRAU/6O1uBhkZZNcHCnpqmuJ9q6t0hBAwdrsdwe083EFhs9kgHA7js7TbbTD0UDAYDKjVamCUy2U0Gg1N5HI5mEwmfj5DLfDYbrf3NP4HAgEym80IPWtiOBySRCLBzhPlvk6tQAbw5nA4MBgMMJ1OQYvB7/ez4Kr6/T7sdjsor+w+DaLHJX9YHzqdDvb7PQRBQCQSQTqdhsViwXw+RygUIgBEjQUFZuUvVUB8Ph+hjeLSK5UKCQaDZDwes+8XqNBDy3en0/mvWCyiWq1ivV6j1+uhVCrBarUKAH5rClzjdDrhcDioFepA+aiANBqNIqlUCtFoFGazGW63G8lkEovF4icAjQW1/6flcvmtUCggk8mA9gGMWCyGeDyObDYLWZZ/0Xtfril4ZkPi9XrBnlMFz9lsNrRaLWbjx7UCXyeTCTweD47HI5rNJvL5PLrdLusDz7P/lEcoXCwThQ9PvV6HKIqgkwcFvicul4vbkCQJCg/nAqvVity8TOptNBqNPHkr71cXCDPl8tJBAAAAAElFTkSuQmCC"
+            },
+            {
+                "Installing",
                 "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAByElEQVR4XpWTPYsiQRCGX2UjTXYxMfAXKFyisKeZIIKsH6GcYnAox4KRHHLIhcKCOGhicAyIY3CnRiIYqKihu4Emov4A01OYRAU/6O1uBhkZZNcHCnpqmuJ9q6t0hBAwdrsdwe083EFhs9kgHA7js7TbbTD0UDAYDKjVamCUy2U0Gg1N5HI5mEwmfj5DLfDYbrf3NP4HAgEym80IPWtiOBySRCLBzhPlvk6tQAbw5nA4MBgMMJ1OQYvB7/ez4Kr6/T7sdjsor+w+DaLHJX9YHzqdDvb7PQRBQCQSQTqdhsViwXw+RygUIgBEjQUFZuUvVUB8Ph+hjeLSK5UKCQaDZDwes+8XqNBDy3en0/mvWCyiWq1ivV6j1+uhVCrBarUKAH5rClzjdDrhcDioFepA+aiANBqNIqlUCtFoFGazGW63G8lkEovF4icAjQW1/6flcvmtUCggk8mA9gGMWCyGeDyObDYLWZZ/0Xtfril4ZkPi9XrBnlMFz9lsNrRaLWbjx7UCXyeTCTweD47HI5rNJvL5PLrdLusDz7P/lEcoXCwThQ9PvV6HKIqgkwcFvicul4vbkCQJCg/nAqvVity8TOptNBqNPHkr71cXCDPl8tJBAAAAAElFTkSuQmCC"
             },
         };
+
+        public static string[] StateImageKeyList = StateImages.Keys.ToArray();
+
+        public static int GetStateImageIndex(string distroStatusString)
+        {
+            if (string.IsNullOrWhiteSpace(distroStatusString))
+                return (-1);
+
+            for (int i = 0; i < StateImageKeyList.Length; i++)
+            {
+                if (string.Equals(distroStatusString, StateImageKeyList[i], StringComparison.OrdinalIgnoreCase))
+                    return i;
+            }
+
+            return (-1);
+        }
 
         public static readonly KeyValuePair<string, string> GenericLinuxLogoImage = new KeyValuePair<string, string>(
             "linux",

@@ -125,12 +125,7 @@ namespace WslManager.Screens
                 if (!found)
                     lvItem.ImageKey = Resources.GenericLinuxLogoImage.Key;
 
-                if (dataRow.IsDefault)
-                    lvItem.StateImageIndex = 0;
-                else if (string.Equals(dataRow.DistroStatus, "Installing", StringComparison.OrdinalIgnoreCase))
-                    lvItem.StateImageIndex = 1;
-                else
-                    lvItem.StateImageIndex = (-1);
+                lvItem.StateImageIndex = Resources.GetStateImageIndex(dataRow.DistroStatus);
             }
         }
 
