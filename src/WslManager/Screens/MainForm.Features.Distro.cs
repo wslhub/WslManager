@@ -69,6 +69,21 @@ namespace WslManager.Screens
             var result = process.Start();
         }
 
+        private void Feature_OpenDistroProperties(object sender, EventArgs e)
+        {
+            var targetItem = GetSelectedDistroBySender(sender);
+
+            if (targetItem == null)
+                return;
+
+            using var dialog = new PropertiesForm(new DistroPropertyRequest()
+            {
+                DistroName = targetItem.DistroName,
+            });
+
+            dialog.ShowDialog(this);
+        }
+
         private void Feature_BackupDistro(object sender, EventArgs e)
         {
             var targetItem = GetSelectedDistroBySender(sender);

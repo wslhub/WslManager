@@ -43,6 +43,24 @@
     <Compile Update="**/DistroFindForm.*.cs">
       <DependentUpon>DistroFindForm.cs</DependentUpon>
     </Compile>
+	<Compile Update="**/PropertiesForm.*.cs">
+      <DependentUpon>PropertiesForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Screens\RestoreForm - 복사.Components.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RestoreForm - 복사.Helpers.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RestoreForm - 복사.Layout.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Screens\RestoreForm - 복사.Models.cs">
+      <DependentUpon>RestoreForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
