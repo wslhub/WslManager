@@ -45,4 +45,16 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="External\LICENSE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="External\LICENSE-3RD-PARTY">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="External\LxRunOffline.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
