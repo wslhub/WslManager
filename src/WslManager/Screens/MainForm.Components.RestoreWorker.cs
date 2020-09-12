@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using WslManager.Extensions;
+using WslManager.External;
 using WslManager.Models;
 using WslManager.ViewModels;
 
@@ -30,11 +31,12 @@ namespace WslManager.Screens
 
         private void RestoreWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var request = (DistroRestoreRequest)e.Argument;
+            // todo
+            /*var request = (DistroRestoreRequest)e.Argument;
             var process = WslHelpers.CreateImportDistroProcess(request.NewName, request.RestoreDirPath, request.TarFilePath);
             process.Start();
 
-            var list = WslHelpers.GetDistroList();
+            var list = DistroManager.wslDistroList;
             var installingItem = list.Where(x => string.Equals(x.DistroName, request.NewName, StringComparison.Ordinal)).FirstOrDefault();
 
             if (installingItem == null)
@@ -44,13 +46,13 @@ namespace WslManager.Screens
 
             while (!process.HasExited && !restoreWorker.CancellationPending)
             {
-                list = WslHelpers.GetDistroList();
+                list = DistroManager.wslDistroList;
                 installingItem = list.Where(x => string.Equals(x.DistroName, request.NewName, StringComparison.Ordinal)).FirstOrDefault();
                 restoreWorker.ReportProgress(50, installingItem);
                 Thread.Sleep(TimeSpan.FromSeconds(1d));
             }
 
-            list = WslHelpers.GetDistroList();
+            list = DistroManager.wslDistroList;
             installingItem = list.Where(x => string.Equals(x.DistroName, request.NewName, StringComparison.Ordinal)).FirstOrDefault();
 
             if (request.SetAsDefault)
@@ -62,7 +64,7 @@ namespace WslManager.Screens
 
             restoreWorker.ReportProgress(100, installingItem);
             request.Succeed = true;
-            e.Result = request;
+            e.Result = request;*/
         }
 
         private void RestoreWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -126,9 +128,8 @@ namespace WslManager.Screens
 
             if (result.Succeed)
             {
+                DistroManager.StartDistro(result.NewName);
                 AppContext.RefreshDistroList();
-                var process = WslHelpers.CreateLaunchSpecificDistroProcess(result.NewName);
-                process.Start();
             }
             else
             {

@@ -30,6 +30,8 @@ namespace WslManager.Screens
 
         private void BackupWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            // todo
+            /*
             var request = (DistroBackupRequest)e.Argument;
             var process = WslHelpers.CreateExportDistroProcess(request.DistroName, request.SaveFilePath);
             process.Start();
@@ -51,6 +53,7 @@ namespace WslManager.Screens
             backupWorker.ReportProgress(100, convertingItem);
             request.Succeed = true;
             e.Result = request;
+            */
         }
 
         private void BackupWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
