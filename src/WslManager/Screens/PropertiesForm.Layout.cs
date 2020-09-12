@@ -16,8 +16,12 @@ namespace WslManager.Screens
         private TabControl tabControl;
 
         private TabPage generalPage;
+        private TableLayoutPanel generalPageLayout;
+        private Label distroNameLabel;
+        private TextBox distroName;
 
         private TabPage usersPage;
+        private DataGridView usersGridView;
 
         private TabPage detailsPage;
         private PropertyGrid propertyGrid;
@@ -39,7 +43,7 @@ namespace WslManager.Screens
             }
 
             .SetupLayout(
-                columnStyles: "180px 95%",
+                columnStyles: "100%",
                 rowStyles: "92% 8%")
 
             .Place(new object[,]
@@ -47,19 +51,15 @@ namespace WslManager.Screens
                 {
                     new TableLayoutCell
                     {
-                        ColumnSpan = 2,
                         Control = tabControl = new TabControl()
                         {
                             Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom,
                         },
                     },
-
-                    default,
                 },
                 {
                     new TableLayoutCell
                     {
-                        ColumnSpan = 2,
                         Control = actionPanel = new FlowLayoutPanel()
                         {
                             Anchor = AnchorStyles.Left | AnchorStyles.Right,
@@ -80,8 +80,6 @@ namespace WslManager.Screens
                             }
                             .SetAsCancelButton(this)),
                     },
-
-                    default,
                 },
             });
 
@@ -92,11 +90,61 @@ namespace WslManager.Screens
                 Padding = new Padding(10),
             };
 
+            generalPageLayout = new TableLayoutPanel()
+            {
+                Parent = generalPage,
+                Dock = DockStyle.Fill,
+            }
+
+            .SetupLayout(
+                columnStyles: "180px 95%",
+                rowStyles: "25% 25% 25% 25% 25%")
+
+            .Place(new object[,]
+            {
+                // TODO: Icon
+
+                {
+                    distroNameLabel = new Label()
+                    {
+                        Text = "Backup File: ",
+                        TextAlign = ContentAlignment.MiddleRight,
+                        Anchor = AnchorStyles.Right,
+                    },
+
+                    distroName = new TextBox()
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                        AutoCompleteSource = AutoCompleteSource.FileSystem,
+                        ReadOnly = true,
+                    }
+                    .AssociateLabel(distroNameLabel)
+                    .SetTextBoxBinding(this.ViewModel, m => m.DistroName),
+                },
+
+                // TODO: Location
+
+                // TODO: Size
+
+                // TODO: State
+
+                // AppxName
+            });
+
             usersPage = new TabPage()
             {
                 Parent = tabControl,
                 Text = "Users",
                 Padding = new Padding(10),
+            };
+
+            usersGridView = new DataGridView()
+            {
+                Parent = usersPage,
+                Dock = DockStyle.Fill,
+                DataSource = null, // TODO
+                ReadOnly = true,
             };
 
             detailsPage = new TabPage()
