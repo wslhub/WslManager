@@ -14,6 +14,7 @@ namespace WslManager.Screens
         private ToolStripMenuItem terminateDistroContextMenuItem;
         private ToolStripMenuItem unregisterDistroContextMenuItem;
         private ToolStripMenuItem setAsDefaultDistroContextMenuItem;
+        private ToolStripMenuItem propertiesDistroContextMenuItem;
 
         partial void InitializePointContextMenu()
         {
@@ -29,6 +30,8 @@ namespace WslManager.Screens
                 unregisterDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Unregister Distro..."),
                 pointContextMenuStrip.Items.AddSeparator(),
                 setAsDefaultDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("Set as &default distro"),
+                pointContextMenuStrip.Items.AddSeparator(),
+                propertiesDistroContextMenuItem = pointContextMenuStrip.Items.AddMenuItem("&Properties..."),
             });
 
             openDistroContextMenuItem.Click += Feature_LaunchDistro;
@@ -38,6 +41,7 @@ namespace WslManager.Screens
             terminateDistroContextMenuItem.Click += Feature_TerminateDistro;
             unregisterDistroContextMenuItem.Click += Feature_UnregisterDistro;
             setAsDefaultDistroContextMenuItem.Click += Feature_SetAsDefaultDistro;
+            propertiesDistroContextMenuItem.Click += Feature_OpenDistroProperties;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace WslManager.Screens
         private ToolStripMenuItem terminateDistroMenuItem;
         private ToolStripMenuItem unregisterDistroMenuItem;
         private ToolStripMenuItem setAsDefaultDistroMenuItem;
+        private ToolStripMenuItem propertiesDistroMenuItem;
 
         private ToolStripItem[] genericDistroMenuItems;
 
@@ -78,6 +79,8 @@ namespace WslManager.Screens
                 distroMenu.DropDownItems.AddSeparator(),
                 setAsDefaultDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("Set as &default distro"),
                 distroMenu.DropDownItems.AddSeparator(),
+                propertiesDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Properties..."),
+                distroMenu.DropDownItems.AddSeparator(),
             };
 
             genericDistroMenuItems = new ToolStripItem[]
@@ -101,6 +104,7 @@ namespace WslManager.Screens
             terminateDistroMenuItem.Click += Feature_TerminateDistro;
             unregisterDistroMenuItem.Click += Feature_UnregisterDistro;
             setAsDefaultDistroMenuItem.Click += Feature_SetAsDefaultDistro;
+            propertiesDistroMenuItem.Click += Feature_OpenDistroProperties;
             installDistroMenuItem.Click += Feature_InstallDistro;
             restoreDistroMenuItem.Click += Feature_RestoreDistro;
 
