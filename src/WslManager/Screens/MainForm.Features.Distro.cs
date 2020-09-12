@@ -136,8 +136,7 @@ namespace WslManager.Screens
             if (installRequest == null)
                 return;
 
-            // TODO
-            var process = WslHelpers.CreateImportDistroProcess(installRequest.NewName, installRequest.InstallDirPath, installRequest.RootFsUrl);
+            var process = WslHelpers.CreateImportDistroProcess(installRequest.NewName, installRequest.InstallDirPath, installRequest.DownloadedTarFilePath);
             process.Start();
             AppContext.RefreshDistroList();
         }

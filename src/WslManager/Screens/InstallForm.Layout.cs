@@ -50,6 +50,9 @@ namespace WslManager.Screens
                 columnStyles: "180px 65% 90px",
                 rowStyles: "20% 20% 20% 20% 20%")
 
+            .SetUseWaitCursorBinding(
+                this.ViewModel, m => m.DownloadInProgress)
+
             .Place(new object[,]
             {
                 {
@@ -67,7 +70,8 @@ namespace WslManager.Screens
                         AutoCompleteSource = AutoCompleteSource.FileSystem,
                     }
                     .AssociateLabel(rootFsUrlLabel)
-                    .SetTextBoxBinding(this.ViewModel, m => m.RootFsUrl),
+                    .SetTextBoxBinding(this.ViewModel, m => m.RootFsUrl)
+                    .SetReadOnlyBinding(this.ViewModel, m => m.MakeReadOnly),
 
                     rootFsSelectButton = new Button()
                     {
@@ -90,7 +94,8 @@ namespace WslManager.Screens
                         AutoCompleteSource = AutoCompleteSource.FileSystemDirectories,
                     }
                     .AssociateLabel(installDirLabel)
-                    .SetTextBoxBinding(this.ViewModel, m => m.InstallDirPath),
+                    .SetTextBoxBinding(this.ViewModel, m => m.InstallDirPath)
+                    .SetReadOnlyBinding(this.ViewModel, m => m.MakeReadOnly),
 
                     installDirBrowseButton = new Button()
                     {
@@ -112,7 +117,8 @@ namespace WslManager.Screens
                         Text = NameGenerator.Value.GetRandomName(),
                     }
                     .AssociateLabel(distroNameLabel)
-                    .SetTextBoxBinding(this.ViewModel, m => m.NewName),
+                    .SetTextBoxBinding(this.ViewModel, m => m.NewName)
+                    .SetReadOnlyBinding(this.ViewModel, m => m.MakeReadOnly),
 
                     distroNameSuggestButton = new Button()
                     {
@@ -139,7 +145,8 @@ namespace WslManager.Screens
                             Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         }
                         .AssociateLabel(setAsDefaultLabel)
-                        .SetCheckBoxBinding(this.ViewModel, m => m.SetAsDefault),
+                        .SetCheckBoxBinding(this.ViewModel, m => m.SetAsDefault)
+                        .SetEnabledBinding(this.ViewModel, m => m.MakeEnabled),
                     },
 
                     default,
@@ -148,8 +155,8 @@ namespace WslManager.Screens
                     downloadProgressBar = new ProgressBar()
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
-                        Visible = false,
-                    },
+                    }
+                    .SetVisibleBinding(this.ViewModel, m => m.DownloadInProgress),
 
                     new TableLayoutCell
                     {
@@ -165,7 +172,8 @@ namespace WslManager.Screens
                                 Text = "&Install",
                                 AutoSize = true,
                             }
-                            .SetAsConfirmButton(this),
+                            .SetAsConfirmButton(this)
+                            .SetEnabledBinding(this.ViewModel, m => m.MakeEnabled),
 
                             cancelButton = new Button()
                             {
@@ -184,6 +192,7 @@ namespace WslManager.Screens
             distroNameSuggestButton.Click += DistroNameSuggestButton_Click;
 
             FormClosing += InstallForm_FormClosing;
+            FormClosed += InstallForm_FormClosed;
         }
 
         private void RootFsSelectButton_Click(object sender, EventArgs e)
@@ -223,9 +232,18 @@ namespace WslManager.Screens
 
             errorProvider.Clear();
 
-            if (!File.Exists(rootFsUrl.Text))
+            if (!Uri.TryCreate(rootFsUrl.Text, UriKind.Absolute, out Uri parsedUri))
             {
-                errorProvider.SetError(rootFsUrl, "Selected file does not exists.");
+                errorProvider.SetError(rootFsUrl, "Selected URI does not supported.");
+                rootFsUrl.Focus();
+                e.Cancel = true;
+                return;
+            }
+
+            if (!string.Equals(parsedUri.Scheme, Uri.UriSchemeHttps, StringComparison.Ordinal) &&
+                !string.Equals(parsedUri.Scheme, Uri.UriSchemeHttp, StringComparison.Ordinal))
+            {
+                errorProvider.SetError(rootFsUrl, "Only HTTP and HTTPS URI supported.");
                 rootFsUrl.Focus();
                 e.Cancel = true;
                 return;
@@ -261,6 +279,36 @@ namespace WslManager.Screens
                 e.Cancel = true;
                 return;
             }
+
+            if (string.IsNullOrWhiteSpace(ViewModel.DownloadedTarFilePath) ||
+                !File.Exists(ViewModel.DownloadedTarFilePath))
+            {
+                if (rootFsDownloadWorker.IsBusy)
+                {
+                    errorProvider.SetError(confirmButton, "Download is in progress.");
+                    e.Cancel = true;
+                    return;
+                }
+
+                var localFileName = Path.GetFileName(parsedUri.LocalPath);
+                var temporaryPath = Path.Combine(Path.GetTempPath(), localFileName);
+                ViewModel.DownloadInProgress = true;
+
+                rootFsDownloadWorker.RunWorkerAsync(new AsyncDownloadContext
+                {
+                    Url = parsedUri,
+                    DownloadedFilePath = temporaryPath,
+                });
+
+                e.Cancel = true;
+                return;
+            }
+        }
+
+        private void InstallForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (rootFsDownloadWorker.IsBusy)
+                rootFsDownloadWorker.CancelAsync();
         }
     }
 }
