@@ -69,15 +69,6 @@ namespace WslManager.Screens
 
         private void Feature_BackupDistro(object sender, EventArgs e)
         {
-            if (backupWorker.IsBusy)
-            {
-                MessageBox.Show(
-                    this, "Already one or more backup in progress. Please try again later.",
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop);
-
-                return;
-            }
-
             var targetItem = GetSelectedDistroBySender(sender);
 
             if (targetItem == null)
@@ -95,11 +86,9 @@ namespace WslManager.Screens
             if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            backupWorker.RunWorkerAsync(new DistroBackupRequest()
-            {
-                DistroName = targetItem.DistroName,
-                SaveFilePath = saveFileDialog.FileName,
-            });
+            var backupProcess = WslHelpers.CreateExportDistroProcess(targetItem.DistroName, saveFileDialog.FileName);
+            backupProcess.Start();
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_UnregisterDistro(object sender, EventArgs e)
@@ -128,17 +117,25 @@ namespace WslManager.Screens
             // todo
         }
 
+        private void Feature_InstallDistro(object sender, EventArgs e)
+        {
+            using var dialog = new InstallForm();
+
+            if (dialog.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            var installRequest = dialog.ViewModel;
+
+            if (installRequest == null)
+                return;
+
+            var process = WslHelpers.CreateImportDistroProcess(installRequest.NewName, installRequest.InstallDirPath, installRequest.DownloadedTarFilePath);
+            process.Start();
+            AppContext.RefreshDistroList();
+        }
+
         private void Feature_RestoreDistro(object sender, EventArgs e)
         {
-            if (restoreWorker.IsBusy)
-            {
-                MessageBox.Show(
-                    this, "Already one or more restore in progress. Please try again later.",
-                    Text, MessageBoxButtons.OK, MessageBoxIcon.Stop);
-
-                return;
-            }
-
             using var dialog = new RestoreForm();
 
             if (dialog.ShowDialog(this) != DialogResult.OK)
@@ -149,7 +146,9 @@ namespace WslManager.Screens
             if (restoreRequest == null)
                 return;
 
-            restoreWorker.RunWorkerAsync(restoreRequest);
+            var process = WslHelpers.CreateImportDistroProcess(restoreRequest.NewName, restoreRequest.RestoreDirPath, restoreRequest.TarFilePath);
+            process.Start();
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_RefreshDistroList(object sender, EventArgs e)

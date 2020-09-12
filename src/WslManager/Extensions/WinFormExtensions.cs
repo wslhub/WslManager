@@ -34,6 +34,54 @@ namespace WslManager.Extensions
             return control;
         }
 
+        public static TControl SetEnabledBinding<TControl, TDataSource>(
+            this TControl control,
+            TDataSource dataSource,
+            Expression<Func<TDataSource, bool>> dataMemberExpression)
+            where TControl : Control
+            where TDataSource : class
+        {
+            var targetPropertyName = dataMemberExpression.GetMemberName();
+            control.DataBindings.Add(nameof(Control.Enabled), dataSource, targetPropertyName, false, DataSourceUpdateMode.OnPropertyChanged);
+            return control;
+        }
+
+        public static TControl SetVisibleBinding<TControl, TDataSource>(
+            this TControl control,
+            TDataSource dataSource,
+            Expression<Func<TDataSource, bool>> dataMemberExpression)
+            where TControl : Control
+            where TDataSource : class
+        {
+            var targetPropertyName = dataMemberExpression.GetMemberName();
+            control.DataBindings.Add(nameof(Control.Visible), dataSource, targetPropertyName, false, DataSourceUpdateMode.OnPropertyChanged);
+            return control;
+        }
+
+        public static TControl SetUseWaitCursorBinding<TControl, TDataSource>(
+            this TControl control,
+            TDataSource dataSource,
+            Expression<Func<TDataSource, bool>> dataMemberExpression)
+            where TControl : Control
+            where TDataSource : class
+        {
+            var targetPropertyName = dataMemberExpression.GetMemberName();
+            control.DataBindings.Add(nameof(Control.UseWaitCursor), dataSource, targetPropertyName, false, DataSourceUpdateMode.OnPropertyChanged);
+            return control;
+        }
+
+        public static TTextBoxBaseControl SetReadOnlyBinding<TTextBoxBaseControl, TDataSource>(
+            this TTextBoxBaseControl control,
+            TDataSource dataSource,
+            Expression<Func<TDataSource, bool>> dataMemberExpression)
+            where TTextBoxBaseControl : TextBoxBase
+            where TDataSource : class
+        {
+            var targetPropertyName = dataMemberExpression.GetMemberName();
+            control.DataBindings.Add(nameof(TextBoxBase.ReadOnly), dataSource, targetPropertyName, false, DataSourceUpdateMode.OnPropertyChanged);
+            return control;
+        }
+
         public static TTextBox SetTextBoxBinding<TTextBox, TDataSource>(
             this TTextBox textBox,
             TDataSource dataSource,
@@ -49,13 +97,22 @@ namespace WslManager.Extensions
             this TComboBox comboBox,
             TDataSource dataSource,
             Expression<Func<TDataSource, object>> dataMemberExpression,
-            object comboBoxDataSource = default)
+            object comboBoxDataSource = default,
+            string displayMemberName = default,
+            string valueMemberName = default)
             where TComboBox : ComboBox
             where TDataSource : class
         {
+            comboBox.DisplayMember = displayMemberName;
+            comboBox.ValueMember = valueMemberName;
             comboBox.DataSource = comboBoxDataSource;
-            return SetBinding<TComboBox, TDataSource>(
-                comboBox, x => x.Text, dataSource, dataMemberExpression);
+
+            if (string.IsNullOrWhiteSpace(valueMemberName))
+                SetBinding<TComboBox, TDataSource>(comboBox, x => x.Text, dataSource, dataMemberExpression);
+            else
+                SetBinding<TComboBox, TDataSource>(comboBox, x => x.SelectedValue, dataSource, dataMemberExpression);
+
+            return comboBox;
         }
 
         public static TCheckBox SetCheckBoxBinding<TCheckBox, TDataSource>(

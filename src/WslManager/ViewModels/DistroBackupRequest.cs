@@ -4,7 +4,6 @@
     {
         private string _distroName;
         private string _saveFilePath;
-        private bool _succeed;
 
         public string DistroName
         {
@@ -27,19 +26,6 @@
                 if (value != _saveFilePath)
                 {
                     _saveFilePath = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-        public bool Succeed
-        {
-            get => _succeed;
-            set
-            {
-                if (value != _succeed)
-                {
-                    _succeed = value;
                     NotifyPropertyChanged();
                 }
             }

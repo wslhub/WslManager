@@ -26,6 +26,7 @@ namespace WslManager.Screens
         private ToolStripMenuItem sortByDescendingContextMenuItem;
 
         private ToolStripMenuItem refreshListContextMenuItem;
+        private ToolStripMenuItem installDistroContextMenuItem;
         private ToolStripMenuItem restoreDistroContextMenuItem;
 
         partial void InitializeDefaultContextMenu()
@@ -37,6 +38,7 @@ namespace WslManager.Screens
                 sortByContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Sort by..."),
                 refreshListContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("Refresh &List"),
                 defaultContextMenuStrip.Items.AddSeparator(),
+                installDistroContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Install Distro..."),
                 restoreDistroContextMenuItem = defaultContextMenuStrip.Items.AddMenuItem("&Restore Distro..."),
             });
 
@@ -76,6 +78,7 @@ namespace WslManager.Screens
             sortByDescendingContextMenuItem.Click += Feature_SortBy_Descending;
 
             refreshListContextMenuItem.Click += Feature_RefreshDistroList;
+            installDistroContextMenuItem.Click += Feature_InstallDistro;
             restoreDistroContextMenuItem.Click += Feature_RestoreDistro;
         }
 

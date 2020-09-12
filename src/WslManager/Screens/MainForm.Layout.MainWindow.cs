@@ -111,22 +111,22 @@ namespace WslManager.Screens
             if (dataRow != null)
             {
                 var roughName = dataRow?.DistroName?.Trim() ?? string.Empty;
+                var found = false;
 
                 foreach (var eachKey in Resources.LogoImages.Keys)
                 {
                     if (roughName.Contains(eachKey, StringComparison.OrdinalIgnoreCase))
                     {
                         lvItem.ImageKey = eachKey;
+                        found = true;
                         break;
                     }
                 }
 
-                if (dataRow.IsDefault)
-                    lvItem.StateImageIndex = 0;
-                else if (string.Equals(dataRow.DistroStatus, "Installing", StringComparison.OrdinalIgnoreCase))
-                    lvItem.StateImageIndex = 1;
-                else
-                    lvItem.StateImageIndex = (-1);
+                if (!found)
+                    lvItem.ImageKey = Resources.GenericLinuxLogoImage.Key;
+
+                lvItem.StateImageIndex = Resources.GetStateImageIndex(dataRow.DistroStatus);
             }
         }
 
