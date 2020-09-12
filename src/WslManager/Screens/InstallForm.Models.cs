@@ -5,9 +5,9 @@ namespace WslManager.Screens
     // Models
     partial class InstallForm
     {
-        public override DistroInstallRequest CreateDefaultViewModel()
+        public override DistroInstallModel CreateDefaultViewModel()
         {
-            return new DistroInstallRequest()
+            return new DistroInstallModel()
             {
                 NewName = NameGenerator.Value.GetRandomName(),
             };

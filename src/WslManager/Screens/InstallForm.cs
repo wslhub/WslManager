@@ -3,5 +3,5 @@
 namespace WslManager.Screens
 {
     // Class Definition
-    public sealed partial class InstallForm : CodeFirstForm<DistroInstallRequest> { }
+    public sealed partial class InstallForm : CodeFirstForm<DistroInstallModel> { }
 }
