@@ -7,7 +7,18 @@ namespace WslManager.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "", params string[] additionalProperties)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+                if (additionalProperties != null && additionalProperties.Length > 0)
+                    foreach (var eachPropertyName in additionalProperties)
+                        handler.Invoke(this, new PropertyChangedEventArgs(eachPropertyName));
+            }
+        }
     }
 }
