@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using WslManager.Extensions;
-using WslManager.External;
 
 namespace WslManager.Screens
 {
@@ -58,7 +57,9 @@ namespace WslManager.Screens
                 MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return;
 
-            DistroManager.ShutdownWsl();
+            var process = WslHelpers.CreateShutdownDistroProcess();
+            process.Start();
+            process.WaitForExit();
             AppContext.RefreshDistroList();
         }
 
@@ -69,7 +70,9 @@ namespace WslManager.Screens
                 MessageBoxDefaultButton.Button2) != DialogResult.Yes)
             return;
 
-            DistroManager.ShutdownWsl();
+            var process = WslHelpers.CreateShutdownDistroProcess();
+            process.Start();
+            process.WaitForExit();
             AppContext.RefreshDistroList();
         }
 

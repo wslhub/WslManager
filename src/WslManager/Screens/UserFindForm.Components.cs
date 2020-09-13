@@ -42,11 +42,9 @@ namespace WslManager.Screens
         {
             var request = e.Argument as DistroUserFindRequest;
 
-            // todo
-            /*if (request != null)
+            if (request != null)
                 request.UserIdCandidates = WslHelpers.GetLinuxUserInfo(request.DistroName)
                     .Where(x => x.IsRegularUser || x.IsSuperUser).Select(x => x.User).ToArray();
-            */
         }
     }
 }

@@ -18,7 +18,7 @@ namespace WslManager.Models
 
         [Required(AllowEmptyStrings = false)]
         [DisplayName("WSL Version")]
-        public int WSLVersion { get; set; } = 1;
+        public string WSLVersion { get; set; } = "1";
 
         [Required]
         [DisplayName("Is Default?")]

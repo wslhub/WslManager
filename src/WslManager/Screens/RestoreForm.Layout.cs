@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
-using WslManager.External;
 using static WslManager.Extensions.WinFormExtensions;
 
 namespace WslManager.Screens
@@ -251,7 +250,7 @@ namespace WslManager.Screens
                 e.Cancel = true;
                 return;
             }
-            else if (DistroManager.wslDistroList.Select(x => x.DistroName).Contains(distroNameValue.Text, StringComparer.Ordinal))
+            else if (WslHelpers.GetDistroNames().Contains(distroNameValue.Text, StringComparer.Ordinal))
             {
                 errorProvider.SetError(distroNameValue, "Already taken distro name.");
                 distroNameValue.Focus();
