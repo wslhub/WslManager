@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
-using WslManager.External;
 using WslManager.Models;
 using WslManager.Screens;
 
@@ -69,8 +68,7 @@ namespace WslManager
         public static void RefreshDistroList()
         {
             var table = dbContext.WslDistros;
-            DistroManager.RefreshWslDistroData();
-            var distroList = DistroManager.wslDistroList;
+            var distroList = WslHelpers.GetDistroList();
 
             foreach (var eachDistroInfo in distroList)
             {

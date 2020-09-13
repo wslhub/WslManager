@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows.Forms;
 using WslManager.Controls;
 using WslManager.Extensions;
-using WslManager.External;
 using WslManager.Models;
 
 namespace WslManager.Screens
@@ -224,8 +223,8 @@ namespace WslManager.Screens
             if (targetItem == null)
                 return;
 
-            DistroManager.StartDistro(targetItem.DistroName);
-            AppContext.RefreshDistroList();
+            var process = WslHelpers.CreateLaunchSpecificDistroProcess(targetItem.DistroName);
+            process.Start();
         }
     }
 }
