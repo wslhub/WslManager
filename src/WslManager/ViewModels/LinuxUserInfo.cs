@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace WslManager.ViewModels
 {
@@ -13,13 +14,13 @@ namespace WslManager.ViewModels
             if (parts.Length < 7)
                 throw new ArgumentException("Insufficient passwd row parts found.", nameof(passwdExpression));
 
-            User = parts[0];
-            PasswordVerification = parts[2];
-            UserIdentifierNumber = int.Parse(parts[2]);
-            GroupIdentifierNumber = int.Parse(parts[3]);
-            Gecos = parts[4];
-            HomeDirectoryPath = parts[5];
-            LoginShellPath = parts[6];
+            User = parts.ElementAtOrDefault(0);
+            PasswordVerification = parts.ElementAtOrDefault(1);
+            UserIdentifierNumber = int.Parse(parts.ElementAtOrDefault(2));
+            GroupIdentifierNumber = int.Parse(parts.ElementAtOrDefault(3));
+            Gecos = parts.ElementAtOrDefault(4);
+            HomeDirectoryPath = parts.ElementAtOrDefault(5);
+            LoginShellPath = parts.ElementAtOrDefault(6);
         }
 
         public string User { get; set; }
