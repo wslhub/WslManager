@@ -19,6 +19,12 @@ namespace WslManager.Screens
         private TableLayoutPanel generalPageLayout;
         private Label distroNameLabel;
         private TextBox distroName;
+        private Label locationLabel;
+        private TextBox location;
+        private Label distroSizeLabel;
+        private TextBox distroSize;
+        private Label distroStateLabel;
+        private TextBox distroState;
 
         private TabPage usersPage;
         private DataGridView usersGridView;
@@ -44,7 +50,7 @@ namespace WslManager.Screens
 
             .SetupLayout(
                 columnStyles: "100%",
-                rowStyles: "92% 8%")
+                rowStyles: "91% 9%")
 
             .Place(new object[,]
             {
@@ -97,7 +103,7 @@ namespace WslManager.Screens
             }
 
             .SetupLayout(
-                columnStyles: "180px 95%",
+                columnStyles: "100px 95%",
                 rowStyles: "25% 25% 25% 25% 25%")
 
             .Place(new object[,]
@@ -107,7 +113,7 @@ namespace WslManager.Screens
                 {
                     distroNameLabel = new Label()
                     {
-                        Text = "Backup File: ",
+                        Text = "Name: ",
                         TextAlign = ContentAlignment.MiddleRight,
                         Anchor = AnchorStyles.Right,
                     },
@@ -123,13 +129,62 @@ namespace WslManager.Screens
                     .SetTextBoxBinding(this.ViewModel, m => m.DistroName),
                 },
 
-                // TODO: Location
+                {
+                    locationLabel = new Label()
+                    {
+                        Text = "Location: ",
+                        TextAlign = ContentAlignment.MiddleRight,
+                        Anchor = AnchorStyles.Right,
+                    },
 
-                // TODO: Size
+                    location = new TextBox()
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                        AutoCompleteSource = AutoCompleteSource.FileSystem,
+                        ReadOnly = true,
+                    }
+                    .AssociateLabel(locationLabel)
+                    .SetTextBoxBinding(this.ViewModel, m => m.Location),
+                },
 
-                // TODO: State
+                {
+                    distroSizeLabel = new Label()
+                    {
+                        Text = "Size: ",
+                        TextAlign = ContentAlignment.MiddleRight,
+                        Anchor = AnchorStyles.Right,
+                    },
 
-                // AppxName
+                    distroSize = new TextBox()
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                        AutoCompleteSource = AutoCompleteSource.FileSystem,
+                        ReadOnly = true,
+                    }
+                    .AssociateLabel(distroSizeLabel)
+                    .SetTextBoxBinding(this.ViewModel, m => m.DistroSize),
+                },
+
+                {
+                    distroStateLabel = new Label()
+                    {
+                        Text = "Status: ",
+                        TextAlign = ContentAlignment.MiddleRight,
+                        Anchor = AnchorStyles.Right,
+                    },
+
+                    distroState = new TextBox()
+                    {
+                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        AutoCompleteMode = AutoCompleteMode.SuggestAppend,
+                        AutoCompleteSource = AutoCompleteSource.FileSystem,
+                        ReadOnly = true,
+                    }
+                    .AssociateLabel(distroStateLabel)
+                    .SetTextBoxBinding(this.ViewModel, m => m.DistroState),
+                },
             });
 
             usersPage = new TabPage()
@@ -143,7 +198,7 @@ namespace WslManager.Screens
             {
                 Parent = usersPage,
                 Dock = DockStyle.Fill,
-                DataSource = null, // TODO
+                DataSource = userListBindingSource,
                 ReadOnly = true,
             };
 
@@ -164,6 +219,8 @@ namespace WslManager.Screens
             };
 
             FormClosing += RestoreForm_FormClosing;
+
+            propertiesCalculator.RunWorkerAsync(ViewModel);
         }
 
         private void RestoreForm_FormClosing(object sender, FormClosingEventArgs e)

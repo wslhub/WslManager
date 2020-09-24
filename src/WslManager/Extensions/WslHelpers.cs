@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 using WslManager.Models;
 using WslManager.ViewModels;
 
@@ -293,6 +296,52 @@ namespace WslManager.Extensions
                 case Architecture.X64: return "amd64";
                 default: return value.ToString().ToLowerInvariant();
             }
+        }
+
+        public static Guid? GetDistroGuid(string distroName)
+        {
+            using var lxssKey = Registry.CurrentUser.OpenSubKey(
+                Path.Combine("SOFTWARE", "Microsoft", "Windows", "CurrentVersion", "Lxss"),
+                false);
+
+            foreach (var eachSubKey in lxssKey.GetSubKeyNames())
+            {
+                using var subKey = lxssKey.OpenSubKey(eachSubKey, false);
+                var subDistroName = subKey.GetValue("DistributionName", default, RegistryValueOptions.DoNotExpandEnvironmentNames) as string;
+
+                if (!string.Equals(subDistroName, distroName, StringComparison.Ordinal))
+                    continue;
+
+                var keyName = Path.GetFileName(subKey.Name);
+                if (!Guid.TryParse(keyName, out Guid value))
+                    continue;
+
+                return value;
+            }
+
+            return default;
+        }
+
+        public static string GetDistroLocation(Guid distroGuid)
+        {
+            using var distroKey = Registry.CurrentUser.OpenSubKey(
+                Path.Combine("SOFTWARE", "Microsoft", "Windows", "CurrentVersion", "Lxss", distroGuid.ToString("B")),
+                false);
+
+            if (distroKey == null)
+                return null;
+
+            var basePath = distroKey.GetValue("BasePath", default) as string;
+
+            if (string.IsNullOrEmpty(basePath))
+                return default;
+
+            basePath = Path.GetFullPath(basePath);
+
+            if (!Directory.Exists(basePath))
+                return null;
+
+            return basePath;
         }
     }
 }
