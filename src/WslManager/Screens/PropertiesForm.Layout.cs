@@ -219,7 +219,11 @@ namespace WslManager.Screens
             };
 
             FormClosing += RestoreForm_FormClosing;
+            Shown += PropertiesForm_Shown;
+        }
 
+        private void PropertiesForm_Shown(object sender, EventArgs e)
+        {
             propertiesCalculator.RunWorkerAsync(ViewModel);
         }
 
