@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
-using WslManager.External;
 using WslManager.ViewModels;
 
 namespace WslManager.Screens
@@ -17,7 +16,10 @@ namespace WslManager.Screens
             if (targetItem == null)
                 return;
 
-            DistroManager.StartDistro(targetItem.DistroName);
+            var process = WslHelpers.CreateLaunchSpecificDistroProcess(targetItem.DistroName);
+            process.Start();
+            process.WaitForExit();
+
             AppContext.RefreshDistroList();
         }
 
@@ -43,7 +45,12 @@ namespace WslManager.Screens
             var targetUserId = dialog.ViewModel.User;
             var execCommandLine = dialog.ViewModel.ExecCommandLine;
 
-            // todo
+            var process = WslHelpers.CreateLaunchSpecificDistroAsUserProcess(
+                targetDistro, targetUserId, execCommandLine);
+            process.Start();
+            process.WaitForExit();
+
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_TerminateDistro(object sender, EventArgs e)
@@ -53,7 +60,10 @@ namespace WslManager.Screens
             if (targetItem == null)
                 return;
 
-            DistroManager.TerminateDistro(targetItem.DistroName);
+            var process = WslHelpers.CreateTerminateSpecificDistroProcess(targetItem.DistroName);
+            process.Start();
+            process.WaitForExit();
+
             AppContext.RefreshDistroList();
         }
 
@@ -64,7 +74,11 @@ namespace WslManager.Screens
             if (targetItem == null)
                 return;
 
-            DistroManager.ExploreDistro(targetItem.DistroName);
+            var process = WslHelpers.CreateLaunchSpecificDistroExplorerProcess(targetItem.DistroName);
+            process.Start();
+            process.WaitForExit();
+
+            AppContext.RefreshDistroList();
         }
 
         private void Feature_OpenDistroProperties(object sender, EventArgs e)
@@ -118,7 +132,10 @@ namespace WslManager.Screens
                 MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                 return;
 
-            DistroManager.UnregisterDistro(targetItem.DistroName);
+            var process = WslHelpers.CreateUnregisterDistroProcess(targetItem.DistroName);
+            process.Start();
+            process.WaitForExit();
+
             AppContext.RefreshDistroList();
         }
 

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace WslManager.Extensions
 {
-    // https://github.com/dotnet/runtime/issues/31479#issuecomment-578436466
-    internal static class StreamCopyUtil
-    {
+	// https://github.com/dotnet/runtime/issues/31479#issuecomment-578436466
+	internal static class StreamCopyUtil
+	{
 		public const int PreferredBufferSize = 81920;
 
 		public static async Task CopyStreamAsync(
@@ -18,7 +18,7 @@ namespace WslManager.Extensions
 			long? sourceStreamLength = default,
 			CancellationToken cancellationToken = default,
 			Action<long, long?> progressCallback = default)
-        {
+		{
 			if (sourceStream == null)
 				throw new ArgumentNullException(nameof(sourceStream));
 			if (destinationStream == null)
@@ -36,7 +36,7 @@ namespace WslManager.Extensions
 			if (progressCallback == null)
 				await sourceStream.CopyToAsync(destinationStream, bufferSize, cancellationToken).ConfigureAwait(false);
 			else
-            {
+			{
 				var buffer = new byte[bufferSize];
 				var read = default(int);
 				var totalRead = default(int);
@@ -78,7 +78,7 @@ namespace WslManager.Extensions
 			int bufferSize = PreferredBufferSize,
 			CancellationToken cancellationToken = default,
 			Action<long, long?> progressCallback = null)
-        {
+		{
 			if (sourceFileInfo == null)
 				throw new ArgumentNullException(nameof(sourceFileInfo));
 			if (destinationStream == null)
@@ -87,7 +87,7 @@ namespace WslManager.Extensions
 				throw new FileNotFoundException("Selected file is not an available file.", sourceFileInfo.FullName);
 
 			await using var file = sourceFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
-            await CopyStreamAsync(file, destinationStream, bufferSize, file.Length, cancellationToken, progressCallback).ConfigureAwait(false);
-        }
+			await CopyStreamAsync(file, destinationStream, bufferSize, file.Length, cancellationToken, progressCallback).ConfigureAwait(false);
+		}
 	}
 }
