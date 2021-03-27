@@ -1,0 +1,106 @@
+name: Build WslManager App
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    # For a list of available runner types, refer to https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: windows-2019
+    
+    defaults:
+      run:
+        working-directory: src
+
+    env:
+      Solution_Name: WslManager.sln
+      Test_Project_Path: WslManager.Test\WslManager.Test.csproj
+      Wap_Project_Directory: WslManager.Package
+      Wap_Project_Path: WslManager.Package\WslManager.Package.wapproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.201
+
+    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1
+      
+    # Execute all unit tests in the solution
+    - name: Execute unit tests
+      run: dotnet.exe test $env:Test_Project_Path
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore the application
+      run: |
+        msbuild.exe $env:Solution_Name `
+          /m /t:Restore `
+          /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
+        $certificatePath = Join-Path -Path $PWD -ChildPath $(Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx)
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
+
+    # Create the app package by building and packaging the Windows Application Packaging project
+    - name: Create the app package
+      run: |
+        msbuild.exe $env:Wap_Project_Path `
+          /m /t:Publish `
+          /p:Configuration=$env:Configuration `
+          /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode `
+          /p:AppxBundle=$env:Appx_Bundle `
+          /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx `
+          /p:PackageCertificatePassword=${{ secrets.Pfx_Key }} `
+          /p:Platform=$env:Appx_Bundle_Platforms `
+          /p:PlatformTarget=$env:Appx_Bundle_Platforms `
+          /p:AppxBundlePlatforms=$env:Appx_Bundle_Platforms
+      env:
+        Appx_Bundle: Always
+        Appx_Bundle_Platforms: x64
+        Appx_Package_Build_Mode: StoreUpload
+        Configuration: ${{ matrix.configuration }}
+
+    # Remove the pfx
+    - name: Remove the pfx
+      run: |
+        $certificatePath = Join-Path -Path $PWD -ChildPath $(Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx)
+        Remove-Item -Path $certificatePath
+
+    # Compress archive
+    - name: Compress archive
+      run: |
+        Compress-Archive `
+          -Path $env:Wap_Project_Directory\AppPackages `
+          -DestinationPath "$env:Wap_Project_Directory\AppPackages_$env:Configuration.zip" `
+          -CompressionLevel Optimal
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: MSIX Bundle Package
+        path: src\${{ env.Wap_Project_Directory }}\AppPackages_${{ matrix.configuration }}.zip
