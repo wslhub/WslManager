@@ -77,7 +77,6 @@ namespace WslManager.Screens
 
             var process = WslHelpers.CreateLaunchSpecificDistroExplorerProcess(targetItem.DistroName);
             process.Start();
-            process.WaitForExit();
 
             AppContext.RefreshDistroList();
         }
