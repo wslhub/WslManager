@@ -1,66 +1,68 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
-    <StartupObject>WslManager.Program</StartupObject>
-    <PackageId>WslManager</PackageId>
-    <Version>0.1</Version>
-    <Authors>rkttu.com</Authors>
-    <Company>WSLHub</Company>
-    <Product>WslManager</Product>
-    <AssemblyName>WslManager</AssemblyName>
-    <RootNamespace>WslManager</RootNamespace>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+	<OutputType>WinExe</OutputType>
+	<TargetFramework>net5.0-windows</TargetFramework>
+	<UseWindowsForms>true</UseWindowsForms>
+	<StartupObject>WslManager.Program</StartupObject>
+	<PackageId>WslManager</PackageId>
+	<Version>0.1</Version>
+	<Authors>rkttu.com</Authors>
+	<Company>WSLHub</Company>
+	<Product>WslManager</Product>
+	<AssemblyName>WslManager</AssemblyName>
+	<RootNamespace>WslManager</RootNamespace>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
+	<RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+	<Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.7" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="ObjectListView.Repack.Core3" Version="2.9.2" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.4" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	<PackageReference Include="ObjectListView.Repack.Core3" Version="2.9.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="**/MainForm.*.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="**/RestoreForm.*.cs">
-      <DependentUpon>RestoreForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="**/RunAsForm.*.cs">
-      <DependentUpon>RunAsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="**/UserFindForm.*.cs">
-      <DependentUpon>UserFindForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="**/RunAsForm.*.cs">
-      <DependentUpon>RunAsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="**/InstallForm.*.cs">
-      <DependentUpon>InstallForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="**/DistroFindForm.*.cs">
-      <DependentUpon>DistroFindForm.cs</DependentUpon>
-    </Compile>
+	<Compile Update="**/MainForm.*.cs">
+	  <DependentUpon>MainForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="**/RestoreForm.*.cs">
+	  <DependentUpon>RestoreForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="**/RunAsForm.*.cs">
+	  <DependentUpon>RunAsForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="**/UserFindForm.*.cs">
+	  <DependentUpon>UserFindForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="**/RunAsForm.*.cs">
+	  <DependentUpon>RunAsForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="**/InstallForm.*.cs">
+	  <DependentUpon>InstallForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="**/DistroFindForm.*.cs">
+	  <DependentUpon>DistroFindForm.cs</DependentUpon>
+	</Compile>
 	<Compile Update="**/PropertiesForm.*.cs">
-      <DependentUpon>PropertiesForm.cs</DependentUpon>
-    </Compile>
+	  <DependentUpon>PropertiesForm.cs</DependentUpon>
+	</Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Screens\RestoreForm - 복사.Components.cs">
-      <DependentUpon>RestoreForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Screens\RestoreForm - 복사.Helpers.cs">
-      <DependentUpon>RestoreForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Screens\RestoreForm - 복사.Layout.cs">
-      <DependentUpon>RestoreForm.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Screens\RestoreForm - 복사.Models.cs">
-      <DependentUpon>RestoreForm.cs</DependentUpon>
-    </Compile>
+	<Compile Update="Screens\RestoreForm - 복사.Components.cs">
+	  <DependentUpon>RestoreForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="Screens\RestoreForm - 복사.Helpers.cs">
+	  <DependentUpon>RestoreForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="Screens\RestoreForm - 복사.Layout.cs">
+	  <DependentUpon>RestoreForm.cs</DependentUpon>
+	</Compile>
+	<Compile Update="Screens\RestoreForm - 복사.Models.cs">
+	  <DependentUpon>RestoreForm.cs</DependentUpon>
+	</Compile>
   </ItemGroup>
 
 </Project>

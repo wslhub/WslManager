@@ -9,7 +9,7 @@
   <Identity
     Name="826b17a3-34b3-4ca0-bc35-d44061193ba9"
     Publisher="CN=WSLHUB"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
   <Properties>
     <DisplayName>WslManager</DisplayName>

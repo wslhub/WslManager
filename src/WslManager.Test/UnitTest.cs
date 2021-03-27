@@ -8,6 +8,7 @@ namespace WslManager.Test
         [Fact]
         public void Test()
         {
+
         }
     }
 }
