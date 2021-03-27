@@ -71,15 +71,40 @@ namespace WslManager.Extensions
                 .Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static string GetCommandProcessorExePath()
+        {
+            var cmdExeName = "cmd.exe";
+            var windowsDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
+            var cmdExePath = Path.Combine(windowsDirectoryPath, cmdExeName);
+
+            if (!File.Exists(cmdExePath))
+                throw new FileNotFoundException($"Cannot find {cmdExeName} on your system.", cmdExePath);
+
+            return cmdExePath;
+        }
+
         public static string GetCanonicalWslExePath()
         {
+            var wslExeName = "wsl.exe";
             var windowsDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
-            var wslExePath = Path.Combine(windowsDirectoryPath, "wsl.exe");
+            var wslExePath = Path.Combine(windowsDirectoryPath, wslExeName);
 
             if (!File.Exists(wslExePath))
-                throw new FileNotFoundException("Cannot find wsl.exe on your system.", wslExePath);
+                throw new FileNotFoundException($"Cannot find {wslExeName} on your system.", wslExePath);
 
             return wslExePath;
+        }
+
+        public static string GetCanonicalWslHostExePath()
+        {
+            var wslHostExeName = "wslhost.exe";
+            var windowsDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
+            var wslHostExePath = Path.Combine(windowsDirectoryPath, "lxss", wslHostExeName);
+
+            if (!File.Exists(wslHostExePath))
+                throw new FileNotFoundException($"Cannot find {wslHostExeName} on your system.", wslHostExePath);
+
+            return wslHostExePath;
         }
 
         public static IEnumerable<string> ExecuteAndGetResultForWsl(string distroName, string userName, string oneLinerBashScript)
@@ -157,7 +182,7 @@ namespace WslManager.Extensions
 
         public static Process CreateLaunchSpecificDistroProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("cmd.exe", $"/c {GetCanonicalWslExePath()} --distribution {distroName}")
+            var startInfo = new ProcessStartInfo(GetCommandProcessorExePath(), $"/c {GetCanonicalWslExePath()} --distribution {distroName}")
             {
                 UseShellExecute = false,
                 WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
@@ -174,7 +199,7 @@ namespace WslManager.Extensions
 
         public static Process CreateLaunchSpecificDistroAsUserProcess(string distroName, string userName, string execCommandLine)
         {
-            var startInfo = new ProcessStartInfo("cmd.exe", $"/c {GetCanonicalWslExePath()} --distribution {distroName} --user {userName} -- {execCommandLine}")
+            var startInfo = new ProcessStartInfo(GetCommandProcessorExePath(), $"/c {GetCanonicalWslExePath()} --distribution {distroName} --user {userName} -- {execCommandLine}")
             {
                 UseShellExecute = false,
                 WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
