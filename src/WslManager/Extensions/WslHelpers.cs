@@ -5,8 +5,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Windows.Forms;
+using WslManager.External;
 using WslManager.Models;
 using WslManager.ViewModels;
 
@@ -69,22 +71,33 @@ namespace WslManager.Extensions
                 .Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static string GetCanonicalWslExePath()
+        {
+            var windowsDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
+            var wslExePath = Path.Combine(windowsDirectoryPath, "wsl.exe");
+
+            if (!File.Exists(wslExePath))
+                throw new FileNotFoundException("Cannot find wsl.exe on your system.", wslExePath);
+
+            return wslExePath;
+        }
+
         public static IEnumerable<string> ExecuteAndGetResultForWsl(string distroName, string userName, string oneLinerBashScript)
         {
             if (string.IsNullOrWhiteSpace(userName))
-                return ExecuteAndGetResultForLinux("wsl.exe", $"--distribution {distroName} -- {oneLinerBashScript}");
+                return ExecuteAndGetResultForLinux(GetCanonicalWslExePath(), $"--distribution {distroName} -- {oneLinerBashScript}");
             else
-                return ExecuteAndGetResultForLinux("wsl.exe", $"--distribution {distroName} --user {userName} -- {oneLinerBashScript}");
+                return ExecuteAndGetResultForLinux(GetCanonicalWslExePath(), $"--distribution {distroName} --user {userName} -- {oneLinerBashScript}");
         }
 
         public static IEnumerable<string> GetDistroNames()
         {
-            return ExecuteAndGetResult("wsl.exe", "--list --quiet");
+            return ExecuteAndGetResult(GetCanonicalWslExePath(), "--list --quiet");
         }
 
         public static IEnumerable<WslDistro> GetDistroList()
         {
-            return ParseDistroList(ExecuteAndGetResult("wsl.exe", "--list --verbose"));
+            return ParseDistroList(ExecuteAndGetResult(GetCanonicalWslExePath(), "--list --verbose"));
         }
 
         public static IEnumerable<LinuxUserInfo> GetLinuxUserInfo(string distroName, string userName = "root")
@@ -144,7 +157,7 @@ namespace WslManager.Extensions
 
         public static Process CreateLaunchSpecificDistroProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {distroName}")
+            var startInfo = new ProcessStartInfo("cmd.exe", $"/c {GetCanonicalWslExePath()} --distribution {distroName}")
             {
                 UseShellExecute = false,
                 WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
@@ -161,7 +174,7 @@ namespace WslManager.Extensions
 
         public static Process CreateLaunchSpecificDistroAsUserProcess(string distroName, string userName, string execCommandLine)
         {
-            var startInfo = new ProcessStartInfo("cmd.exe", $"/c wsl.exe --distribution {distroName} --user {userName} -- {execCommandLine}")
+            var startInfo = new ProcessStartInfo("cmd.exe", $"/c {GetCanonicalWslExePath()} --distribution {distroName} --user {userName} -- {execCommandLine}")
             {
                 UseShellExecute = false,
                 WorkingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
@@ -178,7 +191,7 @@ namespace WslManager.Extensions
 
         public static Process CreateTerminateSpecificDistroProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--terminate {distroName}")
+            var startInfo = new ProcessStartInfo(GetCanonicalWslExePath(), $"--terminate {distroName}")
             {
                 UseShellExecute = false,
             };
@@ -209,7 +222,7 @@ namespace WslManager.Extensions
 
         public static Process CreateExportDistroProcess(string distroName, string tarFilePath)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--export {distroName} \"{tarFilePath}\"")
+            var startInfo = new ProcessStartInfo(GetCanonicalWslExePath(), $"--export {distroName} \"{tarFilePath}\"")
             {
                 UseShellExecute = false,
             };
@@ -225,7 +238,7 @@ namespace WslManager.Extensions
 
         public static Process CreateImportDistroProcess(string newName, string installDirectoryPath, string tarFilePath)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--import {newName} \"{installDirectoryPath}\" \"{tarFilePath}\"")
+            var startInfo = new ProcessStartInfo(GetCanonicalWslExePath(), $"--import {newName} \"{installDirectoryPath}\" \"{tarFilePath}\"")
             {
                 UseShellExecute = false,
             };
@@ -241,7 +254,7 @@ namespace WslManager.Extensions
 
         public static Process CreateSetAsDefaultProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--set-default {distroName}")
+            var startInfo = new ProcessStartInfo(GetCanonicalWslExePath(), $"--set-default {distroName}")
             {
                 UseShellExecute = false,
             };
@@ -257,7 +270,7 @@ namespace WslManager.Extensions
 
         public static Process CreateUnregisterDistroProcess(string distroName)
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--unregister {distroName}")
+            var startInfo = new ProcessStartInfo(GetCanonicalWslExePath(), $"--unregister {distroName}")
             {
                 UseShellExecute = false,
             };
@@ -273,7 +286,7 @@ namespace WslManager.Extensions
 
         public static Process CreateShutdownDistroProcess()
         {
-            var startInfo = new ProcessStartInfo("wsl.exe", $"--shutdown")
+            var startInfo = new ProcessStartInfo(GetCanonicalWslExePath(), $"--shutdown")
             {
                 UseShellExecute = false,
             };
@@ -342,6 +355,41 @@ namespace WslManager.Extensions
                 return null;
 
             return basePath;
+        }
+
+        public static void CreateDistroShotcut(string distroName, string shortcutFilePath, string iconFilePath)
+        {
+            var link = (IShellLink)new ShellLink();
+            link.SetPath(GetCanonicalWslExePath());
+            link.SetArguments($"--distribution {distroName}");
+            link.SetDescription($"WSL - {distroName}");
+
+            if (File.Exists(iconFilePath))
+                link.SetIconLocation(iconFilePath, 0);
+
+            var file = (IPersistFile)link;
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            file.Save(shortcutFilePath, false);
+
+            RevealItemInExplorer(shortcutFilePath);
+        }
+
+        public static void RevealItemInExplorer(string targetFilePath)
+        {
+            var canonicalPath = Path.GetFullPath(targetFilePath);
+            var baseDirectoryPath = Path.GetDirectoryName(canonicalPath);
+
+            if (!File.Exists(targetFilePath))
+                return;
+
+            var startInfo = new ProcessStartInfo(
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"),
+                $"/select,{targetFilePath}")
+            {
+                UseShellExecute = false,
+            };
+
+            Process.Start(startInfo);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace WslManager.Screens
     partial class MainForm
     {
         partial void InitializeBindingSource(IContainer components);
-        partial void InitializeImageList(IContainer components);
+        partial void InitializeIconList(IContainer components);
         partial void InitializeBackupWorker(IContainer components);
         partial void InitializeRestoreWorker(IContainer components);
 
@@ -14,7 +14,7 @@ namespace WslManager.Screens
         {
             base.InitializeComponents(components);
 
-            InitializeImageList(components);
+            InitializeIconList(components);
             InitializeBackupWorker(components);
             InitializeRestoreWorker(components);
             InitializeBindingSource(components);
