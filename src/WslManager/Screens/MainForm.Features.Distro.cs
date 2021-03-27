@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WslManager.Extensions;
@@ -79,6 +80,36 @@ namespace WslManager.Screens
             process.WaitForExit();
 
             AppContext.RefreshDistroList();
+        }
+
+        private void Feature_CreateDistroShortcut(object sender, EventArgs e)
+        {
+            var targetItem = GetSelectedDistroBySender(sender);
+
+            if (targetItem == null)
+                return;
+
+            using var saveFileDialog = new SaveFileDialog()
+            {
+                Title = $"Create Shortcut for {targetItem.DistroName}",
+                SupportMultiDottedExtensions = true,
+                Filter = "Shortcut Link|*.lnk",
+                DefaultExt = ".lnk",
+                FileName = $"{targetItem.DistroName}.lnk",
+            };
+
+            if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            var targetShortcutPath = saveFileDialog.FileName;
+
+            if (File.Exists(targetShortcutPath))
+                File.Delete(targetShortcutPath);
+
+            WslHelpers.CreateDistroShotcut(
+                targetItem.DistroName,
+                targetShortcutPath,
+                GetDistroIconImage(targetItem.DistroName));
         }
 
         private void Feature_OpenDistroProperties(object sender, EventArgs e)

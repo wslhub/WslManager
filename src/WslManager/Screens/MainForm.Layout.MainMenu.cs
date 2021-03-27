@@ -17,6 +17,7 @@ namespace WslManager.Screens
         private ToolStripMenuItem openDistroMenuItem;
         private ToolStripMenuItem runAsDistroMenuItem;
         private ToolStripMenuItem openDistroFolderMenuItem;
+        private ToolStripMenuItem createDistroShortcutMenuItem;
         private ToolStripMenuItem backupDistroMenuItem;
         private ToolStripMenuItem terminateDistroMenuItem;
         private ToolStripMenuItem unregisterDistroMenuItem;
@@ -73,6 +74,7 @@ namespace WslManager.Screens
                 runAsDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Run as..."),
                 distroMenu.DropDownItems.AddSeparator(),
                 openDistroFolderMenuItem = distroMenu.DropDownItems.AddMenuItem("E&xplore Distro File System..."),
+                createDistroShortcutMenuItem = distroMenu.DropDownItems.AddMenuItem("Create &Shortcut..."),
                 backupDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Backup Distro..."),
                 terminateDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Terminate Distro..."),
                 unregisterDistroMenuItem = distroMenu.DropDownItems.AddMenuItem("&Unregister Distro..."),
@@ -100,6 +102,7 @@ namespace WslManager.Screens
             openDistroMenuItem.Click += Feature_LaunchDistro;
             runAsDistroMenuItem.Click += Feature_RunAsDistro;
             openDistroFolderMenuItem.Click += Feature_OpenDistroFileSystem;
+            createDistroShortcutMenuItem.Click += Feature_CreateDistroShortcut;
             backupDistroMenuItem.Click += Feature_BackupDistro;
             terminateDistroMenuItem.Click += Feature_TerminateDistro;
             unregisterDistroMenuItem.Click += Feature_UnregisterDistro;

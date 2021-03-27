@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using WslManager.External;
 
 namespace WslManager.Screens
 {
@@ -16,7 +17,9 @@ namespace WslManager.Screens
         private ImageList smallImageList;
         private ImageList stateImageList;
 
-        partial void InitializeImageList(IContainer components)
+        private Dictionary<string, string> cachedDistroIcons = new Dictionary<string, string>();
+
+        partial void InitializeIconList(IContainer components)
         {
             largeImageList = new ImageList()
             {
@@ -35,10 +38,15 @@ namespace WslManager.Screens
             foreach (KeyValuePair<string, string> pairs in Resources.LogoImages)
             {
                 using var memStream = new MemoryStream(Convert.FromBase64String(pairs.Value), false);
+
                 var loadedImage = Image.FromStream(memStream, true);
                 largeImageList.Images.Add(pairs.Key, loadedImage);
+
                 var smallImage = ResizeImage(loadedImage, smallImageList.ImageSize.Width, smallImageList.ImageSize.Height);
                 smallImageList.Images.Add(pairs.Key, smallImage);
+
+                var imagePath = SaveDistroIconImage(memStream, pairs.Key);
+                cachedDistroIcons.Add(pairs.Key, imagePath);
             }
 
             stateImageList = new ImageList()
@@ -54,6 +62,27 @@ namespace WslManager.Screens
                 var loadedImage = Image.FromStream(memStream, true);
                 stateImageList.Images.Add(pairs.Key, loadedImage);
             }
+        }
+
+        private string SaveDistroIconImage(Stream readableStream, string distroName)
+        {
+            var targetDirectoryPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "WslManager", "Icons");
+
+            if (!Directory.Exists(targetDirectoryPath))
+                Directory.CreateDirectory(targetDirectoryPath);
+
+            var targetImageFilePath = Path.Combine(targetDirectoryPath, $"{distroName}.png");
+            using (var fileStream = File.OpenWrite(targetImageFilePath))
+            {
+                readableStream.Seek(0L, SeekOrigin.Begin);
+                readableStream.CopyTo(fileStream);
+            }
+
+            var targetIconFilePath = Path.Combine(targetDirectoryPath, $"{distroName}.ico");
+            ImagingHelper.ConvertToIcon(targetImageFilePath, targetIconFilePath);
+            return targetIconFilePath;
         }
 
         private Bitmap ResizeImage(Image image, int width, int height)
@@ -77,6 +106,17 @@ namespace WslManager.Screens
             }
 
             return destImage;
+        }
+
+        private string GetDistroIconImage(string distroName)
+        {
+            foreach (var eachKey in cachedDistroIcons.Keys)
+            {
+                if (distroName.Contains(eachKey, StringComparison.OrdinalIgnoreCase))
+                    return cachedDistroIcons[eachKey];
+            }
+            
+            return cachedDistroIcons["linux"];
         }
     }
 }
