@@ -15,7 +15,12 @@
 	<ApplicationManifest>app.manifest</ApplicationManifest>
 	<RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
 	<Platforms>AnyCPU;x64;x86</Platforms>
+	<ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="App.ico" />
+  </ItemGroup>
 
   <ItemGroup>
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.4" />

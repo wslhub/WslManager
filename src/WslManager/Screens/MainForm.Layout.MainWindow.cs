@@ -100,6 +100,9 @@ namespace WslManager.Screens
             };
 
             statusStrip.Items.Add(statusItem);
+
+            using var memStream = new MemoryStream(Convert.FromBase64String(Resources.AppIconFileContent));
+            Icon = new Icon(memStream);
         }
 
         private void ListView_FormatRow(object sender, FormatRowEventArgs e)
