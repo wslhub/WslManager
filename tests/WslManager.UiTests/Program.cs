@@ -31,7 +31,7 @@ internal static class Program
                 await window.Dispatcher.InvokeAsync(() => { }, DispatcherPriority.ApplicationIdle);
                 var grid = Find<DataGrid>(window, "DistroGrid");
                 Require(grid.Items.Count == 2, "Initial list contains two distributions");
-                grid.SelectedIndex = 0;
+                grid.SelectedItem = grid.Items.OfType<Distro>().Single(d => d.Name == "Ubuntu");
                 var original = grid.SelectedItem;
                 runner.Running = true;
                 await window.RefreshAsync();
