@@ -1,0 +1,56 @@
+name: Microsoft Store submission
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version (major.minor.patch; higher than the Store version)'
+        required: true
+        type: string
+      submit:
+        description: 'Submit packages to the existing Partner Center app'
+        default: false
+        type: boolean
+permissions:
+  contents: read
+concurrency:
+  group: microsoft-store-submission
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: windows-latest
+    environment: microsoft-store
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+      STORE_IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
+      STORE_PUBLISHER: ${{ vars.STORE_PUBLISHER }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+      - name: Validate Store identity configuration
+        shell: pwsh
+        run: |
+          if (-not $env:STORE_IDENTITY_NAME -or -not $env:STORE_PUBLISHER) {
+            throw 'Configure STORE_IDENTITY_NAME and STORE_PUBLISHER from Partner Center first.'
+          }
+      - run: dotnet test tests/WslManager.Core.Tests -c Release
+      - run: dotnet run --project tests/WslManager.UiTests -c Release -- artifacts/ui
+      - run: ./scripts/Build-Packages.ps1 -Version $env:RELEASE_VERSION -IdentityName $env:STORE_IDENTITY_NAME -Publisher $env:STORE_PUBLISHER
+      - name: Upload and commit Store submission
+        if: inputs.submit
+        env:
+          STORE_TENANT_ID: ${{ secrets.STORE_TENANT_ID }}
+          STORE_CLIENT_ID: ${{ secrets.STORE_CLIENT_ID }}
+          STORE_CLIENT_SECRET: ${{ secrets.STORE_CLIENT_SECRET }}
+          STORE_APP_ID: ${{ vars.STORE_APP_ID }}
+        shell: pwsh
+        run: |
+          $packages = @(Get-ChildItem artifacts/packages/*.msix | ForEach-Object FullName)
+          python scripts/store_submission.py --result artifacts/packages/store-result.json @packages
+          if ($LASTEXITCODE -ne 0) { throw 'Store submission failed.' }
+      - uses: actions/upload-artifact@v7.0.1
+        if: always()
+        with:
+          name: store-packages-and-result
+          path: artifacts/packages

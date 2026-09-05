@@ -1,0 +1,62 @@
+name: Build and test
+on:
+  push:
+    branches: [master, 'codex/**']
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet restore tests/WslManager.Core.Tests --locked-mode
+      - run: dotnet test tests/WslManager.Core.Tests -c Release --no-restore --logger trx --results-directory artifacts/tests
+      - uses: actions/upload-artifact@v7.0.1
+        if: always()
+        with:
+          name: tests-${{ matrix.os }}
+          path: artifacts/tests
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet build src/WslManager.slnx -c Release -warnaserror
+      - name: Exercise WPF windows and interactions
+        run: dotnet run --project tests/WslManager.UiTests -c Release --no-build -- artifacts/ui
+      - name: Build portable, installer and MSIX packages
+        run: ./scripts/Build-Packages.ps1
+      - name: Validate installer install and uninstall
+        run: ./scripts/Test-Installer.ps1
+      - uses: actions/upload-artifact@v7.0.1
+        if: always()
+        with:
+          name: windows-ui
+          path: artifacts/ui
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: windows-packages
+          path: artifacts/packages
+          if-no-files-found: error
+  scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - run: python3 -m unittest discover -s tests/scripts -v

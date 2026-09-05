@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Version>0.2.0</Version>
+    <Authors>WSLHub contributors</Authors>
+    <RepositoryUrl>https://github.com/wslhub/WslManager</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>

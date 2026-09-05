@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../tests/WslManager.Core.Tests/WslManager.Core.Tests.csproj" />
+  <Project Path="../tests/WslManager.UiTests/WslManager.UiTests.csproj" />
+  <Project Path="WslManager.Core/WslManager.Core.csproj" />
+  <Project Path="WslManager/WslManager.csproj" />
+</Solution>
