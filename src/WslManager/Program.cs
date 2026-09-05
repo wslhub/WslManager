@@ -1,23 +1,18 @@
-using System;
-using System.Windows.Forms;
+using System.Windows;
 
-namespace WslManager
+namespace WslManager;
+
+public static class Program
 {
-    internal static class Program
+    [STAThread]
+    public static void Main()
     {
-        private static void InitApplication()
+        var app = new Application();
+        try { app.Run(new MainWindow()); }
+        catch (Exception ex)
         {
-            Application.OleRequired();
-            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-        }
-
-        [STAThread]
-        private static void Main(string[] args)
-        {
-            InitApplication();
-            Application.Run(new AppContext(args));
+            MessageBox.Show(ex.Message, "WslManager startup error", MessageBoxButton.OK, MessageBoxImage.Error);
+            Environment.ExitCode = 1;
         }
     }
 }
