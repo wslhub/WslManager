@@ -16,6 +16,8 @@ $sdk = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Directory |
     Sort-Object { [version]$_.Name } -Descending | Select-Object -First 1
 if (-not $sdk) { throw 'Windows SDK makeappx.exe was not found.' }
 $makeappx = Join-Path $sdk.FullName 'x64\makeappx.exe'
+$makepri = Join-Path $sdk.FullName 'x64\makepri.exe'
+if (-not (Test-Path $makepri)) { throw 'Windows SDK makepri.exe was not found.' }
 $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
 if (-not (Test-Path $iscc)) { throw 'Inno Setup 6 is required to build the installer.' }
 foreach ($arch in @('x64', 'arm64')) {
@@ -26,7 +28,7 @@ foreach ($arch in @('x64', 'arm64')) {
     & dotnet publish (Join-Path $repo 'src/WslManager/WslManager.csproj') -c Release -r "win-$arch" --self-contained true -p:Version=$Version -o $stage
     if ($LASTEXITCODE -ne 0) { throw "Publish failed for $arch." }
     Copy-Item (Join-Path $repo 'License.txt') $stage
-    & $iscc "/DAppVersion=$Version" "/DAppArch=$arch" "/DPublishDirectory=$stage" "/DPackageOutput=$output" (Join-Path $repo 'packaging/installer.iss')
+    & $iscc /Qp "/DAppVersion=$Version" "/DAppArch=$arch" "/DPublishDirectory=$stage" "/DPackageOutput=$output" (Join-Path $repo 'packaging/installer.iss')
     if ($LASTEXITCODE -ne 0) { throw "Installer build failed for $arch." }
     New-Item -ItemType File -Force (Join-Path $stage 'portable.flag') | Out-Null
     Compress-Archive -Path "$stage/*" -DestinationPath (Join-Path $output "WslManager-$Version-win-$arch-portable.zip") -Force
@@ -41,6 +43,12 @@ foreach ($arch in @('x64', 'arm64')) {
     $manifest.Package.Identity.Version = "$Version.0"
     $manifest.Package.Identity.ProcessorArchitecture = $arch
     $manifest.Save((Join-Path $stage 'AppxManifest.xml'))
+    # Index scale-qualified artwork so the manifest's unqualified logo names resolve.
+    $priConfig = Join-Path (Split-Path $stage -Parent) "$arch-priconfig.xml"
+    & $makepri createconfig /cf $priConfig /dq en-US /o
+    if ($LASTEXITCODE -ne 0) { throw 'Resource index configuration failed.' }
+    & $makepri new /pr $stage /cf $priConfig /of (Join-Path $stage 'resources.pri') /o
+    if ($LASTEXITCODE -ne 0) { throw "Resource indexing failed for $arch." }
     & $makeappx pack /d $stage /p (Join-Path $output "WslManager-$Version-$arch.msix") /o
     if ($LASTEXITCODE -ne 0) { throw "MSIX build failed for $arch." }
 }
