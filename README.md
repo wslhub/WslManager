@@ -8,7 +8,7 @@ Manage distributions, import and export archives, select terminal/editor applica
 
 ## Windows and WSL requirements
 
-Use a supported Windows installation with WSL enabled. Builds target Windows x64 and ARM64. The executable manifest and installer require Windows build 19041 or later; actual support also depends on the [.NET 10 supported OS policy](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md).
+Use a supported Windows installation with WSL enabled. Builds target Windows x64 and ARM64. The installer requires Windows build 19041 or later; actual support also depends on the [.NET 10 supported OS policy](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md).
 
 The default-user action uses current WSL's `--manage --set-default-user` and checks command availability. Disk mounting requires a current WSL installation and administrator approval for that operation. Other actions run as the current Windows user. See [Microsoft's WSL commands](https://learn.microsoft.com/windows/wsl/basic-commands) and [disk mounting requirements](https://learn.microsoft.com/windows/wsl/wsl2-mount-disk).
 

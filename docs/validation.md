@@ -2,6 +2,8 @@
 
 The .NET 10 implementation separates command construction and process execution from the WPF window. Automated tests use an injected WSL runner unless explicitly stated otherwise. The automated WPF test opens real Windows windows and manipulates their controls; it does not operate on installed Linux distributions.
 
+The [Windows/Linux CI run for commit cee45ec](https://github.com/wslhub/WslManager/actions/runs/33951401490) passed on September 5, 2026, including all 26 core cases, five Store-script cases, real WPF windows and x64 installer installation/uninstallation. Both x64 and ARM64 packages built successfully. This is build validation for ARM64; ARM64 hardware execution has not been tested.
+
 ## Automated coverage
 
 | Layer | Checks | Execution environment |
