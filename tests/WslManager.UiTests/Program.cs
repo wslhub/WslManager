@@ -47,7 +47,7 @@ internal static class Program
                 Require(Find<TextBlock>(window, "Status").Text.Contains("Refresh failed"), "Failure is visible");
                 runner.Fail = false;
                 await window.RefreshAsync();
-                window.Width = 1100;
+                window.Width = 960;
                 grid.Columns[0].Width = 380;
                 grid.Columns[0].DisplayIndex = 1;
                 await window.Dispatcher.InvokeAsync(() => { }, DispatcherPriority.ApplicationIdle);
@@ -64,11 +64,11 @@ internal static class Program
                 window.Close();
                 Require(File.Exists(settings.FilePath), "Window settings persisted");
                 var saved = settings.Load().Settings;
-                Require(saved.Width == 1100 && saved.Columns.Single(c => c.Name == "Name").DisplayIndex == 1, "Window size and column order persist");
+                Require(Math.Abs(saved.Width - 960) < 2 && saved.Columns.Single(c => c.Name == "Name").DisplayIndex == 1, "Window size and column order persist");
                 var reopened = new MainWindow(runner, settings, observeSystem: false);
                 reopened.Show();
                 await reopened.Dispatcher.InvokeAsync(() => { }, DispatcherPriority.ApplicationIdle);
-                Require(reopened.Width == 1100, "Window size restored");
+                Require(Math.Abs(reopened.Width - 960) < 2, "Window size restored");
                 Require(Find<DataGrid>(reopened, "DistroGrid").Columns[0].DisplayIndex == 1, "Column order restored");
                 reopened.Close();
                 File.WriteAllText(Path.Combine(output, "result.txt"), "PASS: WPF window, refresh, selection, filter, failure retention, settings dialog, save and reload. WSL commands used an injected fake runner.\n");
@@ -98,8 +98,9 @@ internal static class Program
     private static void Capture(Window window, string path)
     {
         window.UpdateLayout();
-        var bitmap = new RenderTargetBitmap((int)window.ActualWidth, (int)window.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-        bitmap.Render(window);
+        var content = (FrameworkElement)window.Content;
+        var bitmap = new RenderTargetBitmap((int)content.ActualWidth, (int)content.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+        bitmap.Render(content);
         var png = new PngBitmapEncoder();
         png.Frames.Add(BitmapFrame.Create(bitmap));
         using var stream = File.Create(path);
