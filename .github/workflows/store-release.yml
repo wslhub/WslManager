@@ -49,7 +49,7 @@ jobs:
           $packages = @(Get-ChildItem artifacts/packages/*.msix | ForEach-Object FullName)
           python scripts/store_submission.py --result artifacts/packages/store-result.json @packages
           if ($LASTEXITCODE -ne 0) { throw 'Store submission failed.' }
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
           name: store-packages-and-result
