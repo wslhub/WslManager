@@ -26,7 +26,7 @@ jobs:
           dotnet-version: '10.0.x'
       - run: dotnet restore tests/WslManager.Core.Tests --locked-mode
       - run: dotnet test tests/WslManager.Core.Tests -c Release --no-restore --logger trx --results-directory artifacts/tests
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
           name: tests-${{ matrix.os }}
@@ -45,12 +45,12 @@ jobs:
         run: ./scripts/Build-Packages.ps1
       - name: Validate installer install and uninstall
         run: ./scripts/Test-Installer.ps1
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
           name: windows-ui
           path: artifacts/ui
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: windows-packages
           path: artifacts/packages
